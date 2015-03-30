@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="offerConfiguratorApp">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ECD Offer Configurator</title>
+    
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- CSS application -->
+    <link href="css/index.css" rel="stylesheet">
+    
+    <!-- JS libraries -->
+    <script src="js/lib/jquery.min.js"></script>
+    <script src="js/lib/bootstrap.min.js"></script>
+    <script src="js/lib/angular.min.js"></script>
+    <script src="js/lib/angular-resource.min.js"></script>
+    <script src="js/lib/angular-ui-router.min.js"></script>
+    
+    <!-- For handeling JSON web tokens -->
+    <script src="js/lib/crypto/core.js"></script>
+    <script src="js/lib/crypto/sha256.js"></script>
+    <script src="js/lib/crypto/x64-core.js"></script>
+    <script src="js/lib/jsrsasign/ext/base64.js"></script>
+    <script src="js/lib/jsrsasign/ext/jsbn.js"></script>
+    <script src="js/lib/jsrsasign/ext/jsbn2.js"></script>
+    <script src="js/lib/jsrsasign/ext/rsa.js"></script>
+    <script src="js/lib/jsrsasign/ext/rsa2.js"></script>
+    <script src="js/lib/jsrsasign/rsapem-1.1.js"></script>
+    <script src="js/lib/jsrsasign/asn1hex-1.1.js"></script>
+    <script src="js/lib/jsrsasign/x509-1.1.js"></script>
+    <script src="js/lib/jsrsasign/crypto-1.1.js"></script>
+    <script src="js/lib/jsrsasign/base64x-1.1.js"></script>
+    <script src="js/lib/jsrsasign/rsasign-1.2.js"></script>
+    <script src="js/lib/ext/json-sans-eval.js"></script>
+    <script src="js/lib/jws-2.0.js"></script>
+    
+    <!-- JS application -->
+    <script src="js/models.js"></script>
+    <script src="js/services.js"></script>
+    <script src="js/controllers.js"></script>
+    <script src="js/app.js"></script>
+</head>
+
+<body ng-controller="HeaderController">
+<nav ng-show="appState.loggedIn" class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Offer Configurator</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">{{appState.firstName}}</a></li>
+                <li><a href="#">{{appState.lastName}}</a></li>
+                <li><a id="logout" href="#">Logout</a></li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+        <form class="form-horizontal" role="search">
+            <div class="form-group">
+                <label class="col-sm-1 control-label">{{currentModelType}}</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" placeholder="Search">
+                </div>
+                <span id="searchIcon" class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            </div>
+        </form>
+    </div><!-- /.container-fluid -->
+</nav>
+
+<!-- This directive allows Angular to snap-in an html template depending
+  -- On the current route.  All templates that can be snapped in are in the 
+  -- /templates directory.  The starting template is login.html
+  -- 
+  -- Note: Some templates may also include this directive, creating a nested
+  -- heararchy of routes.
+  -->
+<div ui-view>
+</div>
+    
+</body>
+
+</html>

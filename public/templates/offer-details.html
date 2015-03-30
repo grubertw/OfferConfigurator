@@ -1,0 +1,39 @@
+<!-- Tabs for navigating into offers.
+  -- Shown when an offer is selected for editing.
+  -->
+<div role="tabpanel" ng-show="showOffersTabs">  
+<ul class="nav nav-tabs" role="tablist" id="offerTabs">
+    <li id="offerDetailsTab" role="presentation" ng-show="offerTabs.showOfferDetails" class="active"><a href="#offerDetails" role="tab" data-toggle="tab">Details</a></li>
+    <li id="benefitsTab" role="presentation" ng-show="offerTabs.showBenefits"><a href="#benefits" role="tab" data-toggle="tab">Benefits</a></li>
+    <li id="termsTab" role="presentation" ng-show="offerTabs.showTerms"><a href="#terms" role="tab" data-toggle="tab">Terms</a></li>
+    <li id="merchandisingTab" role="presentation" ng-show="offerTabs.showMerchandising"><a href="#merchandising" role="tab" data-toggle="tab">Merchandising</a></li>
+</ul>
+    
+<div class="tab-content">    
+<!-- Panel for viewing and selecting offers to edit.
+  -->
+<div role="tabpanel" class="tab-pane" id="offerDetails">
+    
+</div>
+    
+<!-- Panel for adding/removing offers.
+  -->
+<div role="tabpanel" class="tab-pane" id="benefits">
+    
+</div>
+    
+<!-- Panel for modifying terms.
+  -->
+<div role="tabpanel" class="tab-pane" id="terms">
+    
+</div>
+    
+<!-- Panel modifying merchandizing.
+  -- Works like a key/value pair editor to storing text 
+  -- and image assets.
+  -->
+<div role="tabpanel" class="tab-pane" id="merchandising">
+    
+</div>
+</div> <!-- END tab content -->
+</div> <!-- END offer tabs -->

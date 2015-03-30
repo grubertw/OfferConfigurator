@@ -1,0 +1,23 @@
+<div id="login" class="panel panel-default">
+    <div class="panel-body">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-1 control-label">User Name</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control" ng-model="username">
+                </div>
+            </div>
+        </form>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-1 control-label">Password</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control" ng-model="password">
+                </div>
+            </div>
+        </form>
+        <button type="button" class="btn btn-default" ng-click="authenticate()">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Login
+        </button>
+    </div>
+</div>

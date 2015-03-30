@@ -1,0 +1,67 @@
+#logout {
+    color: blue;
+}
+
+#searchIcon {
+    padding-top: 8px;
+}
+
+.editTableHeader {
+    color: red;    
+}
+
+.tab-pane {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#outerOperator {
+    padding-left: 30px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#expression {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 10px;
+    background-color: #EEEEEE;
+    width: 490px;
+    border-radius: 5px;
+}
+
+#dimension {
+    display:inline-block;
+}
+#dimensionButton {
+    width: 190px;   
+}
+
+#innerOperator {
+    display:inline-block;
+}
+#innerOperatorButton {
+    width: 50px;
+}
+
+#range {
+    display:inline-block;
+}
+#rangeButton {
+    width: 200px;   
+}
+
+#addExpressionButton {
+    margin-top: 15px;
+}
+
+#offerSplitEditTextbox {
+    display: inline-block;
+    width: 50px;
+}
+
+#save-button {
+    margin-top: 20px;
+}

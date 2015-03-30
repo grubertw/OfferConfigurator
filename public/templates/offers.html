@@ -1,0 +1,61 @@
+<div role="tabpanel">  
+<ul class="nav nav-tabs" role="tablist" id="populationTabs">
+    <li id="populationDetailsTab" role="presentation"><a ui-sref="populationDetails({populationId:population._id})" role="tab" data-toggle="tab">Details</a></li>
+    <li id="offersTab" role="presentation" class="active"><a href="#offers" role="tab" data-toggle="tab">Offers</a></li>
+</ul>
+    
+<div class="tab-content">
+<div role="tabpanel" class="tab-pane active" id="offers">
+    <button type="button" class="btn btn-default" ng-click="addOffer()">
+      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
+    </button>
+    <button type="button" class="btn btn-default" ng-click="toggleEditOffers()">
+      <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit
+    </button>
+    <button type="button" class="btn btn-default" ng-click="toggleRemoveOffers()">
+      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove
+    </button>
+
+    <table class="table table-striped">
+        <thead><tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Split</th>
+            <th>Status</th>
+            <th>Start</th>
+            <th>End</th>
+            <th class="editTableHeader" ng-show="editOffers">Edit</th>
+            <th class="editTableHeader" ng-show="removeOffers">Remove</th>
+        </tr></thead>
+        <tbody><tr ng-repeat="offer in offers">
+            <td>{{offer.name}}</td>
+            <td>{{offer.offerType.name}}</td>
+            <td><input id="offerSplitEditTextbox" type="text" class="form-control" ng-model="offer.split">%</td>
+            <td>{{offer.status}}</td>
+            <td>{{offer.startTime}}</td>
+            <td>{{offer.stopTime}}</td>
+            <td ng-show="editOffers">
+                <button type="button" class="btn btn-default" ng-click="editOffer(offer)">
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                </button>
+            </td>
+            <td ng-show="removeOffers">
+                <button type="button" class="btn btn-default" ng-click="removeOffer(offer)">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button>
+            </td>
+        </tr></tbody>
+    </table>
+
+    <button type="button" class="btn btn-default" ng-click="addOffer()">
+      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
+    </button>
+    <button type="button" class="btn btn-default" ng-click="toggleEditOffers()">
+      <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit
+    </button>
+    <button type="button" class="btn btn-default" ng-click="toggleRemoveOffers()">
+      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove
+    </button>
+</div>
+</div> <!-- END tab content -->
+</div> <!-- END population tabs -->
