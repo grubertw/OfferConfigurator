@@ -20,7 +20,9 @@ var Dimension = require(__dirname + '/models/Dimension.js');
 var Range = require(__dirname + '/models/Range.js');
 var Operator = require(__dirname + '/models/Operator.js');
 var OfferType = require(__dirname + '/models/OfferType.js');
+var OfferStatus = require(__dirname + '/models/OfferStatus.js');
 var Offer = require(__dirname + '/models/Offer.js');
+var Benefit = require(__dirname + '/models/Benefit.js');
 
 // Load private RSA key for creation of the JWT token.
 var privKey = fs.readFileSync('server/priv_key.pem');
@@ -96,8 +98,6 @@ PopulationAPI.show = function(req, res) {
             res.json(model.toJSON());
         });
     }
-    else 
-        console.log("JWT token is invalid");
 };
 
 
@@ -108,8 +108,6 @@ PopulationAPI.create = function(req, res) {
         model.save();
         res.json(model.toJSON());
     }
-    else 
-        console.log("JWT token is invalid");
 }
 
 PopulationAPI.updateUrl = apiRoute + "population/:id";
@@ -121,8 +119,6 @@ PopulationAPI.update = function(req, res) {
             return res.json(model.toJSON());
         });
     }
-    else 
-        console.log("JWT token is invalid");
 }
 
 PopulationAPI.deleteUrl = apiRoute + "population/:id";
@@ -132,8 +128,6 @@ PopulationAPI.delete = function(req, res) {
             res.json(true);
         });
     }
-    else 
-        console.log("JWT token is invalid");
 };
 module.exports.Population = PopulationAPI;
 
@@ -144,23 +138,19 @@ var OfferAPI = {};
 OfferAPI.listByPopulationUrl = apiRoute + "offers/:populationId";
 OfferAPI.listByPopulation = function(req, res) {    
     if (req.user) {        
-        Population.find({populationId: req.params.populationId}, function(err, models) {
+        Offer.find({populationId: req.params.populationId}, function(err, models) {
             res.send(models);
         });
     }
-    else 
-        console.log("JWT token is invalid");
 };
 
 OfferAPI.showUrl = apiRoute + "offer/:id";
 OfferAPI.show = function(req, res) {
     if (req.user) {
-        Population.findOne({ _id: req.params.id }, function(err, model) {
+        Offer.findOne({ _id: req.params.id }, function(err, model) {
             res.json(model.toJSON());
         });
     }
-    else 
-        console.log("JWT token is invalid");
 };
 
 
@@ -168,17 +158,16 @@ OfferAPI.createUrl = apiRoute + "offer";
 OfferAPI.create = function(req, res) {
     if (req.user) {
         var model = new Offer({className: 'Offer', name: 'New Offer'});
+        model.populationId = req.body.populationId; // An Offer must be created with a populationId, minimum.
         model.save();
         res.json(model.toJSON());
     }
-    else 
-        console.log("JWT token is invalid");
 }
 
 OfferAPI.updateUrl = apiRoute + "offer/:id";
 OfferAPI.update = function(req, res) {
     if (req.user) {
-        Population.findByIdAndUpdate(req.params.id, {
+        Offer.findByIdAndUpdate(req.params.id, {
             $set: {name:                        req.body.name, 
                    offerTypeId:                 req.body.offerTypeId, 
                    statusId:                    req.body.statusId,
@@ -192,18 +181,50 @@ OfferAPI.update = function(req, res) {
             return res.json(model.toJSON());
         });
     }
-    else 
-        console.log("JWT token is invalid");
 }
 
 OfferAPI.deleteUrl = apiRoute + "offer/:id";
 OfferAPI.delete = function(req, res) {
     if (req.user) {
-        Population.remove({ _id: req.params.id }, function(err) {
+        Offer.remove({ _id: req.params.id }, function(err) {
             res.json(true);
         });
     }
-    else 
-        console.log("JWT token is invalid");
 };
 module.exports.Offer = OfferAPI;
+
+// OfferType (enum)
+var OfferTypeAPI = {}
+OfferTypeAPI.listUrl = apiRoute + "offerTypes";
+OfferTypeAPI.list = function(req, res) {
+    if (req.user) {
+        OfferType.find({}, function(err, models) {
+            res.send(models);
+        });
+    }
+};
+module.exports.OfferType = OfferTypeAPI;
+
+// OfferStatus (enum)
+var OfferStatusAPI = {}
+OfferStatusAPI.listUrl = apiRoute + "offerStatuses";
+OfferStatusAPI.list = function(req, res) {
+    if (req.user) {
+        OfferStatus.find({}, function(err, models) {
+            res.send(models);
+        });
+    }
+};
+module.exports.OfferStatus = OfferStatusAPI;
+
+// Benefit (enum)
+var BenefitAPI = {}
+BenefitAPI.listUrl = apiRoute + "benefits";
+BenefitAPI.list = function(req, res) {
+    if (req.user) {
+        Benefit.find({}, function(err, models) {
+            res.send(models);
+        });
+    }
+};
+module.exports.Benefit = BenefitAPI;

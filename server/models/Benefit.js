@@ -11,6 +11,7 @@ var mongoose = require('mongoose')
 var postSchema = new Schema({
     className       : String,
     name            : String,
+    description     : String,
     action          : String
 });
  

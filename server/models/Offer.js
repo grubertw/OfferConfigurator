@@ -10,10 +10,11 @@
 var mongoose = require('mongoose')
    ,Schema = mongoose.Schema
    ,ObjectId = Schema.ObjectId;
- 
-var postSchema = new Schema({
+
+var Offer = new Schema({
     className                   : String,
     name                        : String,
+    description                 : String,
     offerTypeId                 : ObjectId,
     split                       : Number,
     statusId                    : ObjectId,
@@ -22,7 +23,17 @@ var postSchema = new Schema({
     paymentAuthorizationAmount  : String,
     shortPaymentDisclosure      : String,
     longPaymentDisclosure       : String,
-    populationId                : ObjectId
+    populationId                : ObjectId,
+    
+    // A list of benefitId(s) are stored here as an embedded structure
+    // (rather than using a pivot-table, which is the only way to do
+    // a many-to-many relationship with a SQL database).
+    benefits                    : [{
+        benefitId               : ObjectId
+    }]
+    
+    // Charges/Terms are NOT embedded.  Instead, seporate instances
+    // are created with an offerId.
 });
  
-module.exports = mongoose.model('Offer', postSchema);
+module.exports = mongoose.model('Offer', Offer);

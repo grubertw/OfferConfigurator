@@ -1,3 +1,4 @@
+'use strict';
 //
 // File: models.js
 // Project: offerConfigurator
@@ -5,16 +6,11 @@
 //
 
 // Create the models namespace.
-var models = {currPopulationId: 1,
-              currExpressionId: 1,
-              currOfferId: 1,
-              currChargeId: 1,
-              currMerchandisingId: 1};
+var models = {};
 
 // Population represents a set of offers, covering segments of a population
 // (of people).
 models.Population = function () {
-    'use strict';
     this.className = "Population"; // What type of model this is.
     this.name = "New Population"; // Name of population.
     this.status = "Active"; // All offers must be active within the population.
@@ -30,13 +26,9 @@ models.Population = function () {
     // expression component (a.k.a. an object who's left and right are 
     // SegmentExperssion rather than SegmentDimension).
     this.segmentExpression = [];
-    
-    this.populationId = models.currPopulationId;
-    models.currPopulationId = models.currPopulationId + 1;
 };
 
 models.SegmentExpression = function (leftEx, op, rightEx) {
-    'use strict';
     this.className = "Expression";
     
     this.leftExpression = leftEx;
@@ -49,42 +41,43 @@ models.SegmentExpression = function (leftEx, op, rightEx) {
     this.rightExpression = rightEx;
     this.rightId = rightEx.rangeId;
     this.rightClassName = rightEx.className;
-    
-    this.expressionId = models.currExpressionId;
-    models.currExpressionId = models.currExpressionId + 1;
 };
 
 models.Offer = function () {
-    'use strict';
     this.className = "Offer"; // What type of model this is.
     this.name = "New Offer"; // Name of offer.
     this.offerTypeId = 1; // New Subscription
     this.split = 100; // 100% split by default.
     this.status = "Active";
-    this.startTime = new Date(); // Time the first offer activates.
-    this.stopTime = new Date(); // Time the last offer expires.
+    //this.startTime = new Date(); // Time the first offer activates.
+    //this.stopTime = new Date(); // Time the last offer expires.
     
     // These attributs are editable in offer details.
-    this.internalDescription = "";
+    this.description = "";
     
     // These attributes show in the terms tab
-    this.paymentAuthorizationAmount = "";
-    this.shortPaymentDisclosure = "";
-    this.longPaymentDisclosure = "";
+    //this.paymentAuthorizationAmount = "";
+    //this.shortPaymentDisclosure = "";
+    //this.longPaymentDisclosure = "";
     
     this.benefits = []; // Set of benefits in this offer.
-    this.charges = []; // Set of charges in this offer.
-    this.merchendising = []; // Set of merchendising in this offer.
+    this.terms = []; // Set of terms in this offer.
+    //this.merchendising = []; // Set of merchendising in this offer.
     
     this.populationId = 0; // The containing population ID.
-    
-    this.offerId = models.currOfferId;
-    models.currOfferId = models.currOfferId + 1;
 };
 
 
+models.term = function () {
+    this.className = "Term";
+    this.price = "1.95";
+    this.frequency = "Recurring";
+    this.startDate = "2014-11-26";
+    this.description = "";
+    this.billingPeriod = "Month";
+};
+
 models.Charge = function () {
-    'use strict';
     this.className = "Charge";
     this.order = 1;
     this.name = "New Charge";
@@ -99,13 +92,10 @@ models.Charge = function () {
     this.prorationRule = {};
     
     this.offerId = 0; // The containing offer ID.
-    
-    this.chargeId = models.currChargeId;
-    models.currChargeId = models.currChargeId + 1;
 };
 
+
 models.Merchendising = function () {
-    'use strict';
     this.className = "Merchendising";
     this.name = "";
     this.dataType = "String";
@@ -117,7 +107,6 @@ models.Merchendising = function () {
 // Accessors for the test data.  
 // FIXME: These should be replaced by HTTP get requests.
 models.getPopulation = function (popId) {
-    'use strict';
     var pop = {};
     
     for (var i = 0; i < models.populations.length; i++) {
@@ -133,7 +122,6 @@ models.getPopulation = function (popId) {
 };
 
 models.getSegmentExpression = function (popId) {
-    'use strict';
     var expressions = [];
     
     for (var i = 0; i < models.expressions.length; i++) {
@@ -166,7 +154,6 @@ models.getSegmentExpression = function (popId) {
 };
 
 models.getDimension = function (dimensionId) {
-    'use strict';
     var obj = {};
     for (var i = 0; i < models.dimensions.length; i++) {
         var objIt = models.dimensions[i];
@@ -180,7 +167,6 @@ models.getDimension = function (dimensionId) {
 };
 
 models.getOperator = function (operatorId) {
-    'use strict';
     var obj = {};
     for (var i = 0; i < models.operators.length; i++) {
         var objIt = models.operators[i];
@@ -194,7 +180,6 @@ models.getOperator = function (operatorId) {
 };
 
 models.getRange = function (rangeId) {
-    'use strict';
     var obj = {};
     for (var i = 0; i < models.ranges.length; i++) {
         var objIt = models.ranges[i];
@@ -208,7 +193,6 @@ models.getRange = function (rangeId) {
 };
 
 models.getApplicableRangesInDimension = function(dimensionId) {
-    'use strict';
     var ranges = [];
     for (var i = 0; i < models.ranges.length; i++) {
         var objIt = models.ranges[i];
@@ -220,7 +204,6 @@ models.getApplicableRangesInDimension = function(dimensionId) {
 };
 
 models.setApplicableRangesInDimensions = function () {
-    'use strict';
     for (var i = 0; i < models.dimensions.length; i++) {
         var dimension = models.dimensions[i];
         var applicableRanges = models.getApplicableRangesInDimension(dimension.dimensionId);
@@ -229,7 +212,6 @@ models.setApplicableRangesInDimensions = function () {
 };
 
 models.getOffers = function (popId) {
-    'use strict';
     var offers = [];
     
     for (var i = 0; i < models.offers.length; i++) {
@@ -315,30 +297,30 @@ models.expressions = JSON.parse(testExpressions);
 
 var testOfferTypes =
 '[\
-    {"offerTypeId":"1", "className":"OfferType", "name":"New Subscription"},\
-    {"offerTypeId":"2", "className":"OfferType", "name":"Transactional"},\
-    {"offerTypeId":"3", "className":"OfferType", "name":"Retention"},\
-    {"offerTypeId":"4", "className":"OfferType", "name":"Cancelation"},\
-    {"offerTypeId":"5", "className":"OfferType", "name":"Amendment"}\
+    {"_id":"1", "className":"OfferType", "name":"New Subscription"},\
+    {"_id":"2", "className":"OfferType", "name":"Transactional"},\
+    {"_id":"3", "className":"OfferType", "name":"Retention"},\
+    {"_id":"4", "className":"OfferType", "name":"Cancelation"},\
+    {"_id":"5", "className":"OfferType", "name":"Amendment"}\
 ]';
 models.offerTypes = JSON.parse(testOfferTypes);
 
 var testBenefits =
 '[\
-    {"benefitId":"1", "className":"Benefit", "name":"1B Report, Deliver After Registration", "action":"Add"},\
-    {"benefitId":"2", "className":"Benefit", "name":"Daily 1B Report, Post Trial, Auto-refresh on Login", "action":"Add"},\
-    {"benefitId":"3", "className":"Benefit", "name":"3M Monitoring", "action":"Add"}\
+    {"_id":"1", "className":"Benefit", "name":"1B Report, Deliver After Registration", "action":"Add"},\
+    {"_id":"2", "className":"Benefit", "name":"Daily 1B Report, Post Trial, Auto-refresh on Login", "action":"Add"},\
+    {"_id":"3", "className":"Benefit", "name":"3M Monitoring", "action":"Add"}\
 ]';
 models.benefits = JSON.parse(testBenefits);
 
 var testBillingOnsets =
 '[\
-    {"billingOnsetId":"1", "className":"BillingOnset", "name":"Trial Start"},\
-    {"billingOnsetId":"2", "className":"BillingOnset", "name":"Membership Start"},\
-    {"billingOnsetId":"3", "className":"BillingOnset", "name":"3B3S Delivered"},\
-    {"billingOnsetId":"4", "className":"BillingOnset", "name":"1B1S Delivered"},\
-    {"billingOnsetId":"5", "className":"BillingOnset", "name":"Offer Delivered"},\
-    {"billingOnsetId":"6", "className":"BillingOnset", "name":"End of Previous Charge"}\
+    {"_id":"1", "className":"BillingOnset", "name":"Trial Start"},\
+    {"_id":"2", "className":"BillingOnset", "name":"Membership Start"},\
+    {"_id":"3", "className":"BillingOnset", "name":"3B3S Delivered"},\
+    {"_id":"4", "className":"BillingOnset", "name":"1B1S Delivered"},\
+    {"_id":"5", "className":"BillingOnset", "name":"Offer Delivered"},\
+    {"_id":"6", "className":"BillingOnset", "name":"End of Previous Charge"}\
 ]';
 models.billingOnsets = JSON.parse(testBillingOnsets);
 
@@ -347,42 +329,42 @@ models.billingOnsets = JSON.parse(testBillingOnsets);
 //
 var testPopulations =
 '[\
-    {"populationId":"1", "className":"Population", "name":"No subscription, auto inserted, 3B aware", "status":"Active"},\
-    {"populationId":"2", "className":"Population", "name":"No subscription, auto inserted, 3B aware", "status":"Active"},\
-    {"populationId":"3", "className":"Population", "name":"Active subscription, auto inserted, 3B purchased", "status":"Active"},\
-    {"populationId":"4", "className":"Population", "name":"Active subscription, auto inserted, 3B interested", "status":"Active"}\
+    {"_id":"1", "className":"Population", "name":"No subscription, auto inserted, 3B aware", "status":"Active"},\
+    {"_id":"2", "className":"Population", "name":"No subscription, auto inserted, 3B aware", "status":"Active"},\
+    {"_id":"3", "className":"Population", "name":"Active subscription, auto inserted, 3B purchased", "status":"Active"},\
+    {"_id":"4", "className":"Population", "name":"Active subscription, auto inserted, 3B interested", "status":"Active"}\
 ]';
 models.populations = JSON.parse(testPopulations);
 
 var testOffers =
 '[\
-    {"offerId":"1", "className":"Offer", "name":"$17.95/month trial w/ 3M", "offerTypeId":"1", "split":"75", "status":"Active",\
+    {"_id":"1", "className":"Offer", "name":"$17.95/month trial w/ 3M", "offerTypeId":"1", "split":"75", "status":"Active",\
         "startTime":"03/12/2014 00:01", "stopTime":"04/15/2015 14:30",\
             "benefits":[\
                 {"benefitId":"1", "action":"Add"},\
                 {"benefitId":"2", "action":"Add"}], "populationId":"1"},\
-    {"offerId":"2", "className":"Offer", "name":"$12.95/month trial w/ 3M", "offerTypeId":"1", "split":"25", "status":"Active",\
+    {"_id":"2", "className":"Offer", "name":"$12.95/month trial w/ 3M", "offerTypeId":"1", "split":"25", "status":"Active",\
         "startTime":"03/12/2014 00:01", "stopTime":"04/15/2015 14:30", "populationId":"1"},\
-    {"offerId":"3", "className":"Offer", "name":"$15.95/month trial", "offerTypeId":"2", "split":"75", "status":"Active",\
+    {"_id":"3", "className":"Offer", "name":"$15.95/month trial", "offerTypeId":"2", "split":"75", "status":"Active",\
         "startTime":"03/12/2014 00:01", "stopTime":"04/15/2015 14:30", "populationId":"2"},\
-    {"offerId":"4", "className":"Offer", "name":"$11.95/month immediate bill", "offerTypeId":"1", "split":"25", "status":"Active",\
+    {"_id":"4", "className":"Offer", "name":"$11.95/month immediate bill", "offerTypeId":"1", "split":"25", "status":"Active",\
         "startTime":"03/12/2014 00:01", "stopTime":"04/15/2015 14:30", "populationId":"2"},\
-    {"offerId":"5", "className":"Offer", "name":"$34.95 3B3S", "offerTypeId":"1", "split":"50", "status":"Active",\
+    {"_id":"5", "className":"Offer", "name":"$34.95 3B3S", "offerTypeId":"1", "split":"50", "status":"Active",\
         "startTime":"03/12/2014 00:01", "stopTime":"04/15/2015 14:30", "populationId":"4"},\
-    {"offerId":"6", "className":"Offer", "name":"$37.95 3B3S", "offerTypeId":"1", "split":"50", "status":"Active",\
+    {"_id":"6", "className":"Offer", "name":"$37.95 3B3S", "offerTypeId":"1", "split":"50", "status":"Active",\
         "startTime":"03/12/2014 00:01", "stopTime":"04/15/2015 14:30", "populationId":"4"}\
 ]';
 models.offers = JSON.parse(testOffers);
 
 var testCharges =
 '[\
-    {"chargeId":"1", "className":"Charge", "orderWithinOffer":"1", "name":"$1 trial charge", "amount":"$1",\
+    {"_id":"1", "className":"Charge", "orderWithinOffer":"1", "name":"$1 trial charge", "amount":"$1",\
         "billingOnsetId":"1",\
         "recurrence":"None", "timeSpan":"30 days", "isTrial":"true"},\
-    {"chargeId":"2", "className":"Charge", "orderWithinOffer":"2", "name":"$99.95/year subscription charge", "amount":"$99.95", "msrp":"$179.95",\
+    {"_id":"2", "className":"Charge", "orderWithinOffer":"2", "name":"$99.95/year subscription charge", "amount":"$99.95", "msrp":"$179.95",\
         "billingOnsetId":"2",\
         "recurrence":"Every 1 year for 1 Billing Period", "timeSpan":"30 days", "isTrial":"false"},\
-    {"chargeId":"3", "className":"Charge", "orderWithinOffer":"3", "name":"$14.95/month subscription charge", "amount":"$14.95", "msrp":"$19.95",\
+    {"_id":"3", "className":"Charge", "orderWithinOffer":"3", "name":"$14.95/month subscription charge", "amount":"$14.95", "msrp":"$19.95",\
         "billingOnsetId":"6",\
         "recurrence":"Every 1 Month for Indefinite Billing Periods", "timeSpan":"30 days", "isTrial":"false"}\
 ]';

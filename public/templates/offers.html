@@ -29,14 +29,14 @@
         </tr></thead>
         <tbody><tr ng-repeat="offer in offers">
             <td>{{offer.name}}</td>
-            <td>{{offer.offerType.name}}</td>
+            <td>{{offer.offerType}}</td>
             <td><input id="offerSplitEditTextbox" type="text" class="form-control" ng-model="offer.split">%</td>
             <td>{{offer.status}}</td>
             <td>{{offer.startTime}}</td>
             <td>{{offer.stopTime}}</td>
             <td ng-show="editOffers">
-                <button type="button" class="btn btn-default" ng-click="editOffer(offer)">
-                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                <button type="button" class="btn btn-default">
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true" ui-sref="offerDetails({offerId:offer._id})"></span>
                 </button>
             </td>
             <td ng-show="removeOffers">

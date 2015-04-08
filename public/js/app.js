@@ -62,7 +62,7 @@ offerConfiguratorApp.config(function($stateProvider, $urlRouterProvider) {
             controller: 'TermsController'
         }).
         state('populations.populationDetails.offers.offerDetails.charges', {
-            url: '/:chargeId',
+            url: '/charge/:chargeId',
             templateUrl: 'templates/charges.html',
             controller: 'ChargesController'
         }).

@@ -45,6 +45,17 @@ app.post(api.Offer.createUrl, api.validateJWT, api.Offer.create);
 app.put(api.Offer.updateUrl, api.validateJWT, api.Offer.update);
 app.delete(api.Offer.deleteUrl, api.validateJWT, api.Offer.delete);
 
+// OfferType (enum) (list)
+app.get(api.OfferType.listUrl, api.validateJWT, api.OfferType.list);
+
+// OfferStatus (enum) (list)
+app.get(api.OfferStatus.listUrl, api.validateJWT, api.OfferStatus.list);
+
+// Benefit (enum) (list)
+app.get(api.Benefit.listUrl, api.validateJWT, api.Benefit.list);
+
+
+
 
 // This should be configured onto '/' last, for serving up
 // file content within public.

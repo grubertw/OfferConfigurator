@@ -1,3 +1,4 @@
+'use strict';
 //
 // File: services.js
 // Project: offerConfigurator
@@ -13,6 +14,46 @@ offerConfiguratorServices.service('AppState', function () {
     this.authToken = {};
     this.firstName = '';
     this.lastName = '';
+    
+    // Enums requested from the server after successfull login.
+    this.offerTypes = {};
+    this.offerStatuses = {};
+    this.benefits = {};
+    
+    // Get an enum by it's id.
+    this.getOfferType = function (id) {
+        var obj = {};
+        for (var i = 0; i < this.offerTypes.length; i++) {
+            var objIt = this.offerTypes[i];
+            if (objIt._id == id) {
+                obj = objIt;
+                break;
+            }
+        }
+        return obj;
+    };
+    this.getOfferStatus = function (id) {
+        var obj = {};
+        for (var i = 0; i < this.offerStatus.length; i++) {
+            var objIt = this.offerStatus[i];
+            if (objIt._id == id) {
+                obj = objIt;
+                break;
+            }
+        }
+        return obj;
+    };
+    this.getBenefit = function (id) {
+        var obj = {};
+        for (var i = 0; i < this.benefits.length; i++) {
+            var objIt = this.benefits[i];
+            if (objIt._id == id) {
+                obj = objIt;
+                break;
+            }
+        }
+        return obj;
+    };
     
 });
 
@@ -53,11 +94,13 @@ offerConfiguratorServices.factory('Population', ['$resource', 'AppState', functi
 }]);
 
 //
-// Offers service (list by population)
+// Offers service (list by population, or list all)
 //
 offerConfiguratorServices.factory('Offers', ['$resource', 'AppState', function ($resource, AppState) {
-    return $resource(apiRoute+'offers/:populationId', {populationId: '@populationId'}, 
-                     {listByPopulation: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}});
+    return $resource(apiRoute+'offers/:populationId', {}, 
+                     {listByPopulation: {method: 'GET', isArray: true, params: {populationId: '@populationId'}, headers: {'authorization': 'Bearer ' + AppState.authToken}}},
+                     {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}}
+                    );
 }]);
 
 //
@@ -71,4 +114,28 @@ offerConfiguratorServices.factory('Offer', ['$resource', 'AppState', function ($
                       create:   {method: 'POST', headers: httpHeaders},
                       update:   {method: 'PUT', headers: httpHeaders},
                       delete:   {method: 'DELETE', headers: httpHeaders}});
+}]);
+
+//
+// OfferType services (list)
+//
+offerConfiguratorServices.factory('OfferTypes', ['$resource', 'AppState', function ($resource, AppState) {
+    return $resource(apiRoute+'offerTypes', {}, 
+                     {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}});
+}]);
+
+//
+// OfferStatus services (list)
+//
+offerConfiguratorServices.factory('OfferStatuses', ['$resource', 'AppState', function ($resource, AppState) {
+    return $resource(apiRoute+'offerStatus', {}, 
+                     {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}});
+}]);
+
+//
+// Benifit services (list)
+//
+offerConfiguratorServices.factory('Benefits', ['$resource', 'AppState', function ($resource, AppState) {
+    return $resource(apiRoute+'benefits', {}, 
+                     {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}});
 }]);

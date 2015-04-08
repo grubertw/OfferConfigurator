@@ -59,6 +59,10 @@ So59bMGeymGBjBaiBs2xcyZN3/Dm2Tc+FNjuwvtoAone7iuUaSqorlbdtIuvjv5D\
                 var isVarified = jws.verifyJWSByKey(token.token, cert.subjectPublicKeyRSA);
 
                 if (isVarified == 1) {
+                    // Load enumuration data types from the server
+                    // (benefits, offer types, offer statuses, ect...)
+                    
+                    
                     $state.go('populations');
                     AppState.loggedIn = true;
                     AppState.authToken = token.token;
@@ -209,7 +213,10 @@ function OffersController($scope, $stateParams, Population, Offers, Offer) {
         $scope.removeOffers = !$scope.removeOffers;
     };
     $scope.addOffer = function () {
-        var newOffer = Offer.create();
+        // Create an offer within the selected population.
+        // All other fields are set to defaults by the back-end.
+        // Offer.update() can update these fields.
+        var newOffer = Offer.create({populationId: $scope.population._id});
         $scope.offers.push(newOffer);
     };
     $scope.removeOffer = function (offer) {
