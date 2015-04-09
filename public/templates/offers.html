@@ -22,8 +22,8 @@
             <th>Type</th>
             <th>Split</th>
             <th>Status</th>
-            <th>Start</th>
-            <th>End</th>
+            <th>Starts</th>
+            <th>Ends</th>
             <th class="editTableHeader" ng-show="editOffers">Edit</th>
             <th class="editTableHeader" ng-show="removeOffers">Remove</th>
         </tr></thead>
@@ -32,8 +32,8 @@
             <td>{{offer.offerType}}</td>
             <td><input id="offerSplitEditTextbox" type="text" class="form-control" ng-model="offer.split">%</td>
             <td>{{offer.status}}</td>
-            <td>{{offer.startTime}}</td>
-            <td>{{offer.stopTime}}</td>
+            <td>{{offer.startDate}}</td>
+            <td>{{offer.endDate}}</td>
             <td ng-show="editOffers">
                 <button type="button" class="btn btn-default">
                     <span class="glyphicon glyphicon-edit" aria-hidden="true" ui-sref="offerDetails({offerId:offer._id})"></span>

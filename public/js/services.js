@@ -16,9 +16,9 @@ offerConfiguratorServices.service('AppState', function () {
     this.lastName = '';
     
     // Enums requested from the server after successfull login.
-    this.offerTypes = {};
-    this.offerStatuses = {};
-    this.benefits = {};
+    this.offerTypes = [];
+    this.offerStatuses = [];
+    this.benefits = [];
     
     // Get an enum by it's id.
     this.getOfferType = function (id) {
@@ -34,8 +34,8 @@ offerConfiguratorServices.service('AppState', function () {
     };
     this.getOfferStatus = function (id) {
         var obj = {};
-        for (var i = 0; i < this.offerStatus.length; i++) {
-            var objIt = this.offerStatus[i];
+        for (var i = 0; i < this.offerStatuses.length; i++) {
+            var objIt = this.offerStatuses[i];
             if (objIt._id == id) {
                 obj = objIt;
                 break;
@@ -128,7 +128,7 @@ offerConfiguratorServices.factory('OfferTypes', ['$resource', 'AppState', functi
 // OfferStatus services (list)
 //
 offerConfiguratorServices.factory('OfferStatuses', ['$resource', 'AppState', function ($resource, AppState) {
-    return $resource(apiRoute+'offerStatus', {}, 
+    return $resource(apiRoute+'offerStatuses', {}, 
                      {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}});
 }]);
 

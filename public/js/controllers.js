@@ -13,8 +13,11 @@ var offerConfiguratorControllers = angular.module('offerConfiguratorControllers'
 // Login controller.
 // - Responsible for user authentication.
 //
-offerConfiguratorControllers.controller('LoginController', ['$scope', '$state', 'AppState', 'Authenticate', LoginController]);
-function LoginController($scope, $state, AppState, Authenticate) {
+offerConfiguratorControllers.controller('LoginController', 
+                                        ['$scope', '$state', 'AppState', 'Authenticate', 
+                                         'OfferTypes', 'OfferStatuses', 'Benefits',
+                                         LoginController]);
+function LoginController($scope, $state, AppState, Authenticate, OfferTypes, OfferStatuses, Benefits) {
     // Collect Username and Password for authentication with the server.
     $scope.username = 'administrator';
     $scope.password = 'ecdOCtool';
@@ -59,13 +62,17 @@ So59bMGeymGBjBaiBs2xcyZN3/Dm2Tc+FNjuwvtoAone7iuUaSqorlbdtIuvjv5D\
                 var isVarified = jws.verifyJWSByKey(token.token, cert.subjectPublicKeyRSA);
 
                 if (isVarified == 1) {
+                    AppState.loggedIn = true;
+                    AppState.authToken = token.token;
+                    
                     // Load enumuration data types from the server
                     // (benefits, offer types, offer statuses, ect...)
+                    AppState.offerTypes = OfferTypes.list();
+                    AppState.offerStatuses = OfferStatuses.list();
+                    AppState.benefits = Benefits.list();
                     
                     
                     $state.go('populations');
-                    AppState.loggedIn = true;
-                    AppState.authToken = token.token;
                 }
             });
         }
@@ -124,6 +131,11 @@ function PopulationsController($scope, Populations, Population) {
     };
 }
 
+//
+// Controls editing population details.
+// Containes logical population segment expression builder that acts as 
+// a means to characterize a group of people.
+// 
 offerConfiguratorControllers.controller('PopulationDetailsController', 
                                         ['$scope', '$stateParams', 'Population',
                                          PopulationDetailsController]);
@@ -187,17 +199,32 @@ function PopulationDetailsController($scope, $stateParams, Population) {
     }
 }
 
+//
+// Controller for adding/removing Offers.
+//
 offerConfiguratorControllers.controller('OffersController', 
                                         ['$scope', 
                                          '$stateParams',
+                                         'AppState',
                                          'Population',
                                          'Offers', 'Offer',
                                          OffersController]);
-function OffersController($scope, $stateParams, Population, Offers, Offer) {
+function OffersController($scope, $stateParams, AppState, Population, Offers, Offer) {
     // Lookup the population by it's ID.
     $scope.population = Population.show({id: $stateParams.populationId});
     // Perform HTTP GET for all offers in the population.
     $scope.offers = Offers.listByPopulation({populationId: $stateParams.populationId});
+    
+    // Fill out the OferType and OfferStatus of each offer
+    // (linking by way of offerTypeId and statusId)
+    for (var i=0; i < $scope.offers.length; i++) {
+        var offer = $scope.offers[i];
+        var offerType = AppState.getOfferType(offer.oferTypeId);
+        var offerStatus = AppState.getOfferStatus(offer.statusId);
+        
+        offer.offerType = offerType.name;
+        offer.status = offerStatus.name;
+    }
     
     // Toggle remove/edit offers.
     $scope.editOffers = false;
@@ -224,5 +251,61 @@ function OffersController($scope, $stateParams, Population, Offers, Offer) {
         
         var index = this.offers.indexOf(offer);
         $scope.offers.splice(index, 1);
+    };
+}
+
+//
+// Controller for editing the details of an Offer.
+// This controler modifies only direct attributes of the offer.
+// Attributes within associated objects (such as charges and merchandising)
+// are handled by seporate controlers.
+//
+offerConfiguratorControllers.controller('OfferDetailsController', 
+                                        ['$scope', 
+                                         '$stateParams',
+                                         'AppState',
+                                         'Population', 'Offer',
+                                         OfferDetailsController]);
+function OfferDetailsController($scope, $stateParams, AppState, Population, Offer) {
+    // Lookup the offer by it's ID.
+    $scope.offer = Offer.show({id:$stateParams.offerId});
+    
+    // Get OfferType and OfferStatus enum listings (for dropdowns)
+    $scope.offerTypes = AppState.offerTypes;
+    $scope.offerStatuses = AppState.offerStatuses;
+    
+    // Set the offer's current offerStatus and offerType
+    $scope.offer.offerStatus = AppState.getOfferStatus($scope.offer.statusId);
+    $scope.offer.offerType = AppState.getOfferType($scope.offer.offerTypeId);
+    
+    // Set the current population of the offer.
+    $scope.offer.population = Population.show({id: $scope.offer.populationId});
+    
+    // Configure date pickers.
+    $(function () {
+        $("#offerStartDatePicker").datepicker({
+            dateFormat: "dd-mm-yy",
+            onSelect: function (dateText, inst) {
+                $scope.offer.startDate = inst.getDate();
+            }
+        });
+        $("#offerStartDatePicker").datepicker("setDate", $scope.offer.startDate);
+        $("#offerEndDatePicker").datepicker({
+            dateFormat: "dd-mm-yy",
+            onSelect: function (dateText, inst) {
+                $scope.offer.endDate = inst.getDate();
+            }
+        });
+        $("#offerEndDatePicker").datepicker("setDate", $scope.offer.endDate);
+    });
+    
+    //
+    // Supported opperations.
+    //
+    $scope.setOfferType = function (offerType) {
+        $scope.offer.offerType = offerType;
+    };
+    $scope.saveOffer = function () {
+        Offer.update({id: $scope.offer._id}, $scope.offer);
     };
 }

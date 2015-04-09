@@ -171,12 +171,12 @@ OfferAPI.update = function(req, res) {
             $set: {name:                        req.body.name, 
                    offerTypeId:                 req.body.offerTypeId, 
                    statusId:                    req.body.statusId,
-                   startTime:                   req.body.startTime,
-                   stopTime:                    req.body.stopTime,
+                   description:                 req.body.description,
+                   startDate:                   req.body.startDate,
+                   endDate:                     req.body.endDate,
                    paymentAuthorizationAmount:  req.body.paymentAuthorizationAmount,
                    shortPaymentDisclosure:      req.body.shortPaymentDisclosure,
-                   longPaymentDisclosure:       req.body.longPaymentDisclosure,
-                   populationId:                req.body.populationId}
+                   longPaymentDisclosure:       req.body.longPaymentDisclosure}
         }, { upsert: true }, function(err, model) {
             return res.json(model.toJSON());
         });

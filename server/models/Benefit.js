@@ -12,7 +12,7 @@ var postSchema = new Schema({
     className       : String,
     name            : String,
     description     : String,
-    action          : String
+    action          : String,
 });
  
 module.exports = mongoose.model('Benefit', postSchema);

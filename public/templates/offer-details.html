@@ -3,37 +3,80 @@
   -->
 <div role="tabpanel" ng-show="showOffersTabs">  
 <ul class="nav nav-tabs" role="tablist" id="offerTabs">
-    <li id="offerDetailsTab" role="presentation" ng-show="offerTabs.showOfferDetails" class="active"><a href="#offerDetails" role="tab" data-toggle="tab">Details</a></li>
-    <li id="benefitsTab" role="presentation" ng-show="offerTabs.showBenefits"><a href="#benefits" role="tab" data-toggle="tab">Benefits</a></li>
-    <li id="termsTab" role="presentation" ng-show="offerTabs.showTerms"><a href="#terms" role="tab" data-toggle="tab">Terms</a></li>
-    <li id="merchandisingTab" role="presentation" ng-show="offerTabs.showMerchandising"><a href="#merchandising" role="tab" data-toggle="tab">Merchandising</a></li>
+    <li id="offerDetailsTab" role="presentation" class="active">
+        <a href="#offerDetails" role="tab" data-toggle="tab">Details</a>
+    </li>
+    <li id="benefitsTab" role="presentation">
+        <a ui-sref="offers.offerDetails.benefits({offerId:offer._id})" role="tab" data-toggle="tab">Benefits</a>
+    </li>
+    <li id="termsTab" role="presentation">
+        <a ui-sref="offers.offerDetails.terms({offerId:offer._id})" role="tab" data-toggle="tab">Terms</a>
+    </li>
+    <li id="merchandisingTab" role="presentation">
+        <a ui-sref="offers.offerDetails.merchandising({offerId:offer._id})" role="tab" data-toggle="tab">Merchandising</a>
+    </li>
 </ul>
     
 <div class="tab-content">    
 <!-- Panel for viewing and selecting offers to edit.
   -->
 <div role="tabpanel" class="tab-pane" id="offerDetails">
+    <!-- offer.statusId display -->
+    <label>Status</label>
+    <p>{{offer.offerStatus.name}}</p>
     
+    <!-- offer.name entry -->
+    <form class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-1 control-label">Name</label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control" ng-model="offer.name">
+            </div>
+        </div>
+
+    
+        <!-- offer.populationId display -->
+        <label>Population</label>
+        <p>{{offer.population.name}}</p>
+
+        <!-- offer.startDate entry -->
+        <div class="form-group">
+            <label class="col-sm-1 control-label">Start Date</label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control" id="offerStartDatePicker">
+            </div>
+        </div>
+        
+
+        <!-- offer.endDate entry -->
+        <div class="form-group">
+            <label class="col-sm-1 control-label">End Date</label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control" id="offerEndDatePicker">
+            </div>
+        </div>
+        
+
+        <!-- offer.description entry -->
+        <div class="form-group">
+            <label>Internal Description</label>
+            <input type="text" class="form-control" ng-model="offer.description">
+        </div>
+
+        <!-- offer.offerTypeId entry -->
+        <div class="dropdown" id="offerType">
+          <button class="btn btn-default dropdown-toggle" type="button" id="offerTypeButton" data-toggle="dropdown" aria-expanded="true">
+            {{offer.offerType.name}}<span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="offerTypeButton">
+            <li role="presentation" ng-repeat="offerType in offerTypes" ng-click="setOfferType(offerType)">
+                {{offerType.name}}
+            </li>
+          </ul>
+        </div>
+        
+    </form>
 </div>
     
-<!-- Panel for adding/removing offers.
-  -->
-<div role="tabpanel" class="tab-pane" id="benefits">
-    
-</div>
-    
-<!-- Panel for modifying terms.
-  -->
-<div role="tabpanel" class="tab-pane" id="terms">
-    
-</div>
-    
-<!-- Panel modifying merchandizing.
-  -- Works like a key/value pair editor to storing text 
-  -- and image assets.
-  -->
-<div role="tabpanel" class="tab-pane" id="merchandising">
-    
-</div>
 </div> <!-- END tab content -->
 </div> <!-- END offer tabs -->

@@ -46,27 +46,27 @@ offerConfiguratorApp.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: 'templates/offers.html',
             controller: 'OffersController'
         }).
-        state('populations.populationDetails.offers.offerDetails', {
-            url: '/:offerId',
+        state('offerDetails', {
+            url: '/offer/:offerId',
             templateUrl: 'templates/offer-details.html',
             controller: 'OfferDetailsController'
         }).
-        state('populations.populationDetails.offers.offerDetails.benefits', {
-            url: '/benefits',
+        state('benefits', {
+            url: '/offer/:offerId/benefits',
             templateUrl: 'templates/benefits.html',
             controller: 'BenefitsController'
         }).
-        state('populations.populationDetails.offers.offerDetails.terms', {
-            url: '/terms',
+        state('terms', {
+            url: '/offer/:offerId/terms',
             templateUrl: 'templates/terms.html',
             controller: 'TermsController'
         }).
-        state('populations.populationDetails.offers.offerDetails.charges', {
+        state('terms.charge', {
             url: '/charge/:chargeId',
             templateUrl: 'templates/charges.html',
             controller: 'ChargesController'
         }).
-        state('populations.populationDetails.offers.offerDetails.merchandising', {
+        state('merchandising', {
             url: '/merchandising',
             templateUrl: 'templates/merchandising.html',
             controller: 'OfferMerchandisingController'
