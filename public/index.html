@@ -12,13 +12,17 @@
     <!-- CSS application -->
     <link href="css/index.css" rel="stylesheet">
     
+    <!-- CSS JQuery-UI -->
+    <link href="js/lib/jquery-ui/jquery-ui.css" rel="stylesheet">
+    
     <!-- JS libraries -->
-    <script src="js/lib/jquery.min.js"></script>
-    <script src="js/lib/bootstrap.min.js"></script>
-    <script src="js/lib/angular.min.js"></script>
-    <script src="js/lib/angular-resource.min.js"></script>
-    <script src="js/lib/angular-ui-router.min.js"></script>
+    <script src="js/lib/jquery.js"></script>
     <script src="js/lib/jquery-ui/jquery-ui.js"></script>
+    <script src="js/lib/bootstrap.js"></script>
+    <script src="js/lib/angular.js"></script>
+    <script src="js/lib/angular-resource.js"></script>
+    <script src="js/lib/angular-ui-router.js"></script>
+    <script src="js/lib/date.js"></script>
     
     <!-- For handeling JSON web tokens -->
     <script src="js/lib/crypto/core.js"></script>
@@ -71,7 +75,7 @@
             <div class="form-group">
                 <label class="col-sm-1 control-label">{{currentModelType}}</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" placeholder="Search">
+                    <input type="text" class="form-control" placeholder="Search" id="searchBar">
                 </div>
                 <span id="searchIcon" class="glyphicon glyphicon-search" aria-hidden="true"></span>
             </div>

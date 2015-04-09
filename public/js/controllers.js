@@ -268,35 +268,17 @@ offerConfiguratorControllers.controller('OfferDetailsController',
                                          OfferDetailsController]);
 function OfferDetailsController($scope, $stateParams, AppState, Population, Offer) {
     // Lookup the offer by it's ID.
-    $scope.offer = Offer.show({id:$stateParams.offerId});
-    
-    // Get OfferType and OfferStatus enum listings (for dropdowns)
-    $scope.offerTypes = AppState.offerTypes;
-    $scope.offerStatuses = AppState.offerStatuses;
-    
-    // Set the offer's current offerStatus and offerType
-    $scope.offer.offerStatus = AppState.getOfferStatus($scope.offer.statusId);
-    $scope.offer.offerType = AppState.getOfferType($scope.offer.offerTypeId);
-    
-    // Set the current population of the offer.
-    $scope.offer.population = Population.show({id: $scope.offer.populationId});
-    
-    // Configure date pickers.
-    $(function () {
-        $("#offerStartDatePicker").datepicker({
-            dateFormat: "dd-mm-yy",
-            onSelect: function (dateText, inst) {
-                $scope.offer.startDate = inst.getDate();
-            }
-        });
-        $("#offerStartDatePicker").datepicker("setDate", $scope.offer.startDate);
-        $("#offerEndDatePicker").datepicker({
-            dateFormat: "dd-mm-yy",
-            onSelect: function (dateText, inst) {
-                $scope.offer.endDate = inst.getDate();
-            }
-        });
-        $("#offerEndDatePicker").datepicker("setDate", $scope.offer.endDate);
+    $scope.offer = Offer.show({id:$stateParams.offerId}, function (offer) {
+        // Get OfferType and OfferStatus enum listings (for dropdowns)
+        $scope.offerTypes = AppState.offerTypes;
+        $scope.offerStatuses = AppState.offerStatuses;
+
+        // Set the offer's current offerStatus and offerType
+        $scope.offer.offerStatus = AppState.getOfferStatus(offer.statusId);
+        $scope.offer.offerType = AppState.getOfferType(offer.offerTypeId);
+
+        // Set the current population of the offer.
+        $scope.offer.population = Population.show({id: offer.populationId});
     });
     
     //

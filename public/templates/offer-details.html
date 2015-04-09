@@ -1,49 +1,52 @@
 <!-- Tabs for navigating into offers.
   -- Shown when an offer is selected for editing.
   -->
-<div role="tabpanel" ng-show="showOffersTabs">  
+<div role="tabpanel">  
 <ul class="nav nav-tabs" role="tablist" id="offerTabs">
     <li id="offerDetailsTab" role="presentation" class="active">
         <a href="#offerDetails" role="tab" data-toggle="tab">Details</a>
     </li>
     <li id="benefitsTab" role="presentation">
-        <a ui-sref="offers.offerDetails.benefits({offerId:offer._id})" role="tab" data-toggle="tab">Benefits</a>
+        <a ui-sref="benefits({offerId:offer._id})" role="tab" data-toggle="tab">Benefits</a>
     </li>
     <li id="termsTab" role="presentation">
-        <a ui-sref="offers.offerDetails.terms({offerId:offer._id})" role="tab" data-toggle="tab">Terms</a>
+        <a ui-sref="terms({offerId:offer._id})" role="tab" data-toggle="tab">Terms</a>
     </li>
     <li id="merchandisingTab" role="presentation">
-        <a ui-sref="offers.offerDetails.merchandising({offerId:offer._id})" role="tab" data-toggle="tab">Merchandising</a>
+        <a ui-sref="merchandising({offerId:offer._id})" role="tab" data-toggle="tab">Merchandising</a>
     </li>
 </ul>
     
 <div class="tab-content">    
 <!-- Panel for viewing and selecting offers to edit.
   -->
-<div role="tabpanel" class="tab-pane" id="offerDetails">
-    <!-- offer.statusId display -->
-    <label>Status</label>
-    <p>{{offer.offerStatus.name}}</p>
+<div role="tabpanel" class="tab-pane active" id="offerDetails">
+    <!-- offer.statusId -->
+    <form class="form-inline">
+        <label>Status</label>
+        <p>{{offer.offerStatus.name}}</p>
+    </form>    
     
-    <!-- offer.name entry -->
     <form class="form-horizontal">
+        <!-- offer.populationId display -->
+        <div class="form-group">
+            <label class="col-sm-1 control-label">Population</label>
+            <p class="col-sm-2">{{offer.population.name}}</p>
+        </div>
+        
+        <!-- offer.name entry -->
         <div class="form-group">
             <label class="col-sm-1 control-label">Name</label>
             <div class="col-sm-2">
                 <input type="text" class="form-control" ng-model="offer.name">
             </div>
         </div>
-
-    
-        <!-- offer.populationId display -->
-        <label>Population</label>
-        <p>{{offer.population.name}}</p>
-
+            
         <!-- offer.startDate entry -->
         <div class="form-group">
             <label class="col-sm-1 control-label">Start Date</label>
             <div class="col-sm-2">
-                <input type="text" class="form-control" id="offerStartDatePicker">
+                <input type="text" class="form-control" ui-date="offerStartDatePicker" ng-model="offer.startDate">
             </div>
         </div>
         
@@ -52,15 +55,8 @@
         <div class="form-group">
             <label class="col-sm-1 control-label">End Date</label>
             <div class="col-sm-2">
-                <input type="text" class="form-control" id="offerEndDatePicker">
+                <input type="text" class="form-control" ui-date="offerEndDatePicker" ng-model="offer.endDate">
             </div>
-        </div>
-        
-
-        <!-- offer.description entry -->
-        <div class="form-group">
-            <label>Internal Description</label>
-            <input type="text" class="form-control" ng-model="offer.description">
         </div>
 
         <!-- offer.offerTypeId entry -->
@@ -76,6 +72,16 @@
         </div>
         
     </form>
+    
+    <!-- offer.description entry -->
+    <div class="form-group">
+        <label for="offerDescriptionInput">Internal Description</label>
+        <textarea id="offerDescriptionInput" rows="3" class="form-control" ng-model="offer.description">
+    </div>
+    
+    <button type="button" class="btn btn-default" id="save-button" ng-click="saveOffer()">
+        <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save
+    </button>
 </div>
     
 </div> <!-- END tab content -->
