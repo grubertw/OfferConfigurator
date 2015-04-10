@@ -43,6 +43,17 @@ offerConfiguratorServices.service('AppState', function () {
         }
         return obj;
     };
+    this.getOfferStatusByEnumId = function (enumId) {
+        var obj = {};
+        for (var i = 0; i < this.offerStatuses.length; i++) {
+            var objIt = this.offerStatuses[i];
+            if (objIt.enumId == enumId) {
+                obj = objIt;
+                break;
+            }
+        }
+        return obj;
+    };
     this.getBenefit = function (id) {
         var obj = {};
         for (var i = 0; i < this.benefits.length; i++) {

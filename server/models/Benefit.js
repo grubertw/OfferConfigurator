@@ -9,6 +9,7 @@ var mongoose = require('mongoose')
    ,ObjectId = Schema.ObjectId;
  
 var postSchema = new Schema({
+    enumId          : Number,
     className       : String,
     name            : String,
     description     : String,

@@ -25,6 +25,9 @@
     <form class="form-inline">
         <label>Status</label>
         <p>{{offer.offerStatus.name}}</p>
+        <button type="button" class="btn btn-default" id="save-button" ng-click="progressOfferStatus()">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> {{nextOfferStatus.name}}
+        </button>
     </form>    
     
     <form class="form-horizontal">

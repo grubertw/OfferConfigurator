@@ -279,11 +279,27 @@ function OfferDetailsController($scope, $stateParams, AppState, Population, Offe
 
         // Set the current population of the offer.
         $scope.offer.population = Population.show({id: offer.populationId});
+        
+        // Set the next allowable offer stataus.
+        switch ($scope.offer.offerStatus.enumId) {
+        case 1: // Unpublished      -> Published
+            $scope.nextOfferStatus = AppState.getOfferStatusByEnumId(2);
+            break;
+        case 2: // Published        -> Deactivated
+        case 3: // Deactivated      -> Deactivated
+            $scope.nextOfferStatus = AppState.getOfferStatusByEnumId(3);
+            break;
+        }
     });
     
     //
     // Supported opperations.
     //
+    $scope.progressOfferStatus = function () {
+        // Progress the offer status to it's next allowable status.
+        $scope.offer.statusId = $scope.nextOfferStatus._id;
+        $scope.offer.offerStatus = $scope.nextOfferStatus;
+    }
     $scope.setOfferType = function (offerType) {
         $scope.offer.offerType = offerType;
     };
