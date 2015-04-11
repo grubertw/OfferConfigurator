@@ -20,7 +20,7 @@ offerConfiguratorServices.service('AppState', function () {
     this.offerStatuses = [];
     this.benefits = [];
     
-    // Get an enum by it's id.
+    // Get OfferType by id or enumId
     this.getOfferType = function (id) {
         var obj = {};
         for (var i = 0; i < this.offerTypes.length; i++) {
@@ -32,6 +32,19 @@ offerConfiguratorServices.service('AppState', function () {
         }
         return obj;
     };
+    this.getOfferTypeByEnumId = function (enumId) {
+        var obj = {};
+        for (var i = 0; i < this.offerTypes.length; i++) {
+            var objIt = this.offerTypes[i];
+            if (objIt.enumId == enumId) {
+                obj = objIt;
+                break;
+            }
+        }
+        return obj;
+    };
+    
+    // Get OfferStatus by id or enumId
     this.getOfferStatus = function (id) {
         var obj = {};
         for (var i = 0; i < this.offerStatuses.length; i++) {
@@ -54,11 +67,24 @@ offerConfiguratorServices.service('AppState', function () {
         }
         return obj;
     };
+    
+    // Get Benefit by id or enumId
     this.getBenefit = function (id) {
         var obj = {};
         for (var i = 0; i < this.benefits.length; i++) {
             var objIt = this.benefits[i];
             if (objIt._id == id) {
+                obj = objIt;
+                break;
+            }
+        }
+        return obj;
+    };
+    this.getBenefitByEnumId = function (enumId) {
+        var obj = {};
+        for (var i = 0; i < this.benefits.length; i++) {
+            var objIt = this.benefits[i];
+            if (objIt.enumId == enumId) {
                 obj = objIt;
                 break;
             }

@@ -12,7 +12,9 @@ var mongoose = require('mongoose')
 var postSchema = new Schema({
     enumId          : Number,
     className       : String,
-    name            : String
+    name            : String,
+    nextAction      : String,
+    nextStatus      : ObjectId
 });
  
 module.exports = mongoose.model('OfferStatus', postSchema);

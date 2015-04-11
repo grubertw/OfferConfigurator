@@ -29,9 +29,9 @@
         </tr></thead>
         <tbody><tr ng-repeat="offer in offers">
             <td>{{offer.name}}</td>
-            <td>{{offer.offerType}}</td>
+            <td>{{offer.offerType.name}}</td>
             <td><input id="offerSplitEditTextbox" type="text" class="form-control" ng-model="offer.split">%</td>
-            <td>{{offer.status}}</td>
+            <td>{{offer.offerStatus.name}}</td>
             <td>{{offer.startDate}}</td>
             <td>{{offer.endDate}}</td>
             <td ng-show="editOffers">

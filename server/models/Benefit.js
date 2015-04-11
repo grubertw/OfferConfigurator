@@ -12,8 +12,7 @@ var postSchema = new Schema({
     enumId          : Number,
     className       : String,
     name            : String,
-    description     : String,
-    action          : String,
+    description     : String
 });
  
 module.exports = mongoose.model('Benefit', postSchema);

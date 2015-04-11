@@ -159,6 +159,9 @@ OfferAPI.create = function(req, res) {
     if (req.user) {
         var model = new Offer({className: 'Offer', name: 'New Offer'});
         model.populationId = req.body.populationId; // An Offer must be created with a populationId, minimum.
+        model.statusId = req.body.statusId;
+        model.offerTypeId = req.body.offerTypeId;
+        
         model.save();
         res.json(model.toJSON());
     }

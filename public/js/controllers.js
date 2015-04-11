@@ -14,10 +14,9 @@ var offerConfiguratorControllers = angular.module('offerConfiguratorControllers'
 // - Responsible for user authentication.
 //
 offerConfiguratorControllers.controller('LoginController', 
-                                        ['$scope', '$state', 'AppState', 'Authenticate', 
-                                         'OfferTypes', 'OfferStatuses', 'Benefits',
+                                        ['$scope', '$state', 'AppState', 'Authenticate',
                                          LoginController]);
-function LoginController($scope, $state, AppState, Authenticate, OfferTypes, OfferStatuses, Benefits) {
+function LoginController($scope, $state, AppState, Authenticate) {
     // Collect Username and Password for authentication with the server.
     $scope.username = 'administrator';
     $scope.password = 'ecdOCtool';
@@ -64,14 +63,7 @@ So59bMGeymGBjBaiBs2xcyZN3/Dm2Tc+FNjuwvtoAone7iuUaSqorlbdtIuvjv5D\
                 if (isVarified == 1) {
                     AppState.loggedIn = true;
                     AppState.authToken = token.token;
-                    
-                    // Load enumuration data types from the server
-                    // (benefits, offer types, offer statuses, ect...)
-                    AppState.offerTypes = OfferTypes.list();
-                    AppState.offerStatuses = OfferStatuses.list();
-                    AppState.benefits = Benefits.list();
-                    
-                    
+                                        
                     $state.go('populations');
                 }
             });
@@ -101,9 +93,20 @@ function HeaderController($scope, AppState) {
 // passing the populationId.
 //
 offerConfiguratorControllers.controller('PopulationsController', 
-                                        ['$scope', 'Populations', 'Population',
+                                        ['$scope', 'Populations', 'Population', 'AppState',
+                                         'OfferTypes', 'OfferStatuses', 'Benefits',
                                          PopulationsController]);
-function PopulationsController($scope, Populations, Population) {
+function PopulationsController($scope, Populations, Population, AppState, OfferTypes, OfferStatuses, Benefits) {
+    // Prefetch enumerations from the server here
+    // FIXME:
+    // This should be done in the login handler function,
+    // but for some reason, angular has trouble injecting an updated 
+    // AppState into the model REST services.
+    AppState.offerTypes = OfferTypes.list();
+    AppState.offerStatuses = OfferStatuses.list();
+    AppState.benefits = Benefits.list();
+    
+    
     // Fetch the populations from the server.
     $scope.populations = Populations.list();
     
@@ -213,18 +216,18 @@ function OffersController($scope, $stateParams, AppState, Population, Offers, Of
     // Lookup the population by it's ID.
     $scope.population = Population.show({id: $stateParams.populationId});
     // Perform HTTP GET for all offers in the population.
-    $scope.offers = Offers.listByPopulation({populationId: $stateParams.populationId});
-    
-    // Fill out the OferType and OfferStatus of each offer
-    // (linking by way of offerTypeId and statusId)
-    for (var i=0; i < $scope.offers.length; i++) {
-        var offer = $scope.offers[i];
-        var offerType = AppState.getOfferType(offer.oferTypeId);
-        var offerStatus = AppState.getOfferStatus(offer.statusId);
-        
-        offer.offerType = offerType.name;
-        offer.status = offerStatus.name;
-    }
+    $scope.offers = Offers.listByPopulation({populationId: $stateParams.populationId}, function (offers) {
+        // Fill out the OferType and OfferStatus of each offer
+        // (linking by way of offerTypeId and statusId)
+        for (var i=0; i < $scope.offers.length; i++) {
+            var offer = $scope.offers[i];
+            var offerType = AppState.getOfferType(offer.offerTypeId);
+            var offerStatus = AppState.getOfferStatus(offer.statusId);
+
+            offer.offerType = offerType;
+            offer.offerStatus = offerStatus;
+        }
+    });
     
     // Toggle remove/edit offers.
     $scope.editOffers = false;
@@ -241,9 +244,15 @@ function OffersController($scope, $stateParams, AppState, Population, Offers, Of
     };
     $scope.addOffer = function () {
         // Create an offer within the selected population.
-        // All other fields are set to defaults by the back-end.
-        // Offer.update() can update these fields.
-        var newOffer = Offer.create({populationId: $scope.population._id});
+        // Set default values for statusId and offerType.
+        // All other fields can be modified on a REST update.
+        var defaultStatus = AppState.getOfferStatusByEnumId(1);
+        var defaultOfferType = AppState.getOfferTypeByEnumId(1);
+        
+        var newOffer = Offer.create({populationId:      $scope.population._id,
+                                     statusId:          defaultStatus._id,
+                                     offerTypeId:       defaultOfferType._id});
+        
         $scope.offers.push(newOffer);
     };
     $scope.removeOffer = function (offer) {
@@ -279,17 +288,6 @@ function OfferDetailsController($scope, $stateParams, AppState, Population, Offe
 
         // Set the current population of the offer.
         $scope.offer.population = Population.show({id: offer.populationId});
-        
-        // Set the next allowable offer stataus.
-        switch ($scope.offer.offerStatus.enumId) {
-        case 1: // Unpublished      -> Published
-            $scope.nextOfferStatus = AppState.getOfferStatusByEnumId(2);
-            break;
-        case 2: // Published        -> Deactivated
-        case 3: // Deactivated      -> Deactivated
-            $scope.nextOfferStatus = AppState.getOfferStatusByEnumId(3);
-            break;
-        }
     });
     
     //
@@ -297,8 +295,8 @@ function OfferDetailsController($scope, $stateParams, AppState, Population, Offe
     //
     $scope.progressOfferStatus = function () {
         // Progress the offer status to it's next allowable status.
-        $scope.offer.statusId = $scope.nextOfferStatus._id;
-        $scope.offer.offerStatus = $scope.nextOfferStatus;
+        $scope.offer.statusId = $scope.offer.offerStatus.nextStatus;
+        $scope.offer.offerStatus = AppState.getOfferStatus($scope.offer.offerStatus.nextStatus);
     }
     $scope.setOfferType = function (offerType) {
         $scope.offer.offerType = offerType;

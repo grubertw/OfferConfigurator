@@ -62,6 +62,18 @@
     width: 50px;
 }
 
+#nextOfferStatusButton {
+    margin-left: 90px;
+}
+
+#offerInputMainGroup {
+    margin-top: 50px;
+}
+
+#offerDescription {
+    margin-top: 50px;
+}
+
 #save-button {
     margin-top: 20px;
 }
