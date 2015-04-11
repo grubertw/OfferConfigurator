@@ -161,6 +161,9 @@ OfferAPI.create = function(req, res) {
         model.populationId = req.body.populationId; // An Offer must be created with a populationId, minimum.
         model.statusId = req.body.statusId;
         model.offerTypeId = req.body.offerTypeId;
+        model.description = "offer description here";
+        model.startDate = new Date();
+        model.endDate = new Date();
         
         model.save();
         res.json(model.toJSON());
@@ -176,11 +179,9 @@ OfferAPI.update = function(req, res) {
                    statusId:                    req.body.statusId,
                    description:                 req.body.description,
                    startDate:                   req.body.startDate,
-                   endDate:                     req.body.endDate,
-                   paymentAuthorizationAmount:  req.body.paymentAuthorizationAmount,
-                   shortPaymentDisclosure:      req.body.shortPaymentDisclosure,
-                   longPaymentDisclosure:       req.body.longPaymentDisclosure}
+                   endDate:                     req.body.endDate}
         }, { upsert: true }, function(err, model) {
+            console.log("Update Offer:  err=%s", err);
             return res.json(model.toJSON());
         });
     }

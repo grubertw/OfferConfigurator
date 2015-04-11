@@ -300,6 +300,7 @@ function OfferDetailsController($scope, $stateParams, AppState, Population, Offe
     }
     $scope.setOfferType = function (offerType) {
         $scope.offer.offerType = offerType;
+        $scope.offer.offerTypeId = offerType._id;
     };
     $scope.saveOffer = function () {
         Offer.update({id: $scope.offer._id}, $scope.offer);

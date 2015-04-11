@@ -80,14 +80,15 @@
               </ul>
             </div>
         </div>
-        
-    </form>
     
-    <!-- offer.description entry -->
-    <div class="form-group" id="offerDescription">
-        <label for="offerDescriptionInput">Internal Description</label>
-        <textarea id="offerDescriptionInput" rows="3" class="form-control" ng-model="offer.description">
-    </div>
+        <!-- offer.description entry -->
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="offerDescriptionInput">Internal Description</label>
+            <div class="col-sm-6">
+                <textarea id="offerDescriptionInput" rows="3" class="form-control" ng-model="offer.description"></textarea>
+            </div>
+        </div>
+    </form>
     
     <button type="button" class="btn btn-default" id="save-button" ng-click="saveOffer()">
         <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save
