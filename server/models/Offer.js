@@ -30,7 +30,7 @@ var Offer = new Schema({
     // a many-to-many relationship with a SQL database).
     benefits                    : [{
         benefitId               : ObjectId,
-        action                  : String
+        action                  : ObjectId
     }]
     
     // Charges/Terms are NOT embedded.  Instead, seporate instances

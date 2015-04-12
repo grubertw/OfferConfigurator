@@ -181,7 +181,6 @@ OfferAPI.update = function(req, res) {
                    startDate:                   req.body.startDate,
                    endDate:                     req.body.endDate}
         }, { upsert: true }, function(err, model) {
-            console.log("Update Offer:  err=%s", err);
             return res.json(model.toJSON());
         });
     }

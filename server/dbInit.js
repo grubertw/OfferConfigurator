@@ -9,6 +9,7 @@ var console = require('console');
 var Benefit = require(__dirname + '/models/Benefit.js');
 var OfferStatus = require(__dirname + '/models/OfferStatus.js');
 var OfferType = require(__dirname + '/models/OfferType.js');
+var ActionType = require(__dirname + '/models/ActionType.js');
 var User = require(__dirname + '/models/User.js');
 var PrivilegeType = require(__dirname + '/models/PrivilegeType.js');
 var Privilege = require(__dirname + '/models/Privilege.js');
@@ -55,6 +56,16 @@ module.exports.initDb = function () {
             new OfferType({enumId: 3, className: "OfferType", name: "Retention"}).save();
             new OfferType({enumId: 4, className: "OfferType", name: "Cancelation"}).save();
             new OfferType({enumId: 5, className: "OfferType", name: "Amendment"}).save();
+        }
+    });
+    
+    //
+    // Insert action types.
+    //
+    ActionType.findOne({enumId: 1}, function (err, obj) {
+        if (obj == null) {
+            new ActionType({enumId: 1, className: "ActionType", name: "Add"}).save();
+            new ActionType({enumId: 2, className: "ActionType", name: "Remove"}).save();
         }
     });
     

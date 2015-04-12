@@ -249,11 +249,14 @@ function OffersController($scope, $stateParams, AppState, Population, Offers, Of
         var defaultStatus = AppState.getOfferStatusByEnumId(1);
         var defaultOfferType = AppState.getOfferTypeByEnumId(1);
         
-        var newOffer = Offer.create({populationId:      $scope.population._id,
-                                     statusId:          defaultStatus._id,
-                                     offerTypeId:       defaultOfferType._id});
-        
-        $scope.offers.push(newOffer);
+        Offer.create({populationId:      $scope.population._id,
+                      statusId:          defaultStatus._id,
+                      offerTypeId:       defaultOfferType._id},
+                     function (offer) {
+            offer.offerStatus = defaultStatus;
+            offer.offerType = defaultOfferType;
+            $scope.offers.push(offer);
+        });
     };
     $scope.removeOffer = function (offer) {
         Offer.delete({id: offer._id});
