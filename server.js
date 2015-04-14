@@ -54,6 +54,8 @@ app.get(api.OfferStatus.listUrl, api.validateJWT, api.OfferStatus.list);
 // Benefit (enum) (list)
 app.get(api.Benefit.listUrl, api.validateJWT, api.Benefit.list);
 
+// ActionType (enum) (list)
+app.get(api.ActionType.listUrl, api.validateJWT, api.ActionType.list);
 
 
 

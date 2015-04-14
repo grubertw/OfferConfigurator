@@ -1,57 +1,70 @@
 <!-- Tabs for navigating into offers.
   -- Shown when an offer is selected for editing.
   -->
-<div role="tabpanel" ng-show="showOffersTabs">  
+<div role="tabpanel">  
 <ul class="nav nav-tabs" role="tablist" id="offerTabs">
-    <li id="offerDetailsTab" role="presentation" class="active">
-        <a ui-sref="offers.offerDetails({offerId:offer._id})" role="tab" data-toggle="tab">Details</a>
+    <li id="offerDetailsTab" role="presentation">
+        <a ui-sref="offerDetails({offerId:offer._id})" role="tab" data-toggle="tab">Details</a>
     </li>
-    <li id="benefitsTab" role="presentation">
+    <li id="benefitsTab" role="presentation" class="active">
         <a href="#benefits" role="tab" data-toggle="tab">Benefits</a>
     </li>
     <li id="termsTab" role="presentation">
-        <a href="#terms" role="tab" data-toggle="tab">Terms</a>
+        <a ui-sref="terms({offerId:offer._id})" role="tab" data-toggle="tab">Terms</a>
     </li>
     <li id="merchandisingTab" role="presentation">
-        <a href="#merchandising" role="tab" data-toggle="tab">Merchandising</a>
+        <a ui-sref="merchandising({offerId:offer._id})" role="tab" data-toggle="tab">Merchandising</a>
     </li>
 </ul>
     
 <div class="tab-content">    
-<!-- Panel for viewing and selecting offers to edit.
+<!-- Panel for Adding/Removing Benefits to an Offer.
   -->
-<div role="tabpanel" class="tab-pane" id="offerDetails">
-    <!-- Template contained within offer-details.html -->
-    <div ui-view="offers.offerDetails"></div>
+<div role="tabpanel" class="tab-pane active" id="benefits">
+
+    <button type="button" class="btn btn-default" ng-click="toggleRemoveBenefits()">
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove
+    </button>
+    
+    <table class="table table-striped">
+        <thead><tr>
+            <th>Benefit</th>
+            <th class="editTableHeader" ng-show="removeBenefits">Remove</th>
+        </tr></thead>
+        <tbody><tr ng-repeat="benefit in offer.benefits">
+            <td>{{benefit.name}}</td>
+            <td ng-show="removeBenefits">
+                <button type="button" class="btn btn-default" ng-click="removeBenefit(benefit)">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button>
+            </td>
+        </tr></tbody>
+    </table>
+    
+    <form class="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-sm-1">Add Benefit</label>
+            <div class="dropdown col-sm-2">
+              <button class="btn btn-default dropdown-toggle" type="button" id="benefitButton" data-toggle="dropdown" aria-expanded="true">
+                {{benefitToAdd.name}}<span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="benefitButton">
+                <li role="presentation" ng-repeat="benefit in benefits" ng-click="setBenefitToAdd(benefit)">
+                    {{benefit.name}}
+                </li>
+              </ul>
+            </div>
+        
+            <button type="button" class="btn btn-default" id="addBenefitToOfferButton" ng-click="addBenefitToOffer()">
+                <span class="glyphicon glyphicon-chevron-add" aria-hidden="true"></span>Add Benefit
+            </button>
+        </div>
+    </form> 
+    
+    <button type="button" class="btn btn-default" id="save-button" ng-click="saveBenefits()">
+        <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save
+    </button>
 </div>
     
-<!-- Panel for adding/removing offers.
-  -->
-<div role="tabpanel" class="tab-pane" id="benefits">
-    
-    
-    
-    
-    
-    
-    
-    
-</div>
-    
-<!-- Panel for modifying terms.
-  -->
-<div role="tabpanel" class="tab-pane" id="terms">
-    <!-- Template contained within terms.html -->
-    <div ui-view="offers.offerDetails.terms"></div>
-</div>
-    
-<!-- Panel modifying merchandizing.
-  -- Works like a key/value pair editor to storing text 
-  -- and image assets.
-  -->
-<div role="tabpanel" class="tab-pane" id="merchandising">
-    <!-- Template contained within merchandising.html -->
-    <div ui-view="offers.offerDetails.merchandising"></div>
-</div>
 </div> <!-- END tab content -->
 </div> <!-- END offer tabs -->

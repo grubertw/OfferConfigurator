@@ -9,12 +9,16 @@ var mongoose = require('mongoose')
    ,ObjectId = Schema.ObjectId;
  
 var postSchema = new Schema({
-    className       : String,
-    price           : String,
-    frequency       : String,
-    startDate       : String,
-    description     : String,
-    billingPeriod   : String
+    className                   : String,
+    price                       : String,
+    frequency                   : String,
+    startDate                   : Date,         
+    description                 : String,
+    billingPeriod               : String,   // Same as Recurrence.name
+    recurrence                  : {type: Number, ref: 'Recurrence'},
+    timespan                    : Number,
+    isTrial                     : Boolean,
+    prorationRule               : {type: Number, ref: 'ProrationRule'},
 });
  
 module.exports = mongoose.model('Term', postSchema);

@@ -15,12 +15,17 @@ offerConfiguratorServices.service('AppState', function () {
     this.firstName = '';
     this.lastName = '';
     
-    // Enums requested from the server after successfull login.
+    // Enumerated models requested from the server after successfull login.
     this.offerTypes = [];
     this.offerStatuses = [];
     this.benefits = [];
     
-    // Get OfferType by id or enumId
+    //
+    // Getters on enumerated models.
+    // (i.e. models serving as selections within drop-downs)
+    //
+    
+    // Get OfferType by id
     this.getOfferType = function (id) {
         var obj = {};
         for (var i = 0; i < this.offerTypes.length; i++) {
@@ -32,19 +37,8 @@ offerConfiguratorServices.service('AppState', function () {
         }
         return obj;
     };
-    this.getOfferTypeByEnumId = function (enumId) {
-        var obj = {};
-        for (var i = 0; i < this.offerTypes.length; i++) {
-            var objIt = this.offerTypes[i];
-            if (objIt.enumId == enumId) {
-                obj = objIt;
-                break;
-            }
-        }
-        return obj;
-    };
     
-    // Get OfferStatus by id or enumId
+    // Get OfferStatus by id
     this.getOfferStatus = function (id) {
         var obj = {};
         for (var i = 0; i < this.offerStatuses.length; i++) {
@@ -56,35 +50,13 @@ offerConfiguratorServices.service('AppState', function () {
         }
         return obj;
     };
-    this.getOfferStatusByEnumId = function (enumId) {
-        var obj = {};
-        for (var i = 0; i < this.offerStatuses.length; i++) {
-            var objIt = this.offerStatuses[i];
-            if (objIt.enumId == enumId) {
-                obj = objIt;
-                break;
-            }
-        }
-        return obj;
-    };
     
-    // Get Benefit by id or enumId
+    // Get Benefit by id
     this.getBenefit = function (id) {
         var obj = {};
         for (var i = 0; i < this.benefits.length; i++) {
             var objIt = this.benefits[i];
             if (objIt._id == id) {
-                obj = objIt;
-                break;
-            }
-        }
-        return obj;
-    };
-    this.getBenefitByEnumId = function (enumId) {
-        var obj = {};
-        for (var i = 0; i < this.benefits.length; i++) {
-            var objIt = this.benefits[i];
-            if (objIt.enumId == enumId) {
                 obj = objIt;
                 break;
             }
@@ -174,5 +146,13 @@ offerConfiguratorServices.factory('OfferStatuses', ['$resource', 'AppState', fun
 //
 offerConfiguratorServices.factory('Benefits', ['$resource', 'AppState', function ($resource, AppState) {
     return $resource(apiRoute+'benefits', {}, 
+                     {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}});
+}]);
+
+//
+// ActionType services (list)
+//
+offerConfiguratorServices.factory('ActionTypes', ['$resource', 'AppState', function ($resource, AppState) {
+    return $resource(apiRoute+'actionTypes', {}, 
                      {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}});
 }]);

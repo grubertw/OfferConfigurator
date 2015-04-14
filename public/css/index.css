@@ -70,6 +70,10 @@
     margin-top: 50px;
 }
 
+#benefitButton {
+    width: 175px;
+}
+
 #save-button {
     margin-top: 20px;
 }

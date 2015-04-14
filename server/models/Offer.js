@@ -15,26 +15,21 @@ var Offer = new Schema({
     className                   : String,
     name                        : String,
     description                 : String,
-    offerTypeId                 : ObjectId,
+    offerType                   : {type: Number, ref: 'OfferType'},
     split                       : Number,
-    statusId                    : ObjectId,
+    offerStatus                 : {type: Number, ref: 'OfferStatus'},
     startDate                   : Date,
     endDate                     : Date,
     paymentAuthorizationAmount  : String,
     shortPaymentDisclosure      : String,
     longPaymentDisclosure       : String,
-    populationId                : ObjectId,
+    population                  : {type: ObjectId, ref: 'Population'},
     
-    // A list of benefitId(s) are stored here as an embedded structure
-    // (rather than using a pivot-table, which is the only way to do
-    // a many-to-many relationship with a SQL database).
-    benefits                    : [{
-        benefitId               : ObjectId,
-        action                  : ObjectId
-    }]
-    
-    // Charges/Terms are NOT embedded.  Instead, seporate instances
-    // are created with an offerId.
+    // Reference each benefit as a sub-document reference.
+    // Offer.list() or Offer.show() is called, the REST handler will 
+    // invoke populate() to fill these in.
+    benefits                    : [{type: Number, ref: 'Benefit'}],
+    terms                       : [{type: ObjectId, ref: 'Term'}]
 });
  
 module.exports = mongoose.model('Offer', Offer);

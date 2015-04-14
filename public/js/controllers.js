@@ -94,9 +94,10 @@ function HeaderController($scope, AppState) {
 //
 offerConfiguratorControllers.controller('PopulationsController', 
                                         ['$scope', 'Populations', 'Population', 'AppState',
-                                         'OfferTypes', 'OfferStatuses', 'Benefits',
+                                         'OfferTypes', 'OfferStatuses', 'Benefits', 'ActionTypes',
                                          PopulationsController]);
-function PopulationsController($scope, Populations, Population, AppState, OfferTypes, OfferStatuses, Benefits) {
+function PopulationsController($scope, Populations, Population, AppState, 
+                               OfferTypes, OfferStatuses, Benefits, ActionTypes) {
     // Prefetch enumerations from the server here
     // FIXME:
     // This should be done in the login handler function,
@@ -105,7 +106,6 @@ function PopulationsController($scope, Populations, Population, AppState, OfferT
     AppState.offerTypes = OfferTypes.list();
     AppState.offerStatuses = OfferStatuses.list();
     AppState.benefits = Benefits.list();
-    
     
     // Fetch the populations from the server.
     $scope.populations = Populations.list();
@@ -216,18 +216,7 @@ function OffersController($scope, $stateParams, AppState, Population, Offers, Of
     // Lookup the population by it's ID.
     $scope.population = Population.show({id: $stateParams.populationId});
     // Perform HTTP GET for all offers in the population.
-    $scope.offers = Offers.listByPopulation({populationId: $stateParams.populationId}, function (offers) {
-        // Fill out the OferType and OfferStatus of each offer
-        // (linking by way of offerTypeId and statusId)
-        for (var i=0; i < $scope.offers.length; i++) {
-            var offer = $scope.offers[i];
-            var offerType = AppState.getOfferType(offer.offerTypeId);
-            var offerStatus = AppState.getOfferStatus(offer.statusId);
-
-            offer.offerType = offerType;
-            offer.offerStatus = offerStatus;
-        }
-    });
+    $scope.offers = Offers.listByPopulation({populationId: $stateParams.populationId});
     
     // Toggle remove/edit offers.
     $scope.editOffers = false;
@@ -246,12 +235,12 @@ function OffersController($scope, $stateParams, AppState, Population, Offers, Of
         // Create an offer within the selected population.
         // Set default values for statusId and offerType.
         // All other fields can be modified on a REST update.
-        var defaultStatus = AppState.getOfferStatusByEnumId(1);
-        var defaultOfferType = AppState.getOfferTypeByEnumId(1);
+        var defaultStatus = AppState.getOfferStatus(1);
+        var defaultOfferType = AppState.getOfferType(1);
         
-        Offer.create({populationId:      $scope.population._id,
-                      statusId:          defaultStatus._id,
-                      offerTypeId:       defaultOfferType._id},
+        Offer.create({population:        $scope.population,
+                      offerStatus:       defaultStatus,
+                      offerType:         defaultOfferType},
                      function (offer) {
             offer.offerStatus = defaultStatus;
             offer.offerType = defaultOfferType;
@@ -276,36 +265,73 @@ offerConfiguratorControllers.controller('OfferDetailsController',
                                         ['$scope', 
                                          '$stateParams',
                                          'AppState',
-                                         'Population', 'Offer',
+                                         'Offer',
                                          OfferDetailsController]);
-function OfferDetailsController($scope, $stateParams, AppState, Population, Offer) {
+function OfferDetailsController($scope, $stateParams, AppState, Offer) {
     // Lookup the offer by it's ID.
-    $scope.offer = Offer.show({id:$stateParams.offerId}, function (offer) {
-        // Get OfferType and OfferStatus enum listings (for dropdowns)
-        $scope.offerTypes = AppState.offerTypes;
-        $scope.offerStatuses = AppState.offerStatuses;
-
-        // Set the offer's current offerStatus and offerType
-        $scope.offer.offerStatus = AppState.getOfferStatus(offer.statusId);
-        $scope.offer.offerType = AppState.getOfferType(offer.offerTypeId);
-
-        // Set the current population of the offer.
-        $scope.offer.population = Population.show({id: offer.populationId});
-    });
+    $scope.offer = Offer.show({id:$stateParams.offerId});
+    
+    // Get OfferType and OfferStatus enum listings (for dropdowns)
+    $scope.offerTypes = AppState.offerTypes;
+    $scope.offerStatuses = AppState.offerStatuses;
     
     //
     // Supported opperations.
     //
     $scope.progressOfferStatus = function () {
         // Progress the offer status to it's next allowable status.
-        $scope.offer.statusId = $scope.offer.offerStatus.nextStatus;
         $scope.offer.offerStatus = AppState.getOfferStatus($scope.offer.offerStatus.nextStatus);
     }
     $scope.setOfferType = function (offerType) {
         $scope.offer.offerType = offerType;
-        $scope.offer.offerTypeId = offerType._id;
     };
     $scope.saveOffer = function () {
+        Offer.update({id: $scope.offer._id}, $scope.offer);
+    };
+}
+
+//
+// Controller for adding/removing benefits to an offer.
+// Adding a benefit to an offer is done by selecting a belefit from the 
+// enumerated bemefits model collection, along with an actionType model.
+// The chosen benefit (by way of it's id) is added to an array internal 
+// to the offer.
+//
+offerConfiguratorControllers.controller('BenefitsController', 
+                                        ['$scope', 
+                                         '$stateParams',
+                                         'AppState',
+                                         'Offer',
+                                         BenefitsController]);
+function BenefitsController($scope, $stateParams, AppState, Offer) {
+    // Lookup the offer by it's ID.
+    $scope.offer = Offer.show({id:$stateParams.offerId});
+    
+    // Get Benefits and ActionTypes.
+    $scope.benefits = AppState.benefits;
+    
+    // Toggle remove benefits.
+    $scope.removeBenefits = false;
+    // Selected benefit to add.
+    $scope.benefitToAdd = {};
+    
+    //
+    // Supported opperations.
+    //
+    $scope.toggleRemoveBenefits = function () {
+        $scope.removeBenefits = !$scope.removeBenefits;
+    };
+    $scope.removeBenefit = function (benefit) {
+        var index = $scope.offer.benefits.indexOf(benefit);
+        $scope.offer.benefits.splice(index, 1);
+    }
+    $scope.setBenefitToAdd = function (benefit) {
+        $scope.benefitToAdd = benefit;
+    };
+    $scope.addBenefitToOffer = function () {        
+        $scope.offer.benefits.push($scope.benefitToAdd);
+    };
+    $scope.saveBenefits = function () {
         Offer.update({id: $scope.offer._id}, $scope.offer);
     };
 }

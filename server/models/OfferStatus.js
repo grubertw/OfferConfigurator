@@ -10,11 +10,11 @@ var mongoose = require('mongoose')
    ,ObjectId = Schema.ObjectId;
  
 var postSchema = new Schema({
-    enumId          : Number,
+    _id             : Number,
     className       : String,
     name            : String,
     nextAction      : String,
-    nextStatus      : ObjectId
+    nextStatus      : Number
 });
  
 module.exports = mongoose.model('OfferStatus', postSchema);

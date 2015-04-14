@@ -23,6 +23,7 @@ var OfferType = require(__dirname + '/models/OfferType.js');
 var OfferStatus = require(__dirname + '/models/OfferStatus.js');
 var Offer = require(__dirname + '/models/Offer.js');
 var Benefit = require(__dirname + '/models/Benefit.js');
+var ActionType = require(__dirname + '/models/ActionType.js');
 
 // Load private RSA key for creation of the JWT token.
 var privKey = fs.readFileSync('server/priv_key.pem');
@@ -137,8 +138,8 @@ module.exports.Population = PopulationAPI;
 var OfferAPI = {};
 OfferAPI.listByPopulationUrl = apiRoute + "offers/:populationId";
 OfferAPI.listByPopulation = function(req, res) {    
-    if (req.user) {        
-        Offer.find({populationId: req.params.populationId}, function(err, models) {
+    if (req.user) {
+        Offer.find({population: req.params.populationId}).populate('offerType offerStatus population').exec(function(err, models) {
             res.send(models);
         });
     }
@@ -147,7 +148,7 @@ OfferAPI.listByPopulation = function(req, res) {
 OfferAPI.showUrl = apiRoute + "offer/:id";
 OfferAPI.show = function(req, res) {
     if (req.user) {
-        Offer.findOne({ _id: req.params.id }, function(err, model) {
+        Offer.findOne({ _id: req.params.id}).populate('offerType offerStatus population benefits').exec(function(err, model) {
             res.json(model.toJSON());
         });
     }
@@ -158,29 +159,43 @@ OfferAPI.createUrl = apiRoute + "offer";
 OfferAPI.create = function(req, res) {
     if (req.user) {
         var model = new Offer({className: 'Offer', name: 'New Offer'});
-        model.populationId = req.body.populationId; // An Offer must be created with a populationId, minimum.
-        model.statusId = req.body.statusId;
-        model.offerTypeId = req.body.offerTypeId;
+        model.population = req.body.population._id; // An Offer must be created with a population, minimum.
+        model.offerStatus = req.body.offerStatus._id;
+        model.offerType = req.body.offerType._id;
         model.description = "offer description here";
         model.startDate = new Date();
         model.endDate = new Date();
+        model.benefits = [];
+        model.terms = [];
         
-        model.save();
-        res.json(model.toJSON());
+        model.save(function(err) {
+            res.json(model.toJSON());
+        });
+        
     }
 }
 
 OfferAPI.updateUrl = apiRoute + "offer/:id";
 OfferAPI.update = function(req, res) {
     if (req.user) {
+        // Extract the benefitId's from the Benefit objects.
+        var benefits = [];
+        for (var i=0; i<req.body.benefits.length; i++) {
+            benefits.push(req.body.benefits[i]._id);
+        }
+        
         Offer.findByIdAndUpdate(req.params.id, {
             $set: {name:                        req.body.name, 
-                   offerTypeId:                 req.body.offerTypeId, 
-                   statusId:                    req.body.statusId,
+                   offerType:                   req.body.offerType._id, 
+                   offerStatus:                 req.body.offerStatus._id,
                    description:                 req.body.description,
                    startDate:                   req.body.startDate,
-                   endDate:                     req.body.endDate}
+                   endDate:                     req.body.endDate,
+                   benefits:                    benefits,
+                   terms:                       req.body.terms}
         }, { upsert: true }, function(err, model) {
+            console.log("Update Offer  err=%s", err);
+            
             return res.json(model.toJSON());
         });
     }
@@ -231,3 +246,15 @@ BenefitAPI.list = function(req, res) {
     }
 };
 module.exports.Benefit = BenefitAPI;
+
+// ActionType (enum)
+var ActionTypeAPI = {}
+ActionTypeAPI.listUrl = apiRoute + "actionTypes";
+ActionTypeAPI.list = function(req, res) {
+    if (req.user) {
+        ActionType.find({}, function(err, models) {
+            res.send(models);
+        });
+    }
+};
+module.exports.ActionType = ActionTypeAPI;
