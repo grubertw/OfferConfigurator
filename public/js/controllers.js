@@ -307,7 +307,7 @@ function BenefitsController($scope, $stateParams, AppState, Offer) {
     // Lookup the offer by it's ID.
     $scope.offer = Offer.show({id:$stateParams.offerId});
     
-    // Get Benefits and ActionTypes.
+    // Get Benefits.
     $scope.benefits = AppState.benefits;
     
     // Toggle remove benefits.
@@ -332,6 +332,50 @@ function BenefitsController($scope, $stateParams, AppState, Offer) {
         $scope.offer.benefits.push($scope.benefitToAdd);
     };
     $scope.saveBenefits = function () {
+        Offer.update({id: $scope.offer._id}, $scope.offer);
+    };
+}
+
+//
+// Controller for adding/removing terms to an offer.
+// Along with managing a table of terms within the offer, there are a few 
+// top-level attributes that apply to all terms, kept within the 
+// parent offer.
+//
+offerConfiguratorControllers.controller('TermsController', 
+                                        ['$scope', 
+                                         '$stateParams',
+                                         'AppState',
+                                         'Offer', 'Terms', 'Term',
+                                         TermsController]);
+function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
+    // Lookup the offer by it's ID.
+    $scope.offer = Offer.show({id:$stateParams.offerId});
+    
+
+    // Toggle edit terms.
+    $scope.editTerms = false;
+    // Toggle remove terms.
+    $scope.removeTerms = false;
+
+    
+    //
+    // Supported opperations.
+    //
+    $scope.toggleEditTerms = function () {
+        $scope.editTerms = !$scope.editTerms;
+    };
+    $scope.toggleRemoveTerms = function () {
+        $scope.removeTerms = !$scope.removeTerms;
+    };
+    $scope.removeTerm = function (term) {
+        
+        
+        var index = $scope.offer.terms.indexOf(term);
+        $scope.offer.terms.splice(index, 1);
+    }
+
+    $scope.saveTerms = function () {
         Offer.update({id: $scope.offer._id}, $scope.offer);
     };
 }

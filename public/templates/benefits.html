@@ -21,7 +21,14 @@
 <!-- Panel for Adding/Removing Benefits to an Offer.
   -->
 <div role="tabpanel" class="tab-pane active" id="benefits">
-
+    <!-- offer.name display -->
+    <form class="form-inline">
+        <div class="form-group">
+            <label>Offer:</label>
+        </div>
+        <span>{{offer.name}}</span>
+    </form>
+    
     <button type="button" class="btn btn-default" ng-click="toggleRemoveBenefits()">
         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove
     </button>

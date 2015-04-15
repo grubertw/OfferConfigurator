@@ -9,8 +9,10 @@ var mongoose = require('mongoose')
    ,ObjectId = Schema.ObjectId;
  
 var postSchema = new Schema({
+    name                        : String,
     className                   : String,
     price                       : String,
+    msrp                        : String,
     frequency                   : String,
     startDate                   : Date,         
     description                 : String,

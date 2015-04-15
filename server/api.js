@@ -168,6 +168,12 @@ OfferAPI.create = function(req, res) {
         model.benefits = [];
         model.terms = [];
         
+        // Fields that apply to all terms/changes
+        model.requiresPaymentAuthorization = false;
+        model.paymentAuthorizationAmount = "$0.0";
+        model.shortPaymentDisclosure = "short payment disclosure";
+        model.longPaymentDisclosure = "long payment disclosure";
+        
         model.save(function(err) {
             res.json(model.toJSON());
         });
@@ -184,6 +190,14 @@ OfferAPI.update = function(req, res) {
             benefits.push(req.body.benefits[i]._id);
         }
         
+        // Extract the termId's from the Term objects.
+        // MOTE: For terms to be insered properly here, they must
+        // already exist within the terms table.
+        var terms = [];
+        for (var i=0; i<req.body.terms.length; i++) {
+            terms.push(req.body.terms[i]._id);
+        }
+        
         Offer.findByIdAndUpdate(req.params.id, {
             $set: {name:                        req.body.name, 
                    offerType:                   req.body.offerType._id, 
@@ -191,8 +205,12 @@ OfferAPI.update = function(req, res) {
                    description:                 req.body.description,
                    startDate:                   req.body.startDate,
                    endDate:                     req.body.endDate,
+                   requiresPaymentAuthorization:req.bosy.requiresPaymentAuthorization,
+                   paymentAuthorizationAmount:  req.body.paymentAuthorizationAmount,
+                   shortPaymentDisclosure:      req.body.shortPaymentDisclosure,
+                   longPaymentDisclosure:       req.body.longPaymentDisclosure,
                    benefits:                    benefits,
-                   terms:                       req.body.terms}
+                   terms:                       terms}
         }, { upsert: true }, function(err, model) {
             console.log("Update Offer  err=%s", err);
             

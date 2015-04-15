@@ -61,10 +61,10 @@ offerConfiguratorApp.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: 'templates/terms.html',
             controller: 'TermsController'
         }).
-        state('terms.charge', {
-            url: '/charge/:chargeId',
-            templateUrl: 'templates/charges.html',
-            controller: 'ChargesController'
+        state('terms.termDetails', {
+            url: '/:termId',
+            templateUrl: 'templates/termDetails.html',
+            controller: 'TermDetailsController'
         }).
         state('merchandising', {
             url: '/merchandising',
