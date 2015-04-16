@@ -368,6 +368,9 @@ function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
     $scope.toggleRemoveTerms = function () {
         $scope.removeTerms = !$scope.removeTerms;
     };
+    $scope.addTerm = function () {
+        
+    };
     $scope.removeTerm = function (term) {
         
         

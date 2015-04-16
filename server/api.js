@@ -22,7 +22,12 @@ var Operator = require(__dirname + '/models/Operator.js');
 var OfferType = require(__dirname + '/models/OfferType.js');
 var OfferStatus = require(__dirname + '/models/OfferStatus.js');
 var Offer = require(__dirname + '/models/Offer.js');
+var Term = require(__dirname + '/models/Term.js');
 var Benefit = require(__dirname + '/models/Benefit.js');
+var BillingOnset = require(__dirname + '/models/BillingOnset.js');
+var BillingInterval = require(__dirname + '/models/BillingInterval.js');
+var Recurrence = require(__dirname + '/models/Recurrence.js');
+var ProrationRule = require(__dirname + '/models/ProrationRule.js');
 var ActionType = require(__dirname + '/models/ActionType.js');
 
 // Load private RSA key for creation of the JWT token.
@@ -229,6 +234,91 @@ OfferAPI.delete = function(req, res) {
 };
 module.exports.Offer = OfferAPI;
 
+//
+// Term CRUD operations.
+//
+var TermAPI = {};
+TermAPI.listByOfferUrl = apiRoute + "terms/:offerId";
+TermAPI.listByOffer = function(req, res) {    
+    if (req.user) {
+        Term.find({offer: req.params.offerId}).populate('recurrence offer').exec(function(err, models) {
+            res.send(models);
+        });
+    }
+};
+
+TermAPI.showUrl = apiRoute + "term/:id";
+TermAPI.show = function(req, res) {
+    if (req.user) {
+        Term.findOne({ _id: req.params.id}).populate('recurrence prorationRule offer').exec(function(err, model) {
+            res.json(model.toJSON());
+        });
+    }
+};
+
+TermAPI.createUrl = apiRoute + "term";
+TermAPI.create = function(req, res) {
+    if (req.user) {
+        var model = new Term({className: 'Term', name: 'New Term'});
+        model.offer = req.body.offer._id; // A Term must be created with an offer, minimum.
+        model.billingOnset = req.body.billingOnset._id;
+        model.billingInterval = req.body.billingInterval._id;
+        model.recurrence = req.body.recurrence._id;
+        model.prorationRule = req.body.prorationRule._id;
+        model.isTrial = false;
+        model.description = "Term description here";
+        model.startDate = new Date();
+        model.price = "$0.99";
+        model.msrp = "";
+        model.hasBillingInterval = true;
+        
+        // Set this to recurrence.name
+        model.frequency = "Indefinite";
+        
+        // Set this to billingInterval.name
+        model.billingPeriod = "Monthly";
+        
+        model.save(function(err) {
+            res.json(model.toJSON());
+        });
+    }
+}
+
+TermAPI.updateUrl = apiRoute + "term/:id";
+TermAPI.update = function(req, res) {
+    if (req.user) {
+        Term.findByIdAndUpdate(req.params.id, {
+            $set: {name:                        req.body.name, 
+                   billingOnset:                req.body.billingOnset._id, 
+                   billingInterval:             req.body.billingInterval._id,
+                   recurrence:                  req.body.recurrence._id,
+                   prorationRule:               req.body.prorationRule._id,
+                   isTrial:                     req.body.isTrial,
+                   description:                 req.body.description,
+                   startDate:                   req.body.startDate,
+                   price:                       req.body.price,
+                   msrp:                        req.body.msrp,
+                   hasBillingInterval:          req.body.hasBillingInterval,
+                   frequency:                   req.body.frequency,
+                   billingPeriod:               req.body.billingPeriod}
+        }, { upsert: true }, function(err, model) {
+            console.log("Update Offer  err=%s", err);
+            
+            return res.json(model.toJSON());
+        });
+    }
+}
+
+TermAPI.deleteUrl = apiRoute + "term/:id";
+TermAPI.delete = function(req, res) {
+    if (req.user) {
+        Term.remove({ _id: req.params.id }, function(err) {
+            res.json(true);
+        });
+    }
+};
+module.exports.Term = TermAPI;
+
 // OfferType (enum)
 var OfferTypeAPI = {}
 OfferTypeAPI.listUrl = apiRoute + "offerTypes";
@@ -276,3 +366,51 @@ ActionTypeAPI.list = function(req, res) {
     }
 };
 module.exports.ActionType = ActionTypeAPI;
+
+// BillingOnset (enum)
+var BillingOnsetAPI = {}
+BillingOnsetAPI.listUrl = apiRoute + "billingOnsets";
+BillingOnsetAPI.list = function(req, res) {
+    if (req.user) {
+        BillingOnset.find({}, function(err, models) {
+            res.send(models);
+        });
+    }
+};
+module.exports.BillingOnset = BillingOnsetAPI;
+
+// BillingInterval (enum)
+var BillingIntervalAPI = {}
+BillingIntervalAPI.listUrl = apiRoute + "billingIntervals";
+BillingIntervalAPI.list = function(req, res) {
+    if (req.user) {
+        BillingInterval.find({}, function(err, models) {
+            res.send(models);
+        });
+    }
+};
+module.exports.BillingInterval = BillingIntervalAPI;
+
+// Recurrence (enum)
+var RecurrenceAPI = {}
+RecurrenceAPI.listUrl = apiRoute + "recurrences";
+RecurrenceAPI.list = function(req, res) {
+    if (req.user) {
+        Recurrence.find({}, function(err, models) {
+            res.send(models);
+        });
+    }
+};
+module.exports.Recurrence = RecurrenceAPI;
+
+// ProrationRule (enum)
+var ProrationRuleAPI = {}
+ProrationRuleAPI.listUrl = apiRoute + "prorationRules";
+ProrationRuleAPI.list = function(req, res) {
+    if (req.user) {
+        ProrationRule.find({}, function(err, models) {
+            res.send(models);
+        });
+    }
+};
+module.exports.ProrationRule = ProrationRuleAPI;

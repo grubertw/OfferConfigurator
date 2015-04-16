@@ -1,6 +1,6 @@
 //
 // file: BillingOnset.js
-// model: Charge
+// model: BillingOnset
 // 
 // Model indicating the billing onset of a charge within an offer.
 // e.x. Trial Start, Membership Start, 3B3S Delivered.

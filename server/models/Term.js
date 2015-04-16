@@ -13,14 +13,17 @@ var postSchema = new Schema({
     className                   : String,
     price                       : String,
     msrp                        : String,
-    frequency                   : String,
+    isTrial                     : Boolean,
     startDate                   : Date,         
     description                 : String,
-    billingPeriod               : String,   // Same as Recurrence.name
-    recurrence                  : {type: Number, ref: 'Recurrence'},
-    timespan                    : Number,
-    isTrial                     : Boolean,
+    billingOnset                : {type: Number, ref: 'BillingOnset'},
+    frequency                   : String,
+    billingPeriod               : String,
+    hasBillingInterval          : Boolean,
+    billingInterval             : {type: Number, ref: 'BillingInterval'}, // Every 'Month'
+    recurrence                  : {type: Number, ref: 'Recurrence'}, // For '2' months.
     prorationRule               : {type: Number, ref: 'ProrationRule'},
+    offer                       : {type: ObjectId, ref: 'Offer'}
 });
  
 module.exports = mongoose.model('Term', postSchema);

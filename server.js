@@ -45,6 +45,13 @@ app.post(api.Offer.createUrl, api.validateJWT, api.Offer.create);
 app.put(api.Offer.updateUrl, api.validateJWT, api.Offer.update);
 app.delete(api.Offer.deleteUrl, api.validateJWT, api.Offer.delete);
 
+// Term (list, show, create, update, delete)
+app.get(api.Term.listByOfferUrl, api.validateJWT, api.Term.listByOffer);
+app.get(api.Term.showUrl, api.validateJWT, api.Term.show);
+app.post(api.Term.createUrl, api.validateJWT, api.Term.create);
+app.put(api.Term.updateUrl, api.validateJWT, api.Term.update);
+app.delete(api.Term.deleteUrl, api.validateJWT, api.Term.delete);
+
 // OfferType (enum) (list)
 app.get(api.OfferType.listUrl, api.validateJWT, api.OfferType.list);
 
@@ -57,7 +64,17 @@ app.get(api.Benefit.listUrl, api.validateJWT, api.Benefit.list);
 // ActionType (enum) (list)
 app.get(api.ActionType.listUrl, api.validateJWT, api.ActionType.list);
 
+// BillingOnset (enum) (list)
+app.get(api.BillingOnset.listUrl, api.validateJWT, api.BillingOnset.list);
 
+// BillingInterval (enum) (list)
+app.get(api.BillingInterval.listUrl, api.validateJWT, api.BillingInterval.list);
+
+// Recurrence (enum) (list)
+app.get(api.Recurrence.listUrl, api.validateJWT, api.Recurrence.list);
+
+// ProrationRule (enum) (list)
+app.get(api.ProrationRule.listUrl, api.validateJWT, api.ProrationRule.list);
 
 // This should be configured onto '/' last, for serving up
 // file content within public.

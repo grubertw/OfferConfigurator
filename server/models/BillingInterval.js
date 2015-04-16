@@ -1,8 +1,7 @@
 //
-// file: Recurrence.js
-// model: Recurrence
-//
-// Limits number of BillingInterval(s).  1, 2, 3, Indefinite.
+// file: BillingInterval.js
+// model: BillingInterval
+// ex. Daily, Weekly, Monthly.
 //
 var mongoose = require('mongoose')
    ,Schema = mongoose.Schema
@@ -13,4 +12,4 @@ var postSchema = new Schema({
     name                        : String
 });
  
-module.exports = mongoose.model('Recurrence', postSchema);
+module.exports = mongoose.model('BillingInterval', postSchema);
