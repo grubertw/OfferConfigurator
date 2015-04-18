@@ -10,6 +10,10 @@ var Benefit = require(__dirname + '/models/Benefit.js');
 var OfferStatus = require(__dirname + '/models/OfferStatus.js');
 var OfferType = require(__dirname + '/models/OfferType.js');
 var ActionType = require(__dirname + '/models/ActionType.js');
+var BillingOnset = require(__dirname + '/models/BillingOnset.js');
+var BillingInterval = require(__dirname + '/models/BillingInterval.js');
+var Recurrence = require(__dirname + '/models/Recurrence.js');
+var ProrationRule = require(__dirname + '/models/ProrationRule.js');
 var User = require(__dirname + '/models/User.js');
 var PrivilegeType = require(__dirname + '/models/PrivilegeType.js');
 var Privilege = require(__dirname + '/models/Privilege.js');
@@ -19,7 +23,7 @@ module.exports.initDb = function () {
     //
     // Insert test benefits.
     //
-    Benefit.findOne({enumId: 1}, function (err, obj) {
+    Benefit.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
             new Benefit({_id: 1, className: "Benefit", name: "1B", description: "1B Report, Deliver After Registration"}).save();
             new Benefit({_id: 2, className: "Benefit", name: "Daily 1B", description: "Daily 1B Report, Post Trial, Auto-refresh on Login"}).save();
@@ -30,7 +34,7 @@ module.exports.initDb = function () {
     //
     // Insert test offer statuses.
     //
-    OfferStatus.findOne({enumId: 1}, function (err, obj) {
+    OfferStatus.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
             var unpublished = new OfferStatus({_id: 1, className: "OfferStatus", name: "Unpublished", nextAction: "Publish"});
             var published = new OfferStatus({_id: 2, className: "OfferStatus", name: "Published", nextAction: "Deactivate"});
@@ -49,7 +53,7 @@ module.exports.initDb = function () {
     //
     // Insert test OfferTypes.
     //
-    OfferType.findOne({enumId: 1}, function (err, obj) {
+    OfferType.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
             new OfferType({_id: 1, className: "OfferType", name: "New Subscription"}).save();
             new OfferType({_id: 2, className: "OfferType", name: "Transactional"}).save();
@@ -62,10 +66,59 @@ module.exports.initDb = function () {
     //
     // Insert action types.
     //
-    ActionType.findOne({enumId: 1}, function (err, obj) {
+    ActionType.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
             new ActionType({_id: 1, className: "ActionType", name: "Add"}).save();
             new ActionType({_id: 2, className: "ActionType", name: "Remove"}).save();
+        }
+    });
+    
+    //
+    // Insert BillingOnsets.
+    //
+    BillingOnset.findOne({_id: 1}, function (err, obj) {
+        if (obj == null) {
+            new BillingOnset({_id: 1, className: "BillingOnset", name: "Trial Start"}).save();
+            new BillingOnset({_id: 2, className: "BillingOnset", name: "Membership Start"}).save();
+            new BillingOnset({_id: 3, className: "BillingOnset", name: "3B3S Delivered"}).save();
+            new BillingOnset({_id: 4, className: "BillingOnset", name: "1B1S Delivered"}).save();
+            new BillingOnset({_id: 5, className: "BillingOnset", name: "Offer Accepted"}).save();
+            new BillingOnset({_id: 6, className: "BillingOnset", name: "End of Previous Charge"}).save();
+        }
+    });
+    
+    //
+    // Insert BillingIntervals.
+    //
+    BillingInterval.findOne({_id: 1}, function (err, obj) {
+        if (obj == null) {
+            new BillingInterval({_id: 1, className: "BillingInterval", name: "Daily"}).save();
+            new BillingInterval({_id: 2, className: "BillingInterval", name: "Weekly"}).save();
+            new BillingInterval({_id: 3, className: "BillingInterval", name: "Biweekly"}).save();
+            new BillingInterval({_id: 4, className: "BillingInterval", name: "Monthly"}).save();
+        }
+    });
+    
+    //
+    // Insert Recurrences.
+    //
+    Recurrence.findOne({_id: 1}, function (err, obj) {
+        if (obj == null) {
+            new Recurrence({_id: 0, className: "Recurrence", name: "Indefinite"}).save();
+            new Recurrence({_id: 1, className: "Recurrence", name: "1"}).save();
+            new Recurrence({_id: 2, className: "Recurrence", name: "2"}).save();
+            new Recurrence({_id: 3, className: "Recurrence", name: "3"}).save();
+            new Recurrence({_id: 4, className: "Recurrence", name: "4"}).save();
+        }
+    });
+    
+    //
+    // Insert action types.
+    //
+    ProrationRule.findOne({_id: 1}, function (err, obj) {
+        if (obj == null) {
+            new ProrationRule({_id: 1, className: "ProrationRule", name: "Bill difference immediately"}).save();
+            new ProrationRule({_id: 2, className: "ProrationRule", name: "Add to next bill"}).save();
         }
     });
     

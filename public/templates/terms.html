@@ -29,13 +29,15 @@
         <span>{{offer.name}}</span>
     </form>
     
-    <form class="form-horizontal" id="offerInputMainGroup">        
+    <form class="form-horizontal" id="termInputMainGroup">        
         <!-- offer.requiresPaymentAuthorization entry -->
         <div class="form-group">
-            <div class="checkbox col-sm-2">
-                <label>
-                    <input type="checkbox" ng-model="offer.requiresPaymentAuthorization">Requires Payment Authorization
-                </label>
+            <div class="col-sm-offset-2 col-sm-10">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="offer.requiresPaymentAuthorization">Requires Payment Authorization
+                    </label>
+                </div>
             </div>
         </div>
         
@@ -85,12 +87,12 @@
             <th class="editTableHeader" ng-show="editTerms">Edit</th>
             <th class="editTableHeader" ng-show="removeTerms">Remove</th>
         </tr></thead>
-        <tbody><tr ng-repeat="term in offer.terms">
+        <tbody><tr ng-repeat="term in terms">
             <td>{{term.name}}</td>
             <td>{{term.price}}</td>
             <td>{{term.msrp}}</td>
-            <td>{{term.startDate}}</td>
-            <td>{{term.recurrence.name}}</td>
+            <td>{{term.billingOnset.name}}</td>
+            <td>{{term.reccurrenceDescription}}</td>
             <td ng-show="editTerms">
                 <button type="button" class="btn btn-default">
                     <span class="glyphicon glyphicon-edit" aria-hidden="true" ui-sref="termDetails({offerId:offer._id})"></span>
@@ -114,9 +116,11 @@
         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove Term
     </button>
     
-    <button type="button" class="btn btn-default" id="save-button" ng-click="saveTerms()">
-        <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save
-    </button>
+    <div>
+        <button type="button" class="btn btn-default" id="save-button" ng-click="saveTerms()">
+            <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save
+        </button>
+    </div>
 </div>
     
 </div> <!-- END tab content -->

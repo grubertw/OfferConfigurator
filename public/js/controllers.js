@@ -95,9 +95,11 @@ function HeaderController($scope, AppState) {
 offerConfiguratorControllers.controller('PopulationsController', 
                                         ['$scope', 'Populations', 'Population', 'AppState',
                                          'OfferTypes', 'OfferStatuses', 'Benefits', 'ActionTypes',
+                                         'BillingOnsets', 'BillingIntervals', 'Recurrences', 'ProrationRules',
                                          PopulationsController]);
 function PopulationsController($scope, Populations, Population, AppState, 
-                               OfferTypes, OfferStatuses, Benefits, ActionTypes) {
+                               OfferTypes, OfferStatuses, Benefits, ActionTypes,
+                               BillingOnsets, BillingIntervals, Recurrences, ProrationRules) {
     // Prefetch enumerations from the server here
     // FIXME:
     // This should be done in the login handler function,
@@ -106,6 +108,10 @@ function PopulationsController($scope, Populations, Population, AppState,
     AppState.offerTypes = OfferTypes.list();
     AppState.offerStatuses = OfferStatuses.list();
     AppState.benefits = Benefits.list();
+    AppState.billingOnsets = BillingOnsets.list();
+    AppState.billingIntervals = BillingIntervals.list();
+    AppState.recurrences = Recurrences.list();
+    AppState.prorationRules = ProrationRules.list();
     
     // Fetch the populations from the server.
     $scope.populations = Populations.list();
@@ -351,8 +357,21 @@ offerConfiguratorControllers.controller('TermsController',
 function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
     // Lookup the offer by it's ID.
     $scope.offer = Offer.show({id:$stateParams.offerId});
-    
 
+    // Perform HTTP GET for all terms in the offer.
+    $scope.terms = Terms.listByOffer({offerId: $stateParams.offerId}, function (terms) {
+        for (var i=0; i<terms.length; i++) {
+            var term = terms[i];
+            
+            if (term.hasBillingInterval) {
+                term.reccurrenceDescription = term.billingInterval.name + " for " + term.recurrence.name + " billing period(s)";
+            }
+            else {
+                term.reccurrenceDescription = "None";
+            }
+        }
+    });
+    
     // Toggle edit terms.
     $scope.editTerms = false;
     // Toggle remove terms.
@@ -369,13 +388,33 @@ function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
         $scope.removeTerms = !$scope.removeTerms;
     };
     $scope.addTerm = function () {
+        // Create an term within the selected offer.
+        // Set default values for billingOnset, billingInterval, recurrence and prorationRule.
+        // All other fields can be modified on a REST update.
+        var defaultBillingOnset = AppState.getBillingOnset(1);
+        var defaultBillingInterval = AppState.getBillingInterval(1);
+        var defaultRecurrence = AppState.getRecurrence(1);
+        var defaultProrationRule = AppState.getProrationRule(1);
         
+        Term.create({offer:                  $scope.offer,
+                     billingOnset:           defaultBillingOnset,
+                     billingInterval:        defaultBillingInterval,
+                     recurrence:             defaultRecurrence,
+                     prorationRule:          defaultProrationRule},
+                     function (term) {
+            term.billingOnset = defaultBillingOnset;
+            term.billingInterval = defaultBillingInterval;
+            term.recurrence = defaultRecurrence;
+            term.prorationRule = defaultProrationRule;
+            term.reccurrenceDescription = term.billingInterval.name + " for " + term.recurrence.name + " billing period(s)";
+            $scope.terms.push(term);
+        });
     };
     $scope.removeTerm = function (term) {
+        Term.delete({id: term._id});
         
-        
-        var index = $scope.offer.terms.indexOf(term);
-        $scope.offer.terms.splice(index, 1);
+        var index = $scope.terms.indexOf(term);
+        $scope.terms.splice(index, 1);
     }
 
     $scope.saveTerms = function () {

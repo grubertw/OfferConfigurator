@@ -210,7 +210,7 @@ OfferAPI.update = function(req, res) {
                    description:                 req.body.description,
                    startDate:                   req.body.startDate,
                    endDate:                     req.body.endDate,
-                   requiresPaymentAuthorization:req.bosy.requiresPaymentAuthorization,
+                   requiresPaymentAuthorization:req.body.requiresPaymentAuthorization,
                    paymentAuthorizationAmount:  req.body.paymentAuthorizationAmount,
                    shortPaymentDisclosure:      req.body.shortPaymentDisclosure,
                    longPaymentDisclosure:       req.body.longPaymentDisclosure,
@@ -241,7 +241,7 @@ var TermAPI = {};
 TermAPI.listByOfferUrl = apiRoute + "terms/:offerId";
 TermAPI.listByOffer = function(req, res) {    
     if (req.user) {
-        Term.find({offer: req.params.offerId}).populate('recurrence offer').exec(function(err, models) {
+        Term.find({offer: req.params.offerId}).populate('billingOnset billingInterval recurrence offer').exec(function(err, models) {
             res.send(models);
         });
     }
@@ -250,7 +250,7 @@ TermAPI.listByOffer = function(req, res) {
 TermAPI.showUrl = apiRoute + "term/:id";
 TermAPI.show = function(req, res) {
     if (req.user) {
-        Term.findOne({ _id: req.params.id}).populate('recurrence prorationRule offer').exec(function(err, model) {
+        Term.findOne({ _id: req.params.id}).populate('billingOnset billingInterval recurrence prorationRule offer').exec(function(err, model) {
             res.json(model.toJSON());
         });
     }
