@@ -10,10 +10,14 @@ var offerConfiguratorServices = angular.module('offerConfiguratorServices', ['ng
 // Holds application specific state information.
 //
 offerConfiguratorServices.service('AppState', function () {
-    this.loggedIn = false;
     this.authToken = {};
     this.firstName = '';
     this.lastName = '';
+    
+    // Hides/shows various portions of the UI.
+    this.loggedIn = false;
+    this.displayTerms = true;
+    this.displayTermDetails = false;
     
     // Enumerated models requested from the server after successfull login.
     this.offerTypes = [];

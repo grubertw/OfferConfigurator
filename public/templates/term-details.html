@@ -1,0 +1,129 @@
+<!-- Edit details of a single term.
+  -->
+<form class="form-horizontal" id="termInputMainGroup">        
+    <!-- term.name entry -->
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Name</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" ng-model="term.name">
+        </div>
+    </div>
+    
+    <!-- term.price entry -->
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Amount</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" ng-model="term.price">
+        </div>
+    </div>
+    
+    <!-- term.msrp entry -->
+    <div class="form-group">
+        <label class="col-sm-2 control-label">MSRP</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" ng-model="term.msrp">
+        </div>
+    </div>
+    
+    <!-- term.isTrial entry -->
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="term.isTrial">Is Trial
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- term.billingOnset entry -->
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Billing Onset</label>
+        <div class="dropdown col-sm-2" id="billingOnset">
+          <button class="btn btn-default dropdown-toggle" type="button" id="billingOnsetButton" data-toggle="dropdown" aria-expanded="true">
+            {{term.billingOnset.name}}<span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="billingOnsetButton">
+            <li role="presentation" ng-repeat="billingOnset in billingOnsets" ng-click="setBillingOnset(billingOnset)">
+                {{billingOnset.name}}
+            </li>
+          </ul>
+        </div>
+    </div>
+
+    <!-- term.hasBillingInterval entry -->
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="term.hasBillingInterval">Has Billing Interval
+                </label>
+            </div>
+        </div>
+    </div>
+    
+    <!-- term.billingInterval entry -->
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Billing Interval</label>
+        <div class="dropdown col-sm-2" id="billingInterval">
+          <button class="btn btn-default dropdown-toggle" type="button" id="billingIntervalButton" data-toggle="dropdown" aria-expanded="true">
+            {{term.billingInterval.name}}<span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="billingIntervalButton">
+            <li role="presentation" ng-repeat="billingInterval in billingIntervals" ng-click="setBillingInterval(billingInterval)">
+                {{billingInterval.name}}
+            </li>
+          </ul>
+        </div>
+    </div>
+    
+    <!-- term.recurrence entry -->
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Recurrence</label>
+        <div class="dropdown col-sm-2" id="billingOnset">
+          <button class="btn btn-default dropdown-toggle" type="button" id="recurrenceButton" data-toggle="dropdown" aria-expanded="true">
+            {{term.recurrence.name}}<span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="recurrenceButton">
+            <li role="presentation" ng-repeat="recurrence in recurrences" ng-click="setRecurrence(recurrence)">
+                {{recurrence.name}}
+            </li>
+          </ul>
+        </div>
+    </div>
+    
+    <!-- term.prorationRule entry -->
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Proration Rule</label>
+        <div class="dropdown col-sm-2" id="prorationRule">
+          <button class="btn btn-default dropdown-toggle" type="button" id="prorationRuleButton" data-toggle="dropdown" aria-expanded="true">
+            {{term.prorationRule.name}}<span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="prorationRuleButton">
+            <li role="presentation" ng-repeat="prorationRule in prorationRules" ng-click="setProrationRule(prorationRule)">
+                {{prorationRule.name}}
+            </li>
+          </ul>
+        </div>
+    </div>
+    
+    <!-- term.startDate entry -->
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Start Date</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" ui-date="termStartDatePicker" ng-model="term.startDate">
+        </div>
+    </div>
+    
+    <!-- term.description entry -->
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Description</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" ng-model="term.description"></input>
+        </div>
+    </div>
+</form>
+
+<button type="button" class="btn btn-default" id="save-button" ng-click="saveTerm()">
+    <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save and Relist Terms 
+</button>

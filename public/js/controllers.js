@@ -78,11 +78,6 @@ offerConfiguratorControllers.controller('HeaderController', ['$scope', 'AppState
 function HeaderController($scope, AppState) {
     $scope.appState = AppState;
     
-    // Controls the search
-    // Also controls which tab panel is accessed, as a single
-    // tab name may go to multiple destinations (such as Details)
-    $scope.currentModelType = "Population";
-    
     // Initialize models.
     models.setApplicableRangesInDimensions();
 }
@@ -355,6 +350,10 @@ offerConfiguratorControllers.controller('TermsController',
                                          'Offer', 'Terms', 'Term',
                                          TermsController]);
 function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
+    AppState.displayTerms = true;
+    AppState.displayTermDetails = false;
+    $scope.appState = AppState;
+    
     // Lookup the offer by it's ID.
     $scope.offer = Offer.show({id:$stateParams.offerId});
 
@@ -419,5 +418,53 @@ function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
 
     $scope.saveTerms = function () {
         Offer.update({id: $scope.offer._id}, $scope.offer);
+    };
+}
+
+//
+// Controller for editing the details of a Term.
+// This controler modifies only direct attributes of the term.
+//
+offerConfiguratorControllers.controller('TermDetailsController', 
+                                        ['$scope',
+                                         '$state',
+                                         '$stateParams',
+                                         'AppState',
+                                         'Term',
+                                         TermDetailsController]);
+function TermDetailsController($scope, $state, $stateParams, AppState, Term) {
+    // Flip the appState into terms detail.
+    AppState.displayTerms = false;
+    AppState.displayTermDetails = true;
+    
+    // Lookup the term by it's ID.
+    $scope.term = Term.show({id:$stateParams.termId});
+    
+    // Get BillingOnset, BillingInterval, Recurrence, and ProrationRule enum listings (for dropdowns)
+    $scope.billingOnsets = AppState.billingOnsets;
+    $scope.billingIntervals = AppState.billingIntervals;
+    $scope.recurrences = AppState.recurrences;
+    $scope.prorationRules = AppState.prorationRules;
+    
+    //
+    // Supported opperations.
+    //
+    $scope.setBillingOnset = function (billingOnset) {
+        $scope.term.billingOnset = billingOnset;
+    };
+    $scope.setBillingInterval = function (billingInterval) {
+        $scope.term.billingInterval = billingInterval;
+    };
+    $scope.setRecurrence = function (recurrence) {
+        $scope.term.recurrence = recurrence;
+    };
+    $scope.setProrationRule = function (prorationRule) {
+        $scope.term.prorationRule = prorationRule;
+    };
+    $scope.saveTerm = function () {
+        Term.update({id: $scope.term._id}, $scope.term);
+        
+        // Go back to terms 
+        $state.go('terms', {offerId: $scope.term.offer._id}, {reload: true});
     };
 }

@@ -302,8 +302,6 @@ TermAPI.update = function(req, res) {
                    frequency:                   req.body.frequency,
                    billingPeriod:               req.body.billingPeriod}
         }, { upsert: true }, function(err, model) {
-            console.log("Update Offer  err=%s", err);
-            
             return res.json(model.toJSON());
         });
     }
