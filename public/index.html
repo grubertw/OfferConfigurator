@@ -71,6 +71,14 @@
                 <li><a id="logout" href="#" ng-click="logout()">Logout</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
+        
+        <ol class="breadcrumb">
+            <li><a href="#" ng-click="gotoPopulations()">Populations</a></li>
+            <li><a href="#" ng-click="gotoSelectedPopulation()" ng-show="appState.showGotoPopulation">Population</a></li>
+            <li><a href="#" ng-click="gotoOffers()" ng-show="appState.showGotoOffers">Offers</a></li>
+            <li><a href="#" ng-click="gotoSelectedOffer()" ng-show="appState.showGotoOffer">Offer</a></li>
+        </ol>
+        
         <form class="form-horizontal" role="search">
             <div class="form-group">
                 <label class="col-sm-1 control-label">Offer</label>

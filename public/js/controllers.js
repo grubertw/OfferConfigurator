@@ -83,7 +83,38 @@ function HeaderController($scope, $state, AppState) {
     // Initialize models.
     models.setApplicableRangesInDimensions();
     
+    //
+    // Navigation methods.
+    //
+    $scope.gotoPopulations = function () {
+        AppState.showGotoPopulation = false;
+        AppState.showGotoOffers = false;
+        AppState.showGotoOffer = false;
+        
+        $state.go('populations');
+    };
+    $scope.gotoSelectedPopulation = function () {
+        AppState.showGotoPopulation = false;
+        AppState.showGotoOffers = false;
+        AppState.showGotoOffer = false;
+        
+        $state.go('populationDetails', {populationId: AppState.currPopulation._id});
+    };
+    $scope.gotoOffers = function () {
+        AppState.showGotoOffers = false;
+        AppState.showGotoOffer = false;
+        
+        $state.go('offers', {populationId: AppState.currPopulation._id});
+    };
+    $scope.gotoSelectedOffer = function () {
+        AppState.showGotoOffer = false;
+        
+        $state.go('offerDetails', {offerId: AppState.currOffer._id});
+    };
+    
+    //
     // Logout by flipping the variables in the AppState.
+    //
     $scope.logout = function() {
         if (AppState.loggedIn) {
             AppState.loggedIn = false;
@@ -156,11 +187,15 @@ function PopulationsController($scope, Populations, Population, AppState,
 // a means to characterize a group of people.
 // 
 offerConfiguratorControllers.controller('PopulationDetailsController', 
-                                        ['$scope', '$stateParams', 'Population',
+                                        ['$scope', '$stateParams', 'AppState', 'Population',
                                          PopulationDetailsController]);
-function PopulationDetailsController($scope, $stateParams, Population) {
+function PopulationDetailsController($scope, $stateParams, AppState, Population) {
     // Lookup the population by it's ID.
     $scope.population = Population.show({id:$stateParams.populationId});
+    
+    // Update Application State.
+    AppState.currPopulation = $scope.population;
+    
     // Attach the segment expression object tree to the population.
     $scope.population.segmentExpression = models.getSegmentExpression($stateParams.populationId);
     
@@ -234,6 +269,9 @@ function OffersController($scope, $stateParams, AppState, Population, Offers, Of
     // Perform HTTP GET for all offers in the population.
     $scope.offers = Offers.listByPopulation({populationId: $stateParams.populationId});
     
+    // Update the Application State.
+    AppState.showGotoPopulation = true;
+    
     // Toggle remove/edit offers.
     $scope.editOffers = false;
     $scope.removeOffers = false;
@@ -287,6 +325,11 @@ function OfferDetailsController($scope, $stateParams, AppState, Offer) {
     // Lookup the offer by it's ID.
     $scope.offer = Offer.show({id:$stateParams.offerId});
     
+    // Update Application State.
+    AppState.currOffer = $scope.offer;
+    AppState.showGotoOffers = true;
+    AppState.showGotoOffer = false;
+    
     // Get OfferType and OfferStatus enum listings (for dropdowns)
     $scope.offerTypes = AppState.offerTypes;
     $scope.offerStatuses = AppState.offerStatuses;
@@ -322,6 +365,9 @@ offerConfiguratorControllers.controller('BenefitsController',
 function BenefitsController($scope, $stateParams, AppState, Offer) {
     // Lookup the offer by it's ID.
     $scope.offer = Offer.show({id:$stateParams.offerId});
+    
+    // Update the Application State.
+    AppState.showGotoOffer = true;
     
     // Get Benefits.
     $scope.benefits = AppState.benefits;
@@ -368,6 +414,9 @@ function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
     AppState.displayTerms = true;
     AppState.displayTermDetails = false;
     $scope.appState = AppState;
+    
+    // Update the Application State.
+    AppState.showGotoOffer = true;
     
     // Lookup the offer by it's ID.
     $scope.offer = Offer.show({id:$stateParams.offerId});

@@ -19,6 +19,16 @@ offerConfiguratorServices.service('AppState', function () {
     this.displayTerms = true;
     this.displayTermDetails = false;
     
+    this.showGotoPopulation = false;
+    this.showGotoOffers = false;
+    this.showGotoOffer = false;
+    
+    // Current selected population.
+    this.currPopulation = {};
+    
+    // Current selected offer.
+    this.currOffer = {};
+    
     // Enumerated models requested from the server after successfull login.
     this.offerTypes = [];
     this.offerStatuses = [];
