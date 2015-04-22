@@ -74,12 +74,27 @@ So59bMGeymGBjBaiBs2xcyZN3/Dm2Tc+FNjuwvtoAone7iuUaSqorlbdtIuvjv5D\
 //
 // Controls header information.
 // 
-offerConfiguratorControllers.controller('HeaderController', ['$scope', 'AppState', HeaderController]);
-function HeaderController($scope, AppState) {
+offerConfiguratorControllers.controller('HeaderController', 
+                                        ['$scope', '$state', 'AppState', 
+                                         HeaderController]);
+function HeaderController($scope, $state, AppState) {
     $scope.appState = AppState;
     
     // Initialize models.
     models.setApplicableRangesInDimensions();
+    
+    // Logout by flipping the variables in the AppState.
+    $scope.logout = function() {
+        if (AppState.loggedIn) {
+            AppState.loggedIn = false;
+            
+            // Clear the jwt token.
+            AppState.authToken = {}
+            
+            // Go back to the login page.
+            $state.go('login');
+        }
+    };
 }
 
 //
