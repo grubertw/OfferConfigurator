@@ -59,10 +59,13 @@ So59bMGeymGBjBaiBs2xcyZN3/Dm2Tc+FNjuwvtoAone7iuUaSqorlbdtIuvjv5D\
                 cert.readCertPEM(sCert);
 
                 var isVarified = jws.verifyJWSByKey(token.token, cert.subjectPublicKeyRSA);
-
+                var tokenInfo = JSON.parse(jws.parsedJWS.payloadS);
+                
                 if (isVarified == 1) {
                     AppState.loggedIn = true;
                     AppState.authToken = token.token;
+                    AppState.firstName = tokenInfo.firstName;
+                    AppState.lastName = tokenInfo.lastName;
                                         
                     $state.go('populations');
                 }
