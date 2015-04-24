@@ -153,7 +153,7 @@ OfferAPI.listByPopulation = function(req, res) {
 OfferAPI.showUrl = apiRoute + "offer/:id";
 OfferAPI.show = function(req, res) {
     if (req.user) {
-        Offer.findOne({ _id: req.params.id}).populate('offerType offerStatus population benefits').exec(function(err, model) {
+        Offer.findOne({ _id: req.params.id}).populate('offerType offerStatus population benefits terms').exec(function(err, model) {
             res.json(model.toJSON());
         });
     }
@@ -167,17 +167,15 @@ OfferAPI.create = function(req, res) {
         model.population = req.body.population._id; // An Offer must be created with a population, minimum.
         model.offerStatus = req.body.offerStatus._id;
         model.offerType = req.body.offerType._id;
-        model.description = "offer description here";
-        model.startDate = new Date();
-        model.endDate = new Date();
-        model.benefits = [];
-        model.terms = [];
+        model.description = req.body.description;
+        model.startDate = req.body.startDate;
+        model.endDate = req.body.endDate;
         
         // Fields that apply to all terms/changes
-        model.requiresPaymentAuthorization = false;
-        model.paymentAuthorizationAmount = "$0.0";
-        model.shortPaymentDisclosure = "short payment disclosure";
-        model.longPaymentDisclosure = "long payment disclosure";
+        model.requiresPaymentAuthorization = req.body.requiresPaymentAuthorization;
+        model.paymentAuthorizationAmount = req.body.paymentAuthorizationAmount;
+        model.shortPaymentDisclosure = req.body.shortPaymentDisclosure;
+        model.longPaymentDisclosure = req.body.longPaymentDisclosure;
         
         model.save(function(err) {
             res.json(model.toJSON());
@@ -265,18 +263,18 @@ TermAPI.create = function(req, res) {
         model.billingInterval = req.body.billingInterval._id;
         model.recurrence = req.body.recurrence._id;
         model.prorationRule = req.body.prorationRule._id;
-        model.isTrial = false;
-        model.description = "Term description here";
-        model.startDate = new Date();
-        model.price = "$0.99";
-        model.msrp = "";
-        model.hasBillingInterval = true;
+        model.isTrial = req.body.isTrial;
+        model.description = req.body.description;
+        model.startDate = req.body.startDate;
+        model.price = req.body.price;
+        model.msrp = req.body.msrp;
+        model.hasBillingInterval = req.body.hasBillingInterval;
         
         // Set this to recurrence.name
-        model.frequency = "Indefinite";
+        model.frequency = req.body.frequency;
         
         // Set this to billingInterval.name
-        model.billingPeriod = "Monthly";
+        model.billingPeriod = req.body.billingPeriod;
         
         model.save(function(err) {
             res.json(model.toJSON());

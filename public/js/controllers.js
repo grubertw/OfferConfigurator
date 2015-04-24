@@ -78,7 +78,7 @@ So59bMGeymGBjBaiBs2xcyZN3/Dm2Tc+FNjuwvtoAone7iuUaSqorlbdtIuvjv5D\
 // Controls header information.
 // 
 offerConfiguratorControllers.controller('HeaderController', 
-                                        ['$scope', '$state', 'AppState', 
+                                        ['$scope', '$state', 'AppState',
                                          HeaderController]);
 function HeaderController($scope, $state, AppState) {
     $scope.appState = AppState;
@@ -290,14 +290,23 @@ function OffersController($scope, $stateParams, AppState, Population, Offers, Of
     };
     $scope.addOffer = function () {
         // Create an offer within the selected population.
-        // Set default values for statusId and offerType.
+        // Set default values for offerStatus and offerType.
         // All other fields can be modified on a REST update.
         var defaultStatus = AppState.getOfferStatus(1);
         var defaultOfferType = AppState.getOfferType(1);
+        var now = new Date();
         
-        Offer.create({population:        $scope.population,
-                      offerStatus:       defaultStatus,
-                      offerType:         defaultOfferType},
+        Offer.create({population:                       $scope.population,
+                      offerStatus:                      defaultStatus,
+                      offerType:                        defaultOfferType,
+                      description:                      "offer description here",
+                      startDate:                        now,
+                      endDate:                          now,
+                      // The following attributes are part of the top-level fields of terms.
+                      requiresPaymentAuthorization:     false,
+                      paymentAuthorizationAmount:       "$0.0",
+                      shortPaymentDisclosure:           "short payment disclosure",
+                      longPaymentDisclosure:            "long payment disclosure"},
                      function (offer) {
             offer.offerStatus = defaultStatus;
             offer.offerType = defaultOfferType;
@@ -462,11 +471,21 @@ function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
         var defaultRecurrence = AppState.getRecurrence(1);
         var defaultProrationRule = AppState.getProrationRule(1);
         
-        Term.create({offer:                  $scope.offer,
-                     billingOnset:           defaultBillingOnset,
-                     billingInterval:        defaultBillingInterval,
-                     recurrence:             defaultRecurrence,
-                     prorationRule:          defaultProrationRule},
+        var now = new Date();
+        
+        Term.create({offer:                 $scope.offer,
+                     billingOnset:          defaultBillingOnset,
+                     billingInterval:       defaultBillingInterval,
+                     recurrence:            defaultRecurrence,
+                     prorationRule:         defaultProrationRule,
+                     isTrial:               false,
+                     description:           "Term description here",
+                     startDate:             now,
+                     price:                 "$0.99",
+                     msrp:                  "-",
+                     hasBillingInterval:    true,
+                     frequency:             "Indefinite",
+                     billingPeriod:         "Monthly"},
                      function (term) {
             term.billingOnset = defaultBillingOnset;
             term.billingInterval = defaultBillingInterval;
@@ -474,6 +493,10 @@ function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
             term.prorationRule = defaultProrationRule;
             term.reccurrenceDescription = term.billingInterval.name + " for " + term.recurrence.name + " billing period(s)";
             $scope.terms.push(term);
+            
+            // Add term reference to the offer.
+            $scope.offer.terms.push(term);
+            AppState.currOffer.terms.push(term);
         });
     };
     $scope.removeTerm = function (term) {
@@ -529,6 +552,12 @@ function TermDetailsController($scope, $state, $stateParams, AppState, Term) {
         $scope.term.prorationRule = prorationRule;
     };
     $scope.saveTerm = function () {
+        // Set the frequency from recurrence.name
+        $scope.term.frequency = $scope.term.recurrence.name;
+        
+        // Set the billingPeriod from billingInterval.name
+        $scope.term.billingPeriod = $scope.term.billingInterval.name;
+        
         Term.update({id: $scope.term._id}, $scope.term);
         
         // Go back to terms 
