@@ -119,15 +119,7 @@ function HeaderController($scope, $state, AppState) {
     // Logout by flipping the variables in the AppState.
     //
     $scope.logout = function() {
-        if (AppState.loggedIn) {
-            AppState.loggedIn = false;
-            
-            // Clear the jwt token.
-            AppState.authToken = {}
-            
-            // Go back to the login page.
-            $state.go('login');
-        }
+        AppState.logout();
     };
 }
 
@@ -194,7 +186,11 @@ offerConfiguratorControllers.controller('PopulationDetailsController',
                                          PopulationDetailsController]);
 function PopulationDetailsController($scope, $stateParams, AppState, Population) {
     // Lookup the population by it's ID.
-    $scope.population = Population.show({id:$stateParams.populationId});
+    $scope.population = Population.show({id:$stateParams.populationId}, function(d){}, function(err) {
+        if (err.status === 401) {
+            AppState.logout();
+        }
+    });
     
     // Update Application State.
     AppState.currPopulation = $scope.population;
@@ -270,7 +266,11 @@ function OffersController($scope, $stateParams, AppState, Population, Offers, Of
     // Lookup the population by it's ID.
     $scope.population = Population.show({id: $stateParams.populationId});
     // Perform HTTP GET for all offers in the population.
-    $scope.offers = Offers.listByPopulation({populationId: $stateParams.populationId});
+    $scope.offers = Offers.listByPopulation({populationId: $stateParams.populationId}, function(d){}, function(err) {
+        if (err.status === 401) {
+            AppState.logout();
+        }
+    });
     
     // Update the Application State.
     AppState.showGotoPopulation = true;
@@ -335,7 +335,11 @@ offerConfiguratorControllers.controller('OfferDetailsController',
                                          OfferDetailsController]);
 function OfferDetailsController($scope, $stateParams, AppState, Offer) {
     // Lookup the offer by it's ID.
-    $scope.offer = Offer.show({id:$stateParams.offerId});
+    $scope.offer = Offer.show({id:$stateParams.offerId}, function(d){}, function(err) {
+        if (err.status === 401) {
+            AppState.logout();
+        }
+    });
     
     // Update Application State.
     AppState.currOffer = $scope.offer;
@@ -376,7 +380,11 @@ offerConfiguratorControllers.controller('BenefitsController',
                                          BenefitsController]);
 function BenefitsController($scope, $stateParams, AppState, Offer) {
     // Lookup the offer by it's ID.
-    $scope.offer = Offer.show({id:$stateParams.offerId});
+    $scope.offer = Offer.show({id:$stateParams.offerId}, function(d){}, function(err) {
+        if (err.status === 401) {
+            AppState.logout();
+        }
+    });
     
     // Update the Application State.
     AppState.showGotoOffer = true;
@@ -431,7 +439,11 @@ function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
     AppState.showGotoOffer = true;
     
     // Lookup the offer by it's ID.
-    $scope.offer = Offer.show({id:$stateParams.offerId});
+    $scope.offer = Offer.show({id:$stateParams.offerId}, function(d){}, function(err) {
+        if (err.status === 401) {
+            AppState.logout();
+        }
+    });
 
     // Perform HTTP GET for all terms in the offer.
     $scope.terms = Terms.listByOffer({offerId: $stateParams.offerId}, function (terms) {
@@ -528,7 +540,11 @@ function TermDetailsController($scope, $state, $stateParams, AppState, Term) {
     AppState.displayTermDetails = true;
     
     // Lookup the term by it's ID.
-    $scope.term = Term.show({id:$stateParams.termId});
+    $scope.term = Term.show({id:$stateParams.termId}, function(d){}, function(err) {
+        if (err.status === 401) {
+            AppState.logout();
+        }
+    });
     
     // Get BillingOnset, BillingInterval, Recurrence, and ProrationRule enum listings (for dropdowns)
     $scope.billingOnsets = AppState.billingOnsets;

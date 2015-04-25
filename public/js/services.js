@@ -9,7 +9,7 @@ var offerConfiguratorServices = angular.module('offerConfiguratorServices', ['ng
 //
 // Holds application specific state information.
 //
-offerConfiguratorServices.service('AppState', function () {
+offerConfiguratorServices.service('AppState', ['$state', function ($state) {
     this.authToken = {};
     this.firstName = '';
     this.lastName = '';
@@ -134,7 +134,19 @@ offerConfiguratorServices.service('AppState', function () {
         return obj;
     };
     
-});
+    // Flip the application back to the logout state.
+    this.logout = function () {
+        if (this.loggedIn) {
+            this.loggedIn = false;
+            
+            // Clear the jwt token.
+            this.authToken = {}
+            
+            // Go back to the login page.
+            $state.go('login');
+        }
+    };
+}]);
 
 // Autheticate service.
 //

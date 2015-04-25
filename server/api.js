@@ -65,7 +65,7 @@ AuthenticateAPI.login = function(req, res) {
             if (obj.password == req.body.password) {
                 var token = jwt.sign({firstName:obj.firstName,
                                       lastName:obj.lastName}, 
-                                     privKey, {algorithm: 'RS256', expiresInMinutes:10});
+                                     privKey, {algorithm: 'RS256', expiresInMinutes:15});
                 
                 console.log("User password matches.  Sending JWT token: %s", token);
 
@@ -93,8 +93,10 @@ PopulationAPI.list = function(req, res) {
             res.send(models);
         });
     }
-    else 
+    else {
         console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
 };
 
 PopulationAPI.showUrl = apiRoute + "population/:id";
@@ -103,6 +105,10 @@ PopulationAPI.show = function(req, res) {
         Population.findOne({ _id: req.params.id }, function(err, model) {
             res.json(model.toJSON());
         });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
     }
 };
 
@@ -113,6 +119,10 @@ PopulationAPI.create = function(req, res) {
         var model = new Population({className: 'Population', name: 'New Population'});
         model.save();
         res.json(model.toJSON());
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
     }
 }
 
@@ -125,6 +135,10 @@ PopulationAPI.update = function(req, res) {
             return res.json(model.toJSON());
         });
     }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
 }
 
 PopulationAPI.deleteUrl = apiRoute + "population/:id";
@@ -133,6 +147,10 @@ PopulationAPI.delete = function(req, res) {
         Population.remove({ _id: req.params.id }, function(err) {
             res.json(true);
         });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
     }
 };
 module.exports.Population = PopulationAPI;
@@ -148,6 +166,10 @@ OfferAPI.listByPopulation = function(req, res) {
             res.send(models);
         });
     }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
 };
 
 OfferAPI.showUrl = apiRoute + "offer/:id";
@@ -156,6 +178,10 @@ OfferAPI.show = function(req, res) {
         Offer.findOne({ _id: req.params.id}).populate('offerType offerStatus population benefits terms').exec(function(err, model) {
             res.json(model.toJSON());
         });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
     }
 };
 
@@ -179,8 +205,11 @@ OfferAPI.create = function(req, res) {
         
         model.save(function(err) {
             res.json(model.toJSON());
-        });
-        
+        });   
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
     }
 }
 
@@ -220,6 +249,10 @@ OfferAPI.update = function(req, res) {
             return res.json(model.toJSON());
         });
     }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
 }
 
 OfferAPI.deleteUrl = apiRoute + "offer/:id";
@@ -228,6 +261,10 @@ OfferAPI.delete = function(req, res) {
         Offer.remove({ _id: req.params.id }, function(err) {
             res.json(true);
         });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
     }
 };
 module.exports.Offer = OfferAPI;
@@ -243,6 +280,10 @@ TermAPI.listByOffer = function(req, res) {
             res.send(models);
         });
     }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
 };
 
 TermAPI.showUrl = apiRoute + "term/:id";
@@ -251,6 +292,10 @@ TermAPI.show = function(req, res) {
         Term.findOne({ _id: req.params.id}).populate('billingOnset billingInterval recurrence prorationRule offer').exec(function(err, model) {
             res.json(model.toJSON());
         });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
     }
 };
 
@@ -280,6 +325,10 @@ TermAPI.create = function(req, res) {
             res.json(model.toJSON());
         });
     }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
 }
 
 TermAPI.updateUrl = apiRoute + "term/:id";
@@ -303,6 +352,10 @@ TermAPI.update = function(req, res) {
             return res.json(model.toJSON());
         });
     }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
 }
 
 TermAPI.deleteUrl = apiRoute + "term/:id";
@@ -311,6 +364,10 @@ TermAPI.delete = function(req, res) {
         Term.remove({ _id: req.params.id }, function(err) {
             res.json(true);
         });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
     }
 };
 module.exports.Term = TermAPI;
@@ -324,6 +381,10 @@ OfferTypeAPI.list = function(req, res) {
             res.send(models);
         });
     }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
 };
 module.exports.OfferType = OfferTypeAPI;
 
@@ -335,6 +396,10 @@ OfferStatusAPI.list = function(req, res) {
         OfferStatus.find({}, function(err, models) {
             res.send(models);
         });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
     }
 };
 module.exports.OfferStatus = OfferStatusAPI;
@@ -348,6 +413,10 @@ BenefitAPI.list = function(req, res) {
             res.send(models);
         });
     }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
 };
 module.exports.Benefit = BenefitAPI;
 
@@ -359,6 +428,10 @@ ActionTypeAPI.list = function(req, res) {
         ActionType.find({}, function(err, models) {
             res.send(models);
         });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
     }
 };
 module.exports.ActionType = ActionTypeAPI;
@@ -372,6 +445,10 @@ BillingOnsetAPI.list = function(req, res) {
             res.send(models);
         });
     }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
 };
 module.exports.BillingOnset = BillingOnsetAPI;
 
@@ -383,6 +460,10 @@ BillingIntervalAPI.list = function(req, res) {
         BillingInterval.find({}, function(err, models) {
             res.send(models);
         });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
     }
 };
 module.exports.BillingInterval = BillingIntervalAPI;
@@ -396,6 +477,10 @@ RecurrenceAPI.list = function(req, res) {
             res.send(models);
         });
     }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
 };
 module.exports.Recurrence = RecurrenceAPI;
 
@@ -407,6 +492,10 @@ ProrationRuleAPI.list = function(req, res) {
         ProrationRule.find({}, function(err, models) {
             res.send(models);
         });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
     }
 };
 module.exports.ProrationRule = ProrationRuleAPI;
