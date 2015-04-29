@@ -70,9 +70,31 @@
     margin-top: 50px;
 }
 
+#termsDiv {
+    padding: 10px;
+    border: solid;
+}
+
+#termDetailsDiv {
+    padding: 10px;
+    border: solid;
+}
+
 #termInputMainGroup {
-    margin-top: 25px;
-    margin-bottom: 50px;
+    margin-top: 15px;
+}
+
+#isReccuringCheckbox {
+    margin-left: 20px;
+}
+
+#termInputRecurrence {
+    margin-left: 20px;
+    margin-bottom: 30px;
+}
+
+#termInputRecurrenceForm {
+    margin-left: 10px;
 }
 
 #benefitButton {

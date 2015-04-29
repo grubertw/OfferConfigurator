@@ -35,7 +35,7 @@ offerConfiguratorServices.service('AppState', ['$state', function ($state) {
     this.benefits = [];
     this.billingOnsets = [];
     this.billingIntervals = [];
-    this.recurrences = [];
+    this.billingPeriods = [];
     this.prorationRules = [];
     
     //
@@ -108,11 +108,11 @@ offerConfiguratorServices.service('AppState', ['$state', function ($state) {
         return obj;
     };
     
-    // Get Recurrence by id
-    this.getRecurrence = function (id) {
+    // Get BillingPeriod by id
+    this.getBillingPeriod = function (id) {
         var obj = {};
-        for (var i = 0; i < this.recurrences.length; i++) {
-            var objIt = this.recurrences[i];
+        for (var i = 0; i < this.billingPeriods.length; i++) {
+            var objIt = this.billingPeriods[i];
             if (objIt._id == id) {
                 obj = objIt;
                 break;
@@ -279,10 +279,10 @@ offerConfiguratorServices.factory('BillingIntervals', ['$resource', 'AppState', 
 }]);
 
 //
-// Recurrence service (list)
+// BillingPeriod service (list)
 //
-offerConfiguratorServices.factory('Recurrences', ['$resource', 'AppState', function ($resource, AppState) {
-    return $resource(apiRoute+'recurrences', {}, 
+offerConfiguratorServices.factory('BillingPeriods', ['$resource', 'AppState', function ($resource, AppState) {
+    return $resource(apiRoute+'billingPeriods', {}, 
                      {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}});
 }]);
 

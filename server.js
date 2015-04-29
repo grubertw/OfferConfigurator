@@ -70,8 +70,8 @@ app.get(api.BillingOnset.listUrl, api.validateJWT, api.BillingOnset.list);
 // BillingInterval (enum) (list)
 app.get(api.BillingInterval.listUrl, api.validateJWT, api.BillingInterval.list);
 
-// Recurrence (enum) (list)
-app.get(api.Recurrence.listUrl, api.validateJWT, api.Recurrence.list);
+// BillingPeriod (enum) (list)
+app.get(api.BillingPeriod.listUrl, api.validateJWT, api.BillingPeriod.list);
 
 // ProrationRule (enum) (list)
 app.get(api.ProrationRule.listUrl, api.validateJWT, api.ProrationRule.list);

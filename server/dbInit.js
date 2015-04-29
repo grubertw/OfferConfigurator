@@ -12,7 +12,7 @@ var OfferType = require(__dirname + '/models/OfferType.js');
 var ActionType = require(__dirname + '/models/ActionType.js');
 var BillingOnset = require(__dirname + '/models/BillingOnset.js');
 var BillingInterval = require(__dirname + '/models/BillingInterval.js');
-var Recurrence = require(__dirname + '/models/Recurrence.js');
+var BillingPeriod = require(__dirname + '/models/BillingPeriod.js');
 var ProrationRule = require(__dirname + '/models/ProrationRule.js');
 var User = require(__dirname + '/models/User.js');
 var PrivilegeType = require(__dirname + '/models/PrivilegeType.js');
@@ -92,23 +92,23 @@ module.exports.initDb = function () {
     //
     BillingInterval.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            new BillingInterval({_id: 1, className: "BillingInterval", name: "Daily"}).save();
-            new BillingInterval({_id: 2, className: "BillingInterval", name: "Weekly"}).save();
-            new BillingInterval({_id: 3, className: "BillingInterval", name: "Biweekly"}).save();
-            new BillingInterval({_id: 4, className: "BillingInterval", name: "Monthly"}).save();
+            new BillingInterval({_id: 1, className: "BillingInterval", name: "days"}).save();
+            new BillingInterval({_id: 2, className: "BillingInterval", name: "weeks"}).save();
+            new BillingInterval({_id: 3, className: "BillingInterval", name: "months"}).save();
+            new BillingInterval({_id: 4, className: "BillingInterval", name: "years"}).save();
         }
     });
     
     //
-    // Insert Recurrences.
+    // Insert BillingPeriods.
     //
-    Recurrence.findOne({_id: 1}, function (err, obj) {
+    BillingPeriod.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            new Recurrence({_id: 0, className: "Recurrence", name: "Indefinite"}).save();
-            new Recurrence({_id: 1, className: "Recurrence", name: "1"}).save();
-            new Recurrence({_id: 2, className: "Recurrence", name: "2"}).save();
-            new Recurrence({_id: 3, className: "Recurrence", name: "3"}).save();
-            new Recurrence({_id: 4, className: "Recurrence", name: "4"}).save();
+            new BillingPeriod({_id: 0, className: "BillingPeriod", name: "Indefinite"}).save();
+            new BillingPeriod({_id: 1, className: "BillingPeriod", name: "1"}).save();
+            new BillingPeriod({_id: 2, className: "BillingPeriod", name: "2"}).save();
+            new BillingPeriod({_id: 3, className: "BillingPeriod", name: "3"}).save();
+            new BillingPeriod({_id: 4, className: "BillingPeriod", name: "4"}).save();
         }
     });
     

@@ -26,7 +26,7 @@ var Term = require(__dirname + '/models/Term.js');
 var Benefit = require(__dirname + '/models/Benefit.js');
 var BillingOnset = require(__dirname + '/models/BillingOnset.js');
 var BillingInterval = require(__dirname + '/models/BillingInterval.js');
-var Recurrence = require(__dirname + '/models/Recurrence.js');
+var BillingPeriod = require(__dirname + '/models/BillingPeriod.js');
 var ProrationRule = require(__dirname + '/models/ProrationRule.js');
 var ActionType = require(__dirname + '/models/ActionType.js');
 
@@ -198,6 +198,7 @@ OfferAPI.create = function(req, res) {
         model.endDate = req.body.endDate;
         
         // Fields that apply to all terms/changes
+        model.hasTrial = req.body.hasTrial;
         model.requiresPaymentAuthorization = req.body.requiresPaymentAuthorization;
         model.paymentAuthorizationAmount = req.body.paymentAuthorizationAmount;
         model.shortPaymentDisclosure = req.body.shortPaymentDisclosure;
@@ -237,6 +238,7 @@ OfferAPI.update = function(req, res) {
                    description:                 req.body.description,
                    startDate:                   req.body.startDate,
                    endDate:                     req.body.endDate,
+                   hasTrial:                    req.body.hasTrial,
                    requiresPaymentAuthorization:req.body.requiresPaymentAuthorization,
                    paymentAuthorizationAmount:  req.body.paymentAuthorizationAmount,
                    shortPaymentDisclosure:      req.body.shortPaymentDisclosure,
@@ -276,7 +278,7 @@ var TermAPI = {};
 TermAPI.listByOfferUrl = apiRoute + "terms/:offerId";
 TermAPI.listByOffer = function(req, res) {    
     if (req.user) {
-        Term.find({offer: req.params.offerId}).populate('billingOnset billingInterval recurrence offer').exec(function(err, models) {
+        Term.find({offer: req.params.offerId}).populate('billingOnset billingInterval billingPeriod offer').exec(function(err, models) {
             res.send(models);
         });
     }
@@ -289,7 +291,7 @@ TermAPI.listByOffer = function(req, res) {
 TermAPI.showUrl = apiRoute + "term/:id";
 TermAPI.show = function(req, res) {
     if (req.user) {
-        Term.findOne({ _id: req.params.id}).populate('billingOnset billingInterval recurrence prorationRule offer').exec(function(err, model) {
+        Term.findOne({ _id: req.params.id}).populate('billingOnset billingInterval billingPeriod prorationRule offer').exec(function(err, model) {
             res.json(model.toJSON());
         });
     }
@@ -306,7 +308,7 @@ TermAPI.create = function(req, res) {
         model.offer = req.body.offer._id; // A Term must be created with an offer, minimum.
         model.billingOnset = req.body.billingOnset._id;
         model.billingInterval = req.body.billingInterval._id;
-        model.recurrence = req.body.recurrence._id;
+        model.billingPeriod = req.body.billingPeriod._id;
         model.prorationRule = req.body.prorationRule._id;
         model.isTrial = req.body.isTrial;
         model.description = req.body.description;
@@ -314,12 +316,9 @@ TermAPI.create = function(req, res) {
         model.price = req.body.price;
         model.msrp = req.body.msrp;
         model.hasBillingInterval = req.body.hasBillingInterval;
+        model.billingTimespan = req.body.billingTimespan;
         
-        // Set this to recurrence.name
         model.frequency = req.body.frequency;
-        
-        // Set this to billingInterval.name
-        model.billingPeriod = req.body.billingPeriod;
         
         model.save(function(err) {
             res.json(model.toJSON());
@@ -338,7 +337,7 @@ TermAPI.update = function(req, res) {
             $set: {name:                        req.body.name, 
                    billingOnset:                req.body.billingOnset._id, 
                    billingInterval:             req.body.billingInterval._id,
-                   recurrence:                  req.body.recurrence._id,
+                   billingPeriod:               req.body.billingPeriod._id,
                    prorationRule:               req.body.prorationRule._id,
                    isTrial:                     req.body.isTrial,
                    description:                 req.body.description,
@@ -346,8 +345,8 @@ TermAPI.update = function(req, res) {
                    price:                       req.body.price,
                    msrp:                        req.body.msrp,
                    hasBillingInterval:          req.body.hasBillingInterval,
-                   frequency:                   req.body.frequency,
-                   billingPeriod:               req.body.billingPeriod}
+                   billingTimespan:             req.body.billingTimespan,
+                   frequency:                   req.body.frequency}
         }, { upsert: true }, function(err, model) {
             return res.json(model.toJSON());
         });
@@ -468,12 +467,12 @@ BillingIntervalAPI.list = function(req, res) {
 };
 module.exports.BillingInterval = BillingIntervalAPI;
 
-// Recurrence (enum)
-var RecurrenceAPI = {}
-RecurrenceAPI.listUrl = apiRoute + "recurrences";
-RecurrenceAPI.list = function(req, res) {
+// BillingPeriod (enum)
+var BillingPeriodAPI = {}
+BillingPeriodAPI.listUrl = apiRoute + "billingPeriods";
+BillingPeriodAPI.list = function(req, res) {
     if (req.user) {
-        Recurrence.find({}, function(err, models) {
+        BillingPeriod.find({}, function(err, models) {
             res.send(models);
         });
     }
@@ -482,7 +481,7 @@ RecurrenceAPI.list = function(req, res) {
         res.status(401).send('JWT token is invalid');
     }
 };
-module.exports.Recurrence = RecurrenceAPI;
+module.exports.BillingPeriod = BillingPeriodAPI;
 
 // ProrationRule (enum)
 var ProrationRuleAPI = {}

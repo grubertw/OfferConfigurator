@@ -18,10 +18,10 @@ var postSchema = new Schema({
     description                 : String,
     billingOnset                : {type: Number, ref: 'BillingOnset'},
     frequency                   : String,
-    billingPeriod               : String,
     hasBillingInterval          : Boolean,
+    billingTimespan             : Number,
     billingInterval             : {type: Number, ref: 'BillingInterval'}, // Every 'Month'
-    recurrence                  : {type: Number, ref: 'Recurrence'}, // For '2' months.
+    billingPeriod               : {type: Number, ref: 'BillingPeriod'}, // For '2' months.
     prorationRule               : {type: Number, ref: 'ProrationRule'},
     offer                       : {type: ObjectId, ref: 'Offer'}
 });

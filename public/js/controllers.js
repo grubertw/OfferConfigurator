@@ -131,11 +131,11 @@ function HeaderController($scope, $state, AppState) {
 offerConfiguratorControllers.controller('PopulationsController', 
                                         ['$scope', 'Populations', 'Population', 'AppState',
                                          'OfferTypes', 'OfferStatuses', 'Benefits', 'ActionTypes',
-                                         'BillingOnsets', 'BillingIntervals', 'Recurrences', 'ProrationRules',
+                                         'BillingOnsets', 'BillingIntervals', 'BillingPeriods', 'ProrationRules',
                                          PopulationsController]);
 function PopulationsController($scope, Populations, Population, AppState, 
                                OfferTypes, OfferStatuses, Benefits, ActionTypes,
-                               BillingOnsets, BillingIntervals, Recurrences, ProrationRules) {
+                               BillingOnsets, BillingIntervals, BillingPeriods, ProrationRules) {
     // Prefetch enumerations from the server here
     // FIXME:
     // This should be done in the login handler function,
@@ -146,7 +146,7 @@ function PopulationsController($scope, Populations, Population, AppState,
     AppState.benefits = Benefits.list();
     AppState.billingOnsets = BillingOnsets.list();
     AppState.billingIntervals = BillingIntervals.list();
-    AppState.recurrences = Recurrences.list();
+    AppState.billingPeriods = BillingPeriods.list();
     AppState.prorationRules = ProrationRules.list();
     
     // Fetch the populations from the server.
@@ -303,6 +303,7 @@ function OffersController($scope, $stateParams, AppState, Population, Offers, Of
                       startDate:                        now,
                       endDate:                          now,
                       // The following attributes are part of the top-level fields of terms.
+                      hasTrial:                         false,
                       requiresPaymentAuthorization:     false,
                       paymentAuthorizationAmount:       "$0.0",
                       shortPaymentDisclosure:           "short payment disclosure",
@@ -451,7 +452,7 @@ function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
             var term = terms[i];
             
             if (term.hasBillingInterval) {
-                term.reccurrenceDescription = term.billingInterval.name + " for " + term.recurrence.name + " billing period(s)";
+                term.reccurrenceDescription = "Every " + term.billingTimespan + " " + term.billingInterval.name + " for " + term.billingPeriod.name + " billing period(s)";
             }
             else {
                 term.reccurrenceDescription = "None";
@@ -480,7 +481,7 @@ function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
         // All other fields can be modified on a REST update.
         var defaultBillingOnset = AppState.getBillingOnset(1);
         var defaultBillingInterval = AppState.getBillingInterval(1);
-        var defaultRecurrence = AppState.getRecurrence(1);
+        var defaultBillingPeriod = AppState.getBillingPeriod(1);
         var defaultProrationRule = AppState.getProrationRule(1);
         
         var now = new Date();
@@ -488,7 +489,7 @@ function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
         Term.create({offer:                 $scope.offer,
                      billingOnset:          defaultBillingOnset,
                      billingInterval:       defaultBillingInterval,
-                     recurrence:            defaultRecurrence,
+                     billingPeriod:         defaultBillingPeriod,
                      prorationRule:         defaultProrationRule,
                      isTrial:               false,
                      description:           "Term description here",
@@ -496,14 +497,14 @@ function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
                      price:                 "$0.99",
                      msrp:                  "-",
                      hasBillingInterval:    true,
-                     frequency:             "Indefinite",
-                     billingPeriod:         "Monthly"},
+                     billingTimespan:       1,
+                     frequency:             "Indefinite"},
                      function (term) {
             term.billingOnset = defaultBillingOnset;
             term.billingInterval = defaultBillingInterval;
-            term.recurrence = defaultRecurrence;
+            term.billingPeriod = defaultBillingPeriod;
             term.prorationRule = defaultProrationRule;
-            term.reccurrenceDescription = term.billingInterval.name + " for " + term.recurrence.name + " billing period(s)";
+            term.reccurrenceDescription = "Every " + term.billingTimespan + " " + term.billingInterval.name + " for " + term.billingPeriod.name + " billing period(s)";
             $scope.terms.push(term);
             
             // Add term reference to the offer.
@@ -549,7 +550,7 @@ function TermDetailsController($scope, $state, $stateParams, AppState, Term) {
     // Get BillingOnset, BillingInterval, Recurrence, and ProrationRule enum listings (for dropdowns)
     $scope.billingOnsets = AppState.billingOnsets;
     $scope.billingIntervals = AppState.billingIntervals;
-    $scope.recurrences = AppState.recurrences;
+    $scope.billingPeriods = AppState.billingPeriods;
     $scope.prorationRules = AppState.prorationRules;
     
     //
@@ -561,18 +562,15 @@ function TermDetailsController($scope, $state, $stateParams, AppState, Term) {
     $scope.setBillingInterval = function (billingInterval) {
         $scope.term.billingInterval = billingInterval;
     };
-    $scope.setRecurrence = function (recurrence) {
-        $scope.term.recurrence = recurrence;
+    $scope.setBillingPeriod = function (billingPeriod) {
+        $scope.term.billingPeriod = billingPeriod;
     };
     $scope.setProrationRule = function (prorationRule) {
         $scope.term.prorationRule = prorationRule;
     };
     $scope.saveTerm = function () {
-        // Set the frequency from recurrence.name
-        $scope.term.frequency = $scope.term.recurrence.name;
-        
-        // Set the billingPeriod from billingInterval.name
-        $scope.term.billingPeriod = $scope.term.billingInterval.name;
+        // Set the frequency from billingPeriod.name
+        $scope.term.frequency = $scope.term.billingPeriod.name;
         
         Term.update({id: $scope.term._id}, $scope.term);
         

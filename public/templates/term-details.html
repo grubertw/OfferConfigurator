@@ -50,48 +50,64 @@
           </ul>
         </div>
     </div>
+</form>
 
-    <!-- term.hasBillingInterval entry -->
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" ng-model="term.hasBillingInterval">Has Billing Interval
-                </label>
+<!-- term.hasBillingInterval entry -->
+<div class="checkbox" id="isReccuringCheckbox">
+    <label>
+        <input type="checkbox" ng-model="term.hasBillingInterval">Is Recurring
+    </label>
+</div>
+
+<div id="termInputRecurrence" ng-show="term.hasBillingInterval">
+    <h3>Recurrence</h3>    
+
+    <form class="form-inline" id="termInputRecurrenceForm">
+        <!-- term.billingTimespan entry -->
+        <div class="form-group">
+            <label for="billingTimespan">Every</label>
+            <input type="number" class="form-control" id="billingTimespan" placeholder="1" ng-model="term.billingTimespan">
+        </div>
+
+        <!-- term.billingInterval entry -->
+        <div class="form-group">
+            <div class="dropdown" id="billingInterval">
+              <button class="btn btn-default dropdown-toggle" type="button" id="billingIntervalButton" data-toggle="dropdown" aria-expanded="true">
+                {{term.billingInterval.name}}<span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="billingIntervalButton">
+                <li role="presentation" ng-repeat="billingInterval in billingIntervals" ng-click="setBillingInterval(billingInterval)">
+                    {{billingInterval.name}}
+                </li>
+              </ul>
             </div>
         </div>
-    </div>
-    
-    <!-- term.billingInterval entry -->
-    <div class="form-group">
-        <label class="col-sm-2 control-label">Billing Interval</label>
-        <div class="dropdown col-sm-2" id="billingInterval">
-          <button class="btn btn-default dropdown-toggle" type="button" id="billingIntervalButton" data-toggle="dropdown" aria-expanded="true">
-            {{term.billingInterval.name}}<span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="billingIntervalButton">
-            <li role="presentation" ng-repeat="billingInterval in billingIntervals" ng-click="setBillingInterval(billingInterval)">
-                {{billingInterval.name}}
-            </li>
-          </ul>
+
+        <div class="form-group">
+            <label>for</label>
         </div>
-    </div>
-    
-    <!-- term.recurrence entry -->
-    <div class="form-group">
-        <label class="col-sm-2 control-label">Recurrence</label>
-        <div class="dropdown col-sm-2" id="billingOnset">
-          <button class="btn btn-default dropdown-toggle" type="button" id="recurrenceButton" data-toggle="dropdown" aria-expanded="true">
-            {{term.recurrence.name}}<span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="recurrenceButton">
-            <li role="presentation" ng-repeat="recurrence in recurrences" ng-click="setRecurrence(recurrence)">
-                {{recurrence.name}}
-            </li>
-          </ul>
+
+        <!-- term.billingPeriod entry -->
+        <div class="form-group">
+            <div class="dropdown" id="billingPeriod">
+              <button class="btn btn-default dropdown-toggle" type="button" id="billingPeriodButton" data-toggle="dropdown" aria-expanded="true">
+                {{term.billingPeriod.name}}<span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="billingPeriodButton">
+                <li role="presentation" ng-repeat="billingPeriod in billingPeriods" ng-click="setBillingPeriod(billingPeriod)">
+                    {{billingPeriod.name}}
+                </li>
+              </ul>
+            </div>
         </div>
-    </div>
+
+        <div class="form-group">
+            <label>billing period(s)</label>
+        </div>
+    </form>
+</div>
     
+<form class="form-horizontal" id="termInputMainGroup">
     <!-- term.prorationRule entry -->
     <div class="form-group">
         <label class="col-sm-2 control-label">Proration Rule</label>
@@ -104,14 +120,6 @@
                 {{prorationRule.name}}
             </li>
           </ul>
-        </div>
-    </div>
-    
-    <!-- term.startDate entry -->
-    <div class="form-group">
-        <label class="col-sm-2 control-label">Start Date</label>
-        <div class="col-sm-2">
-            <input type="text" class="form-control" ui-date="termStartDatePicker" ng-model="term.startDate">
         </div>
     </div>
     

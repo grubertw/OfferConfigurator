@@ -20,6 +20,7 @@ var Offer = new Schema({
     offerStatus                 : {type: Number, ref: 'OfferStatus'},
     startDate                   : Date,
     endDate                     : Date,
+    hasTrial                    : Boolean,
     requiresPaymentAuthorization: Boolean,
     paymentAuthorizationAmount  : String,
     shortPaymentDisclosure      : String,
