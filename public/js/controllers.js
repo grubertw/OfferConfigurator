@@ -132,10 +132,11 @@ offerConfiguratorControllers.controller('PopulationsController',
                                         ['$scope', 'Populations', 'Population', 'AppState',
                                          'OfferTypes', 'OfferStatuses', 'Benefits', 'ActionTypes',
                                          'BillingOnsets', 'BillingIntervals', 'BillingPeriods', 'ProrationRules',
+                                         'Placements',
                                          PopulationsController]);
 function PopulationsController($scope, Populations, Population, AppState, 
                                OfferTypes, OfferStatuses, Benefits, ActionTypes,
-                               BillingOnsets, BillingIntervals, BillingPeriods, ProrationRules) {
+                               BillingOnsets, BillingIntervals, BillingPeriods, ProrationRules, Placements) {
     // Prefetch enumerations from the server here
     // FIXME:
     // This should be done in the login handler function,
@@ -148,6 +149,7 @@ function PopulationsController($scope, Populations, Population, AppState,
     AppState.billingIntervals = BillingIntervals.list();
     AppState.billingPeriods = BillingPeriods.list();
     AppState.prorationRules = ProrationRules.list();
+    AppState.placements = Placements.list();
     
     // Fetch the populations from the server.
     $scope.populations = Populations.list();
@@ -576,5 +578,70 @@ function TermDetailsController($scope, $state, $stateParams, AppState, Term) {
         
         // Go back to terms 
         $state.go('terms', {offerId: $scope.term.offer._id}, {reload: true});
+    };
+}
+
+//
+// Controller for adding/removing merchendising to an offer.
+//
+offerConfiguratorControllers.controller('TermsController', 
+                                        ['$scope', 
+                                         '$stateParams',
+                                         'AppState',
+                                         'Offer', 'Merchendisings', 'Merchendising',
+                                         OfferMerchandisingController]);
+function OfferMerchandisingController($scope, $stateParams, AppState, Offer, Merchendisings, Merchendising) {
+    $scope.appState = AppState;
+    
+    // Update the Application State.
+    AppState.showGotoOffer = true;
+    
+    // Lookup the offer by it's ID.
+    $scope.offer = Offer.show({id:$stateParams.offerId}, function(d){}, function(err) {
+        if (err.status === 401) {
+            AppState.logout();
+        }
+    });
+
+    // Perform HTTP GET for all merchendising in the offer.
+    $scope.merchendisings = Merchendisings.listByOffer({offerId: $stateParams.offerId});
+    
+    // Toggle remove merchendising.
+    $scope.removeMerchendising = false;
+
+    
+    //
+    // Supported opperations.
+    //
+    $scope.toggleRemoveMerchendising = function () {
+        $scope.removeMerchendising = !$scope.removeMerchendising;
+    };
+    $scope.addMerchendising = function () {
+        var defaultPlacement = AppState.getPlacement(1);
+        
+        Merchendising.create({offer:                 $scope.offer,
+                              placement:             defaultPlacement,
+                              dataType:              2,
+                              value:                 "Custom text here",
+                              notes:                 "notes here"},
+                             function (merchendising) {
+            merchendising.placement = defaultPlacement;
+            
+            $scope.merchendisings.push(merchendising);
+        });
+    };
+    $scope.removeMerchendising = function (merchendising) {
+        Merchendising.delete({id: merchendising._id});
+        
+        var index = $scope.merchendisings.indexOf(merchendising);
+        $scope.merchendisings.splice(index, 1);
+    }
+
+    $scope.saveMerchendising = function () {
+        for (var i=0; i<$scope.merchendisings.length; i++) {
+            var merch = $scope.merchendisings[i];
+            
+            Merchendising.update({id: merch._id}, merch);
+        }
     };
 }

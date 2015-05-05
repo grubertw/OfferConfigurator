@@ -37,6 +37,7 @@ offerConfiguratorServices.service('AppState', ['$state', function ($state) {
     this.billingIntervals = [];
     this.billingPeriods = [];
     this.prorationRules = [];
+    this.placements = [];
     
     //
     // Getters on enumerated models.
@@ -126,6 +127,19 @@ offerConfiguratorServices.service('AppState', ['$state', function ($state) {
         var obj = {};
         for (var i = 0; i < this.prorationRules.length; i++) {
             var objIt = this.prorationRules[i];
+            if (objIt._id == id) {
+                obj = objIt;
+                break;
+            }
+        }
+        return obj;
+    };
+    
+    // Get Placements by id
+    this.getPlacement = function (id) {
+        var obj = {};
+        for (var i = 0; i < this.placements.length; i++) {
+            var objIt = this.placements[i];
             if (objIt._id == id) {
                 obj = objIt;
                 break;
@@ -231,6 +245,29 @@ offerConfiguratorServices.factory('Term', ['$resource', 'AppState', function ($r
 }]);
 
 //
+// Merchendising service (list by offer)
+//
+offerConfiguratorServices.factory('Merchendisings', ['$resource', 'AppState', function ($resource, AppState) {
+    return $resource(apiRoute+'terms/:offerId', {}, 
+                     {listByOffer: {method: 'GET', isArray: true, params: {offerId: '@offerId'}, headers: {'authorization': 'Bearer ' + AppState.authToken}}},
+                     {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}}
+                    );
+}]);
+
+//
+// Merchendising service (show, create, update, delete).
+//
+offerConfiguratorServices.factory('Merchendising', ['$resource', 'AppState', function ($resource, AppState) {
+    var httpHeaders = {'authorization': 'Bearer ' + AppState.authToken};
+    
+    return $resource(apiRoute+'merchendising/:id', {id:'@id'},
+                     {show:     {method: 'GET', headers: httpHeaders},
+                      create:   {method: 'POST', headers: httpHeaders},
+                      update:   {method: 'PUT', headers: httpHeaders},
+                      delete:   {method: 'DELETE', headers: httpHeaders}});
+}]);
+
+//
 // OfferType service (list)
 //
 offerConfiguratorServices.factory('OfferTypes', ['$resource', 'AppState', function ($resource, AppState) {
@@ -291,5 +328,13 @@ offerConfiguratorServices.factory('BillingPeriods', ['$resource', 'AppState', fu
 //
 offerConfiguratorServices.factory('ProrationRules', ['$resource', 'AppState', function ($resource, AppState) {
     return $resource(apiRoute+'prorationRules', {}, 
+                     {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}});
+}]);
+
+//
+// Placement service (list)
+//
+offerConfiguratorServices.factory('Placements', ['$resource', 'AppState', function ($resource, AppState) {
+    return $resource(apiRoute+'placements', {}, 
                      {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}});
 }]);

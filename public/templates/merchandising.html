@@ -1,44 +1,23 @@
 <!-- Tabs for navigating into offers.
   -- Shown when an offer is selected for editing.
   -->
-<div role="tabpanel" ng-show="showOffersTabs">  
+<div role="tabpanel">  
 <ul class="nav nav-tabs" role="tablist" id="offerTabs">
-    <li id="offerDetailsTab" role="presentation" class="active">
-        <a href="#offerDetails" role="tab" data-toggle="tab">Details</a>
+    <li id="offerDetailsTab" role="presentation">
+        <a ui-sref="offerDetails({offerId:offer._id})" role="tab" data-toggle="tab">Details</a>
     </li>
     <li id="benefitsTab" role="presentation">
-        <a href="#benefits" role="tab" data-toggle="tab">Benefits</a>
+        <a ui-sref="benefits({offerId:offer._id})" role="tab" data-toggle="tab">Benefits</a>
     </li>
     <li id="termsTab" role="presentation">
-        <a href="#terms" role="tab" data-toggle="tab">Terms</a>
+        <a ui-sref="terms({offerId:offer._id})" role="tab" data-toggle="tab">Terms</a>
     </li>
-    <li id="merchandisingTab" role="presentation">
+    <li id="merchandisingTab" role="presentation" class="active">
         <a href="#merchandising" role="tab" data-toggle="tab">Merchandising</a>
     </li>
 </ul>
     
 <div class="tab-content">    
-<!-- Panel for viewing and selecting offers to edit.
-  -->
-<div role="tabpanel" class="tab-pane" id="offerDetails">
-    <!-- Template contained within offer-details.html -->
-    <div ui-view="offers.offerDetails"></div>
-</div>
-    
-<!-- Panel for adding/removing offers.
-  -->
-<div role="tabpanel" class="tab-pane" id="benefits">
-    <!-- Template contained within benefits.html -->
-    <div ui-view="offers.offerDetails.benefits"></div>
-</div>
-    
-<!-- Panel for modifying terms.
-  -->
-<div role="tabpanel" class="tab-pane" id="terms">
-    <!-- Template contained within terms.html -->
-    <div ui-view="offers.offerDetails.terms"></div>
-</div>
-    
 <!-- Panel modifying merchandizing.
   -- Works like a key/value pair editor to storing text 
   -- and image assets.

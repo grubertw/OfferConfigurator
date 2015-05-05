@@ -24,10 +24,12 @@ var OfferStatus = require(__dirname + '/models/OfferStatus.js');
 var Offer = require(__dirname + '/models/Offer.js');
 var Term = require(__dirname + '/models/Term.js');
 var Benefit = require(__dirname + '/models/Benefit.js');
+var Merchendising = require(__dirname + '/models/Merchendising.js');
 var BillingOnset = require(__dirname + '/models/BillingOnset.js');
 var BillingInterval = require(__dirname + '/models/BillingInterval.js');
 var BillingPeriod = require(__dirname + '/models/BillingPeriod.js');
 var ProrationRule = require(__dirname + '/models/ProrationRule.js');
+var Placement = require(__dirname + '/models/Placement.js');
 var ActionType = require(__dirname + '/models/ActionType.js');
 
 // Load private RSA key for creation of the JWT token.
@@ -371,6 +373,89 @@ TermAPI.delete = function(req, res) {
 };
 module.exports.Term = TermAPI;
 
+//
+// Merchendising CRUD operations.
+//
+var MerchendisingAPI = {};
+MerchendisingAPI.listByOfferUrl = apiRoute + "merchendisings/:offerId";
+MerchendisingAPI.listByOffer = function(req, res) {    
+    if (req.user) {
+        Merchendising.find({offer: req.params.offerId}).populate('placement offer').exec(function(err, models) {
+            res.send(models);
+        });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
+};
+
+MerchendisingAPI.showUrl = apiRoute + "merchendising/:id";
+MerchendisingAPI.show = function(req, res) {
+    if (req.user) {
+        Merchendising.findOne({ _id: req.params.id}).populate('placement offer').exec(function(err, model) {
+            res.json(model.toJSON());
+        });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
+};
+
+MerchendisingAPI.createUrl = apiRoute + "merchendising";
+MerchendisingAPI.create = function(req, res) {
+    if (req.user) {
+        var model = new Merchendising({className: 'Merchendising', name: 'New Merchendising'});
+        model.offer = req.body.offer._id; // A Term must be created with an offer, minimum.
+        model.placement = req.body.placement._id;
+        model.dataType = req.body.dataType;
+        model.value = req.body.value;
+        model.notes = req.body.notes;
+        
+        model.save(function(err) {
+            res.json(model.toJSON());
+        });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
+}
+
+MerchendisingAPI.updateUrl = apiRoute + "merchendising/:id";
+MerchendisingAPI.update = function(req, res) {
+    if (req.user) {
+        Merchendising.findByIdAndUpdate(req.params.id, {
+            $set: {name:                        req.body.name, 
+                   placement:                   req.body.placement._id,
+                   dataType:                    req.body.dataType,
+                   value:                       req.body.value,
+                   notes:                       req.body.notes}
+        }, { upsert: true }, function(err, model) {
+            return res.json(model.toJSON());
+        });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
+}
+
+MerchendisingAPI.deleteUrl = apiRoute + "merchendising/:id";
+MerchendisingAPI.delete = function(req, res) {
+    if (req.user) {
+        Merchendising.remove({ _id: req.params.id }, function(err) {
+            res.json(true);
+        });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
+};
+module.exports.Merchendising = MerchendisingAPI;
+
 // OfferType (enum)
 var OfferTypeAPI = {}
 OfferTypeAPI.listUrl = apiRoute + "offerTypes";
@@ -498,3 +583,19 @@ ProrationRuleAPI.list = function(req, res) {
     }
 };
 module.exports.ProrationRule = ProrationRuleAPI;
+
+// Placement (enum)
+var PlacementAPI = {}
+PlacementAPI.listUrl = apiRoute + "placements";
+PlacementAPI.list = function(req, res) {
+    if (req.user) {
+        Placement.find({}, function(err, models) {
+            res.send(models);
+        });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
+};
+module.exports.Placement = PlacementAPI;

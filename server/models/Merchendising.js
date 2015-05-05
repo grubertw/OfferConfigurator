@@ -15,12 +15,13 @@ var mongoose = require('mongoose')
 var postSchema = new Schema({
     className       : String,
     name            : String,
-    dataType        : String,
-    placementHint   : String,
+    dataType        : Number,
+    placement       : {type: Number, ref: 'Placement'},
     value           : String,
+    binValue        : Buffer,
     notes           : String,
-    offerId         : ObjectId,
-    benefitId       : ObjectId
+    offer           : {type: ObjectId, ref: 'Offer'},
+    benefit         : {type: Number, ref: 'Benefit'}
 });
  
 module.exports = mongoose.model('Merchendising', postSchema);

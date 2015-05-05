@@ -14,6 +14,7 @@ var BillingOnset = require(__dirname + '/models/BillingOnset.js');
 var BillingInterval = require(__dirname + '/models/BillingInterval.js');
 var BillingPeriod = require(__dirname + '/models/BillingPeriod.js');
 var ProrationRule = require(__dirname + '/models/ProrationRule.js');
+var Placement = require(__dirname + '/models/Placement.js');
 var User = require(__dirname + '/models/User.js');
 var PrivilegeType = require(__dirname + '/models/PrivilegeType.js');
 var Privilege = require(__dirname + '/models/Privilege.js');
@@ -113,12 +114,24 @@ module.exports.initDb = function () {
     });
     
     //
-    // Insert action types.
+    // Insert ProrationRules.
     //
     ProrationRule.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
             new ProrationRule({_id: 1, className: "ProrationRule", name: "Bill difference immediately"}).save();
             new ProrationRule({_id: 2, className: "ProrationRule", name: "Add to next bill"}).save();
+        }
+    });
+    
+    //
+    // Insert Placements.
+    //
+    Placement.findOne({_id: 1}, function (err, obj) {
+        if (obj == null) {
+            new Placement({_id: 1, className: "Placement", name: "top"}).save();
+            new Placement({_id: 2, className: "Placement", name: "bottom"}).save();
+            new Placement({_id: 3, className: "Placement", name: "left"}).save();
+            new Placement({_id: 4, className: "Placement", name: "right"}).save();
         }
     });
     
