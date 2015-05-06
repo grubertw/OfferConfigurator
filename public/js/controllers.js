@@ -588,9 +588,9 @@ offerConfiguratorControllers.controller('OfferMerchandisingController',
                                         ['$scope', 
                                          '$stateParams',
                                          'AppState',
-                                         'Offer', 'Merchendisings', 'Merchendising',
+                                         'Offer', 'Merchandising', 'Merchandise',
                                          OfferMerchandisingController]);
-function OfferMerchandisingController($scope, $stateParams, AppState, Offer, Merchendisings, Merchendising) {
+function OfferMerchandisingController($scope, $stateParams, AppState, Offer, Merchandising, Merchandise) {
     $scope.appState = AppState;
     
     // Update the Application State.
@@ -604,37 +604,42 @@ function OfferMerchandisingController($scope, $stateParams, AppState, Offer, Mer
     });
 
     // Perform HTTP GET for all merchendising in the offer.
-    $scope.merchendising = Merchendisings.listByOffer({offerId: $stateParams.offerId});
+    $scope.merchandising = Merchandising.listByOffer({offerId: $stateParams.offerId});
 
+    $scope.placements = AppState.placements;
+    
     //
     // Supported opperations.
     //
-    $scope.addMerchendising = function () {
+    $scope.setPlacement = function (merch, placement) {
+        merch.placement = placement;
+    };
+    $scope.addMerchandising = function () {
         var defaultPlacement = AppState.getPlacement(1);
         
-        Merchendising.create({offer:                 $scope.offer,
-                              placement:             defaultPlacement,
-                              dataType:              2,
-                              value:                 "Custom text here",
-                              notes:                 "notes here"},
-                             function (merchendising) {
-            merchendising.placement = defaultPlacement;
+        Merchandise.create({offer:                 $scope.offer,
+                            placement:             defaultPlacement,
+                            dataType:              2,
+                            value:                 "Custom text here",
+                            notes:                 "notes here"},
+                            function (merchandise) {
+            merchandise.placement = defaultPlacement;
             
-            $scope.merchendisings.push(merchendising);
+            $scope.merchandising.push(merchandise);
         });
     };
-    $scope.removeMerchendising = function (merchendising) {
-        Merchendising.delete({id: merchendising._id});
+    $scope.removeMerchandising = function (merchandise) {
+        Merchandise.delete({id: merchandise._id});
         
-        var index = $scope.merchendisings.indexOf(merchendising);
-        $scope.merchendisings.splice(index, 1);
+        var index = $scope.merchandising.indexOf(merchandise);
+        $scope.merchandising.splice(index, 1);
     }
 
-    $scope.saveMerchendising = function () {
-        for (var i=0; i<$scope.merchendisings.length; i++) {
-            var merch = $scope.merchendisings[i];
+    $scope.saveMerchandising = function () {
+        for (var i=0; i<$scope.merchandising.length; i++) {
+            var merch = $scope.merchandising[i];
             
-            Merchendising.update({id: merch._id}, merch);
+            Merchandise.update({id: merch._id}, merch);
         }
     };
 }

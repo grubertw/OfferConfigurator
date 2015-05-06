@@ -101,6 +101,11 @@
     width: 175px;
 }
 
+#merchandiseRow {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
 #save-button {
     margin-top: 20px;
 }

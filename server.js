@@ -52,12 +52,12 @@ app.post(api.Term.createUrl, api.validateJWT, api.Term.create);
 app.put(api.Term.updateUrl, api.validateJWT, api.Term.update);
 app.delete(api.Term.deleteUrl, api.validateJWT, api.Term.delete);
 
-// Merchendising (list, show, create, update, delete)
-app.get(api.Merchendising.listByOfferUrl, api.validateJWT, api.Merchendising.listByOffer);
-app.get(api.Merchendising.showUrl, api.validateJWT, api.Merchendising.show);
-app.post(api.Merchendising.createUrl, api.validateJWT, api.Merchendising.create);
-app.put(api.Merchendising.updateUrl, api.validateJWT, api.Merchendising.update);
-app.delete(api.Merchendising.deleteUrl, api.validateJWT, api.Merchendising.delete);
+// Merchandise (list, show, create, update, delete)
+app.get(api.Merchandise.listByOfferUrl, api.validateJWT, api.Merchandise.listByOffer);
+app.get(api.Merchandise.showUrl, api.validateJWT, api.Merchandise.show);
+app.post(api.Merchandise.createUrl, api.validateJWT, api.Merchandise.create);
+app.put(api.Merchandise.updateUrl, api.validateJWT, api.Merchandise.update);
+app.delete(api.Merchandise.deleteUrl, api.validateJWT, api.Merchandise.delete);
 
 // OfferType (enum) (list)
 app.get(api.OfferType.listUrl, api.validateJWT, api.OfferType.list);

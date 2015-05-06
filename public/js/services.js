@@ -247,20 +247,20 @@ offerConfiguratorServices.factory('Term', ['$resource', 'AppState', function ($r
 //
 // Merchendising service (list by offer)
 //
-offerConfiguratorServices.factory('Merchendisings', ['$resource', 'AppState', function ($resource, AppState) {
-    return $resource(apiRoute+'terms/:offerId', {}, 
+offerConfiguratorServices.factory('Merchandising', ['$resource', 'AppState', function ($resource, AppState) {
+    return $resource(apiRoute+'merchandising/:offerId', {}, 
                      {listByOffer: {method: 'GET', isArray: true, params: {offerId: '@offerId'}, headers: {'authorization': 'Bearer ' + AppState.authToken}}},
                      {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}}
                     );
 }]);
 
 //
-// Merchendising service (show, create, update, delete).
+// Merchandise service (show, create, update, delete).
 //
-offerConfiguratorServices.factory('Merchendising', ['$resource', 'AppState', function ($resource, AppState) {
+offerConfiguratorServices.factory('Merchandise', ['$resource', 'AppState', function ($resource, AppState) {
     var httpHeaders = {'authorization': 'Bearer ' + AppState.authToken};
     
-    return $resource(apiRoute+'merchendising/:id', {id:'@id'},
+    return $resource(apiRoute+'merchandise/:id', {id:'@id'},
                      {show:     {method: 'GET', headers: httpHeaders},
                       create:   {method: 'POST', headers: httpHeaders},
                       update:   {method: 'PUT', headers: httpHeaders},

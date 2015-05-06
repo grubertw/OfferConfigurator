@@ -24,7 +24,7 @@ var OfferStatus = require(__dirname + '/models/OfferStatus.js');
 var Offer = require(__dirname + '/models/Offer.js');
 var Term = require(__dirname + '/models/Term.js');
 var Benefit = require(__dirname + '/models/Benefit.js');
-var Merchendising = require(__dirname + '/models/Merchendising.js');
+var Merchandise = require(__dirname + '/models/Merchandise.js');
 var BillingOnset = require(__dirname + '/models/BillingOnset.js');
 var BillingInterval = require(__dirname + '/models/BillingInterval.js');
 var BillingPeriod = require(__dirname + '/models/BillingPeriod.js');
@@ -374,13 +374,13 @@ TermAPI.delete = function(req, res) {
 module.exports.Term = TermAPI;
 
 //
-// Merchendising CRUD operations.
+// Merchandise CRUD operations.
 //
-var MerchendisingAPI = {};
-MerchendisingAPI.listByOfferUrl = apiRoute + "merchendisings/:offerId";
-MerchendisingAPI.listByOffer = function(req, res) {    
+var MerchandiseAPI = {};
+MerchandiseAPI.listByOfferUrl = apiRoute + "merchandising/:offerId";
+MerchandiseAPI.listByOffer = function(req, res) {    
     if (req.user) {
-        Merchendising.find({offer: req.params.offerId}).populate('placement offer').exec(function(err, models) {
+        Merchandise.find({offer: req.params.offerId}).populate('placement offer').exec(function(err, models) {
             res.send(models);
         });
     }
@@ -390,10 +390,10 @@ MerchendisingAPI.listByOffer = function(req, res) {
     }
 };
 
-MerchendisingAPI.showUrl = apiRoute + "merchendising/:id";
-MerchendisingAPI.show = function(req, res) {
+MerchandiseAPI.showUrl = apiRoute + "merchandise/:id";
+MerchandiseAPI.show = function(req, res) {
     if (req.user) {
-        Merchendising.findOne({ _id: req.params.id}).populate('placement offer').exec(function(err, model) {
+        Merchandise.findOne({ _id: req.params.id}).populate('placement offer').exec(function(err, model) {
             res.json(model.toJSON());
         });
     }
@@ -403,10 +403,10 @@ MerchendisingAPI.show = function(req, res) {
     }
 };
 
-MerchendisingAPI.createUrl = apiRoute + "merchendising";
-MerchendisingAPI.create = function(req, res) {
+MerchandiseAPI.createUrl = apiRoute + "merchandise";
+MerchandiseAPI.create = function(req, res) {
     if (req.user) {
-        var model = new Merchendising({className: 'Merchendising', name: 'New Merchendising'});
+        var model = new Merchandise({className: 'Merchandise', name: 'New Merchandise'});
         model.offer = req.body.offer._id; // A Term must be created with an offer, minimum.
         model.placement = req.body.placement._id;
         model.dataType = req.body.dataType;
@@ -423,10 +423,10 @@ MerchendisingAPI.create = function(req, res) {
     }
 }
 
-MerchendisingAPI.updateUrl = apiRoute + "merchendising/:id";
-MerchendisingAPI.update = function(req, res) {
+MerchandiseAPI.updateUrl = apiRoute + "merchandise/:id";
+MerchandiseAPI.update = function(req, res) {
     if (req.user) {
-        Merchendising.findByIdAndUpdate(req.params.id, {
+        Merchandise.findByIdAndUpdate(req.params.id, {
             $set: {name:                        req.body.name, 
                    placement:                   req.body.placement._id,
                    dataType:                    req.body.dataType,
@@ -442,10 +442,10 @@ MerchendisingAPI.update = function(req, res) {
     }
 }
 
-MerchendisingAPI.deleteUrl = apiRoute + "merchendising/:id";
-MerchendisingAPI.delete = function(req, res) {
+MerchandiseAPI.deleteUrl = apiRoute + "merchandise/:id";
+MerchandiseAPI.delete = function(req, res) {
     if (req.user) {
-        Merchendising.remove({ _id: req.params.id }, function(err) {
+        Merchandise.remove({ _id: req.params.id }, function(err) {
             res.json(true);
         });
     }
@@ -454,7 +454,7 @@ MerchendisingAPI.delete = function(req, res) {
         res.status(401).send('JWT token is invalid');
     }
 };
-module.exports.Merchendising = MerchendisingAPI;
+module.exports.Merchandise = MerchandiseAPI;
 
 // OfferType (enum)
 var OfferTypeAPI = {}
