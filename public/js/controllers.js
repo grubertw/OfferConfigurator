@@ -584,7 +584,7 @@ function TermDetailsController($scope, $state, $stateParams, AppState, Term) {
 //
 // Controller for adding/removing merchendising to an offer.
 //
-offerConfiguratorControllers.controller('TermsController', 
+offerConfiguratorControllers.controller('OfferMerchandisingController', 
                                         ['$scope', 
                                          '$stateParams',
                                          'AppState',
@@ -604,18 +604,11 @@ function OfferMerchandisingController($scope, $stateParams, AppState, Offer, Mer
     });
 
     // Perform HTTP GET for all merchendising in the offer.
-    $scope.merchendisings = Merchendisings.listByOffer({offerId: $stateParams.offerId});
-    
-    // Toggle remove merchendising.
-    $scope.removeMerchendising = false;
+    $scope.merchendising = Merchendisings.listByOffer({offerId: $stateParams.offerId});
 
-    
     //
     // Supported opperations.
     //
-    $scope.toggleRemoveMerchendising = function () {
-        $scope.removeMerchendising = !$scope.removeMerchendising;
-    };
     $scope.addMerchendising = function () {
         var defaultPlacement = AppState.getPlacement(1);
         

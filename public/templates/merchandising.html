@@ -23,10 +23,64 @@
   -- and image assets.
   -->
 <div role="tabpanel" class="tab-pane" id="merchandising">
+    <div class="container-fluid">
+        <div class="row" ng-repeat="item in merchandizing">
+            <div class="col-md-2">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="merchName">Name</label>
+                        <input type="text" class="form-control" id="merchName" ng-model="item.name">
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-2">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="merchType">Type</label>
+                        <input type="number" class="form-control" id="merchType" ng-model="item.dataType">
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="merchValue">Value</label>
+                        <input type="text" class="form-control" id="merchValue" ng-model="item.value">
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-3">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="merchPlacement">Placement</label>
+                        <div class="dropdown" id="merchPlacement">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="merchPlacementButton" data-toggle="dropdown" aria-expanded="true">
+                            {{item.placement.name}}<span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="merchPlacementButton">
+                                <li role="presentation" ng-repeat="placement in placements" ng-click="setBillingPeriod(billingPeriod)">
+                                {{placement.name}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-1">
+                <button type="button" class="btn btn-default" ng-click="removeMerchendising()">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button>
+            </div>
+            
+        </div>
+    </div>
     
-    
-    
-    
+    <button type="button" class="btn btn-default" ng-click="addMerchendising()">
+        <span class="glyphicon glyphicon-add" aria-hidden="true"></span>Add
+    </button>
+    <button type="button" class="btn btn-default" ng-click="saveMerchendising()">
+        <span class="glyphicon glyphicon-save" aria-hidden="true"></span>Save
+    </button>
 </div>
 </div> <!-- END tab content -->
 </div> <!-- END offer tabs -->
