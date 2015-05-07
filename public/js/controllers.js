@@ -132,11 +132,11 @@ offerConfiguratorControllers.controller('PopulationsController',
                                         ['$scope', 'Populations', 'Population', 'AppState',
                                          'OfferTypes', 'OfferStatuses', 'Benefits', 'ActionTypes',
                                          'BillingOnsets', 'BillingIntervals', 'BillingPeriods', 'ProrationRules',
-                                         'Placements',
+                                         'MerchTypes', 'Placements',
                                          PopulationsController]);
 function PopulationsController($scope, Populations, Population, AppState, 
                                OfferTypes, OfferStatuses, Benefits, ActionTypes,
-                               BillingOnsets, BillingIntervals, BillingPeriods, ProrationRules, Placements) {
+                               BillingOnsets, BillingIntervals, BillingPeriods, ProrationRules, MerchTypes, Placements) {
     // Prefetch enumerations from the server here
     // FIXME:
     // This should be done in the login handler function,
@@ -149,6 +149,7 @@ function PopulationsController($scope, Populations, Population, AppState,
     AppState.billingIntervals = BillingIntervals.list();
     AppState.billingPeriods = BillingPeriods.list();
     AppState.prorationRules = ProrationRules.list();
+    AppState.merchTypes = MerchTypes.list();
     AppState.placements = Placements.list();
     
     // Fetch the populations from the server.
@@ -607,6 +608,7 @@ function OfferMerchandisingController($scope, $stateParams, AppState, Offer, Mer
     $scope.merchandising = Merchandising.listByOffer({offerId: $stateParams.offerId});
 
     $scope.placements = AppState.placements;
+    $scope.merchTypes = AppState.merchTypes;
     
     //
     // Supported opperations.
@@ -614,15 +616,20 @@ function OfferMerchandisingController($scope, $stateParams, AppState, Offer, Mer
     $scope.setPlacement = function (merch, placement) {
         merch.placement = placement;
     };
+    $scope.setMerchType = function (merch, type) {
+        merch.merchType = type;
+    };
     $scope.addMerchandising = function () {
+        var defaultMerchType = AppState.getMerchType(1);
         var defaultPlacement = AppState.getPlacement(1);
         
         Merchandise.create({offer:                 $scope.offer,
+                            merchType:             defaultMerchType,
                             placement:             defaultPlacement,
-                            dataType:              2,
                             value:                 "Custom text here",
                             notes:                 "notes here"},
                             function (merchandise) {
+            merchandise.merchType = defaultMerchType;
             merchandise.placement = defaultPlacement;
             
             $scope.merchandising.push(merchandise);

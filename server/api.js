@@ -30,6 +30,7 @@ var BillingInterval = require(__dirname + '/models/BillingInterval.js');
 var BillingPeriod = require(__dirname + '/models/BillingPeriod.js');
 var ProrationRule = require(__dirname + '/models/ProrationRule.js');
 var Placement = require(__dirname + '/models/Placement.js');
+var MerchType = require(__dirname + '/models/MerchType.js');
 var ActionType = require(__dirname + '/models/ActionType.js');
 
 // Load private RSA key for creation of the JWT token.
@@ -380,7 +381,7 @@ var MerchandiseAPI = {};
 MerchandiseAPI.listByOfferUrl = apiRoute + "merchandising/:offerId";
 MerchandiseAPI.listByOffer = function(req, res) {    
     if (req.user) {
-        Merchandise.find({offer: req.params.offerId}).populate('placement offer').exec(function(err, models) {
+        Merchandise.find({offer: req.params.offerId}).populate('merchType placement offer').exec(function(err, models) {
             res.send(models);
         });
     }
@@ -393,7 +394,7 @@ MerchandiseAPI.listByOffer = function(req, res) {
 MerchandiseAPI.showUrl = apiRoute + "merchandise/:id";
 MerchandiseAPI.show = function(req, res) {
     if (req.user) {
-        Merchandise.findOne({ _id: req.params.id}).populate('placement offer').exec(function(err, model) {
+        Merchandise.findOne({ _id: req.params.id}).populate('merchType placement offer').exec(function(err, model) {
             res.json(model.toJSON());
         });
     }
@@ -408,8 +409,8 @@ MerchandiseAPI.create = function(req, res) {
     if (req.user) {
         var model = new Merchandise({className: 'Merchandise', name: 'New Merchandise'});
         model.offer = req.body.offer._id; // A Term must be created with an offer, minimum.
+        model.merchType = req.body.merchType._id;
         model.placement = req.body.placement._id;
-        model.dataType = req.body.dataType;
         model.value = req.body.value;
         model.notes = req.body.notes;
         
@@ -428,8 +429,8 @@ MerchandiseAPI.update = function(req, res) {
     if (req.user) {
         Merchandise.findByIdAndUpdate(req.params.id, {
             $set: {name:                        req.body.name, 
+                   merchType:                   req.body.merchType._id,
                    placement:                   req.body.placement._id,
-                   dataType:                    req.body.dataType,
                    value:                       req.body.value,
                    notes:                       req.body.notes}
         }, { upsert: true }, function(err, model) {
@@ -583,6 +584,22 @@ ProrationRuleAPI.list = function(req, res) {
     }
 };
 module.exports.ProrationRule = ProrationRuleAPI;
+
+// MerchType (enum)
+var MerchTypeAPI = {}
+MerchTypeAPI.listUrl = apiRoute + "merchTypes";
+MerchTypeAPI.list = function(req, res) {
+    if (req.user) {
+        MerchType.find({}, function(err, models) {
+            res.send(models);
+        });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
+};
+module.exports.MerchType = MerchTypeAPI;
 
 // Placement (enum)
 var PlacementAPI = {}

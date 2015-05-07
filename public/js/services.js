@@ -37,6 +37,7 @@ offerConfiguratorServices.service('AppState', ['$state', function ($state) {
     this.billingIntervals = [];
     this.billingPeriods = [];
     this.prorationRules = [];
+    this.merchTypes = [];
     this.placements = [];
     
     //
@@ -127,6 +128,19 @@ offerConfiguratorServices.service('AppState', ['$state', function ($state) {
         var obj = {};
         for (var i = 0; i < this.prorationRules.length; i++) {
             var objIt = this.prorationRules[i];
+            if (objIt._id == id) {
+                obj = objIt;
+                break;
+            }
+        }
+        return obj;
+    };
+    
+    // Get MerchTypes by id
+    this.getMerchType = function (id) {
+        var obj = {};
+        for (var i = 0; i < this.merchTypes.length; i++) {
+            var objIt = this.merchTypes[i];
             if (objIt._id == id) {
                 obj = objIt;
                 break;
@@ -328,6 +342,14 @@ offerConfiguratorServices.factory('BillingPeriods', ['$resource', 'AppState', fu
 //
 offerConfiguratorServices.factory('ProrationRules', ['$resource', 'AppState', function ($resource, AppState) {
     return $resource(apiRoute+'prorationRules', {}, 
+                     {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}});
+}]);
+
+//
+// MerchType service (list)
+//
+offerConfiguratorServices.factory('MerchTypes', ['$resource', 'AppState', function ($resource, AppState) {
+    return $resource(apiRoute+'merchTypes', {}, 
                      {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}});
 }]);
 

@@ -14,6 +14,7 @@ var BillingOnset = require(__dirname + '/models/BillingOnset.js');
 var BillingInterval = require(__dirname + '/models/BillingInterval.js');
 var BillingPeriod = require(__dirname + '/models/BillingPeriod.js');
 var ProrationRule = require(__dirname + '/models/ProrationRule.js');
+var MerchType = require(__dirname + '/models/MerchType.js');
 var Placement = require(__dirname + '/models/Placement.js');
 var User = require(__dirname + '/models/User.js');
 var PrivilegeType = require(__dirname + '/models/PrivilegeType.js');
@@ -120,6 +121,18 @@ module.exports.initDb = function () {
         if (obj == null) {
             new ProrationRule({_id: 1, className: "ProrationRule", name: "Bill difference immediately"}).save();
             new ProrationRule({_id: 2, className: "ProrationRule", name: "Add to next bill"}).save();
+        }
+    });
+    
+    //
+    // Insert MerchTypes.
+    //
+    MerchType.findOne({_id: 1}, function (err, obj) {
+        if (obj == null) {
+            new MerchType({_id: 1, className: "MerchType", name: "text", dataCode: 2}).save();
+            new MerchType({_id: 2, className: "MerchType", name: "image", dataCode: 5}).save();
+            new MerchType({_id: 3, className: "MerchType", name: "audio", dataCode: 5}).save();
+            new MerchType({_id: 4, className: "MerchType", name: "video", dataCode: 5}).save();
         }
     });
     

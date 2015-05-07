@@ -83,6 +83,9 @@ app.get(api.BillingPeriod.listUrl, api.validateJWT, api.BillingPeriod.list);
 // ProrationRule (enum) (list)
 app.get(api.ProrationRule.listUrl, api.validateJWT, api.ProrationRule.list);
 
+// MerchType (enum) (list)
+app.get(api.MerchType.listUrl, api.validateJWT, api.MerchType.list);
+
 // Placement (enum) (list)
 app.get(api.Placement.listUrl, api.validateJWT, api.Placement.list);
 

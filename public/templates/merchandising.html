@@ -39,7 +39,16 @@
             </div>
             <div class="col-md-2">
                 <label>Type</label>
-                <input type="number" class="form-control" ng-model="item.dataType">
+                <div class="dropdown" id="merchType">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="merchTypeButton" data-toggle="dropdown" aria-expanded="true">
+                    {{item.merchType.name}}<span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="merchTypeButton">
+                        <li role="presentation" ng-repeat="type in merchTypes" ng-click="setMerchType(item,type)">
+                        {{type.name}}
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div class="col-md-3">
                 <label>Value</label>

@@ -15,7 +15,7 @@ var mongoose = require('mongoose')
 var postSchema = new Schema({
     className       : String,
     name            : String,
-    dataType        : Number,
+    merchType       : {type: Number, ref: 'MerchType'},
     placement       : {type: Number, ref: 'Placement'},
     value           : String,
     binValue        : Buffer,
