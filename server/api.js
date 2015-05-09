@@ -457,6 +457,38 @@ MerchandiseAPI.delete = function(req, res) {
 };
 module.exports.Merchandise = MerchandiseAPI;
 
+// Dimension (enum)
+var DimensionAPI = {}
+DimensionAPI.listUrl = apiRoute + "dimensions";
+DimensionAPI.list = function(req, res) {
+    if (req.user) {
+        Dimension.find({}, function(err, models) {
+            res.send(models);
+        });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
+};
+module.exports.Dimension = DimensionAPI;
+
+// Range (enum)
+var RangeAPI = {}
+RangeAPI.listUrl = apiRoute + "ranges";
+RangeAPI.list = function(req, res) {
+    if (req.user) {
+        Range.find({}, function(err, models) {
+            res.send(models);
+        });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
+};
+module.exports.Range = RangeAPI;
+
 // OfferType (enum)
 var OfferTypeAPI = {}
 OfferTypeAPI.listUrl = apiRoute + "offerTypes";

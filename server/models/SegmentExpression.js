@@ -19,12 +19,12 @@ var mongoose = require('mongoose')
  
 var postSchema = new Schema({
     className       : String,
-    populationId    : ObjectId,
-    leftId          : ObjectId, // fKey
-    leftClassName   : String,
-    operatorId      : ObjectId, // fKey
-    rightId         : ObjectId, // fKey
-    rightClassName  : String
+    population      : {type: ObjectId, ref:'Population'},
+    left            : {type: Number, ref:'Dimension'}, // fKey
+    leftEx          : {type: ObjectId, ref:'SegmentExpression'},
+    operator        : {type: Number, ref:'Operator'}, // fKey
+    right           : {type: ObjectId, ref:'Range'}, // fKey
+    rightEx         : {type: ObjectId, ref:'SegmentExpression'}
 });
  
 module.exports = mongoose.model('SegmentExpression', postSchema);

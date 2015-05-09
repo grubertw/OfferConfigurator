@@ -11,9 +11,10 @@ var mongoose = require('mongoose')
    ,ObjectId = Schema.ObjectId;
  
 var postSchema = new Schema({
+    _id             : Number,
     className       : String,
     name            : String,
-    dimensionId     : ObjectId // fKey
+    dimension       : {type: Number, ref: 'Dimension'} // fKey
 });
  
 module.exports = mongoose.model('Range', postSchema);

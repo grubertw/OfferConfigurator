@@ -30,6 +30,8 @@ offerConfiguratorServices.service('AppState', ['$state', function ($state) {
     this.currOffer = {};
     
     // Enumerated models requested from the server after successfull login.
+    this.dimensions = [];
+    this.ranges = [];
     this.offerTypes = [];
     this.offerStatuses = [];
     this.benefits = [];
@@ -44,6 +46,32 @@ offerConfiguratorServices.service('AppState', ['$state', function ($state) {
     // Getters on enumerated models.
     // (i.e. models serving as selections within drop-downs)
     //
+    
+    // Get Dimension by id
+    this.getDimension = function (id) {
+        var obj = {};
+        for (var i = 0; i < this.dimensions.length; i++) {
+            var objIt = this.dimensions[i];
+            if (objIt._id == id) {
+                obj = objIt;
+                break;
+            }
+        }
+        return obj;
+    };
+    
+    // Get Range by id
+    this.getRange = function (id) {
+        var obj = {};
+        for (var i = 0; i < this.ranges.length; i++) {
+            var objIt = this.ranges[i];
+            if (objIt._id == id) {
+                obj = objIt;
+                break;
+            }
+        }
+        return obj;
+    };
     
     // Get OfferType by id
     this.getOfferType = function (id) {
@@ -279,6 +307,22 @@ offerConfiguratorServices.factory('Merchandise', ['$resource', 'AppState', funct
                       create:   {method: 'POST', headers: httpHeaders},
                       update:   {method: 'PUT', headers: httpHeaders},
                       delete:   {method: 'DELETE', headers: httpHeaders}});
+}]);
+
+//
+// Dimensions service (list)
+//
+offerConfiguratorServices.factory('Dimensions', ['$resource', 'AppState', function ($resource, AppState) {
+    return $resource(apiRoute+'dimensions', {}, 
+                     {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}});
+}]);
+
+//
+// Ranges service (list)
+//
+offerConfiguratorServices.factory('Ranges', ['$resource', 'AppState', function ($resource, AppState) {
+    return $resource(apiRoute+'ranges', {}, 
+                     {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}});
 }]);
 
 //

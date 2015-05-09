@@ -59,6 +59,12 @@ app.post(api.Merchandise.createUrl, api.validateJWT, api.Merchandise.create);
 app.put(api.Merchandise.updateUrl, api.validateJWT, api.Merchandise.update);
 app.delete(api.Merchandise.deleteUrl, api.validateJWT, api.Merchandise.delete);
 
+// Dimension (enum) (list)
+app.get(api.Dimension.listUrl, api.validateJWT, api.Dimension.list);
+
+// Range (enum) (list)
+app.get(api.Range.listUrl, api.validateJWT, api.Range.list);
+
 // OfferType (enum) (list)
 app.get(api.OfferType.listUrl, api.validateJWT, api.OfferType.list);
 

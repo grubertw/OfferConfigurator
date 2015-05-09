@@ -6,6 +6,8 @@
 var mongoose = require('mongoose');
 var console = require('console');
 
+var Dimension = require(__dirname + '/models/Dimension.js');
+var Range = require(__dirname + '/models/Range.js');
 var Benefit = require(__dirname + '/models/Benefit.js');
 var OfferStatus = require(__dirname + '/models/OfferStatus.js');
 var OfferType = require(__dirname + '/models/OfferType.js');
@@ -22,6 +24,39 @@ var Privilege = require(__dirname + '/models/Privilege.js');
 
 
 module.exports.initDb = function () {
+    //
+    // Insert test Dimensions.
+    //
+    Dimension.findOne({_id: 1}, function (err, obj) {
+        if (obj == null) {
+            new Dimension({_id: 1, className: "Dimension", name: "Age"}).save();
+            new Dimension({_id: 2, className: "Dimension", name: "Occupation"}).save();
+            new Dimension({_id: 3, className: "Dimension", name: "Anual Income"}).save();
+        }
+    });
+    
+    //
+    // Insert test Ranges.
+    //
+    Range.findOne({_id: 1}, function (err, obj) {
+        if (obj == null) {
+            new Range({_id: 1, className: "Range", dimension: 1, name: "0-18"}).save();
+            new Range({_id: 2, className: "Range", dimension: 1, name: "19-24"}).save();
+            new Range({_id: 3, className: "Range", dimension: 1, name: "25-39"}).save();
+            new Range({_id: 4, className: "Range", dimension: 1, name: "40-62"}).save();
+            
+            new Range({_id: 5, className: "Range", dimension: 2, name: "Doctor"}).save();
+            new Range({_id: 6, className: "Range", dimension: 2, name: "Engineer"}).save();
+            new Range({_id: 7, className: "Range", dimension: 2, name: "Laywyer"}).save();
+            new Range({_id: 8, className: "Range", dimension: 2, name: "Accountant"}).save();
+            
+            new Range({_id: 9, className: "Range", dimension: 3, name: "$0 - $13,999"}).save();
+            new Range({_id:10, className: "Range", dimension: 3, name: "$14,000 - $24,999"}).save();
+            new Range({_id:11, className: "Range", dimension: 3, name: "$25,000 - $49,999"}).save();
+            new Range({_id:12, className: "Range", dimension: 3, name: "$50,000 - $99,999"}).save();
+        }
+    });
+    
     //
     // Insert test benefits.
     //
