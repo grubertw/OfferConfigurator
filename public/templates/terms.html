@@ -77,6 +77,7 @@
         </div>
     </form>
     
+    <h3>Charges:</h3>
     <div ng-show="appState.displayTerms" id="termsDiv">
         <button type="button" class="btn btn-default" ng-click="addTerm()">
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Term
@@ -91,19 +92,17 @@
         <!-- Charges/Terms table -->
         <table class="table table-striped">
             <thead><tr>
-                <th>Name</th>
+                <th>Billing Onset</th>
                 <th>Amount</th>
                 <th>MSRP</th>
-                <th>Billing Onset</th>
                 <th>Reccurence</th>
                 <th class="editTableHeader" ng-show="editTerms">Edit</th>
                 <th class="editTableHeader" ng-show="removeTerms">Remove</th>
             </tr></thead>
             <tbody><tr ng-repeat="term in terms">
-                <td>{{term.name}}</td>
+                <td>{{term.billingOnset.name}}</td>
                 <td>{{term.price}}</td>
                 <td>{{term.msrp}}</td>
-                <td>{{term.billingOnset.name}}</td>
                 <td>{{term.reccurrenceDescription}}</td>
                 <td ng-show="editTerms">
                     <button type="button" class="btn btn-default">

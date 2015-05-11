@@ -13,7 +13,6 @@ var mongoose = require('mongoose')
    ,ObjectId = Schema.ObjectId;
  
 var postSchema = new Schema({
-    className       : String,
     name            : String,
     merchType       : {type: Number, ref: 'MerchType'},
     placement       : {type: Number, ref: 'Placement'},

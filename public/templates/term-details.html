@@ -1,11 +1,38 @@
 <!-- Edit details of a single term.
   -->
 <form class="form-horizontal" id="termInputMainGroup">        
-    <!-- term.name entry -->
+    <!-- term.name entry
     <div class="form-group">
-        <label class="col-sm-2 control-label">Name</label>
+        <label class="col-sm-2 control-label">Charge Name</label>
         <div class="col-sm-2">
             <input type="text" class="form-control" ng-model="term.name">
+        </div>
+    </div>
+    -->
+    
+    <!-- term.isTrial entry -->
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="term.isTrial">Is Trial
+                </label>
+            </div>
+        </div>
+    </div>
+    
+    <!-- term.billingOnset entry -->
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Billing Onset</label>
+        <div class="dropdown col-sm-2" id="billingOnset">
+          <button class="btn btn-default dropdown-toggle" type="button" id="billingOnsetButton" data-toggle="dropdown" aria-expanded="true">
+            {{term.billingOnset.name}}<span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="billingOnsetButton">
+            <li role="presentation" ng-repeat="billingOnset in billingOnsets" ng-click="setBillingOnset(billingOnset)">
+                {{billingOnset.name}}
+            </li>
+          </ul>
         </div>
     </div>
     
@@ -22,32 +49,6 @@
         <label class="col-sm-2 control-label">MSRP</label>
         <div class="col-sm-2">
             <input type="text" class="form-control" ng-model="term.msrp">
-        </div>
-    </div>
-    
-    <!-- term.isTrial entry -->
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" ng-model="term.isTrial">Is Trial
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <!-- term.billingOnset entry -->
-    <div class="form-group">
-        <label class="col-sm-2 control-label">Billing Onset</label>
-        <div class="dropdown col-sm-2" id="billingOnset">
-          <button class="btn btn-default dropdown-toggle" type="button" id="billingOnsetButton" data-toggle="dropdown" aria-expanded="true">
-            {{term.billingOnset.name}}<span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="billingOnsetButton">
-            <li role="presentation" ng-repeat="billingOnset in billingOnsets" ng-click="setBillingOnset(billingOnset)">
-                {{billingOnset.name}}
-            </li>
-          </ul>
         </div>
     </div>
 </form>

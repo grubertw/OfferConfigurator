@@ -59,11 +59,21 @@ app.post(api.Merchandise.createUrl, api.validateJWT, api.Merchandise.create);
 app.put(api.Merchandise.updateUrl, api.validateJWT, api.Merchandise.update);
 app.delete(api.Merchandise.deleteUrl, api.validateJWT, api.Merchandise.delete);
 
+// SegmentExpression (list, show, create, update, delete)
+app.get(api.SegmentExpression.showUrl, api.validateJWT, api.SegmentExpression.show);
+app.get(api.SegmentExpression.listByPopulationUrl, api.validateJWT, api.SegmentExpression.listByPopulation);
+app.post(api.SegmentExpression.createUrl, api.validateJWT, api.SegmentExpression.create);
+app.put(api.SegmentExpression.updateUrl, api.validateJWT, api.SegmentExpression.update);
+app.delete(api.SegmentExpression.deleteUrl, api.validateJWT, api.SegmentExpression.delete);
+
 // Dimension (enum) (list)
 app.get(api.Dimension.listUrl, api.validateJWT, api.Dimension.list);
 
 // Range (enum) (list)
 app.get(api.Range.listUrl, api.validateJWT, api.Range.list);
+
+// Operator (enum) (list)
+app.get(api.Operator.listUrl, api.validateJWT, api.Operator.list);
 
 // OfferType (enum) (list)
 app.get(api.OfferType.listUrl, api.validateJWT, api.OfferType.list);

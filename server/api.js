@@ -105,7 +105,7 @@ PopulationAPI.list = function(req, res) {
 PopulationAPI.showUrl = apiRoute + "population/:id";
 PopulationAPI.show = function(req, res) {
     if (req.user) {
-        Population.findOne({ _id: req.params.id }, function(err, model) {
+        Population.findOne({ _id: req.params.id }).populate('segmentExpression').exec(function(err, model) {
             res.json(model.toJSON());
         });
     }
@@ -119,7 +119,8 @@ PopulationAPI.show = function(req, res) {
 PopulationAPI.createUrl = apiRoute + "population";
 PopulationAPI.create = function(req, res) {
     if (req.user) {
-        var model = new Population({className: 'Population', name: 'New Population'});
+        var model = new Population({name: 'New Population'});
+        model.segmentExpression = [];
         model.save();
         res.json(model.toJSON());
     }
@@ -192,7 +193,7 @@ OfferAPI.show = function(req, res) {
 OfferAPI.createUrl = apiRoute + "offer";
 OfferAPI.create = function(req, res) {
     if (req.user) {
-        var model = new Offer({className: 'Offer', name: 'New Offer'});
+        var model = new Offer({name: 'New Offer'});
         model.population = req.body.population._id; // An Offer must be created with a population, minimum.
         model.offerStatus = req.body.offerStatus._id;
         model.offerType = req.body.offerType._id;
@@ -307,7 +308,7 @@ TermAPI.show = function(req, res) {
 TermAPI.createUrl = apiRoute + "term";
 TermAPI.create = function(req, res) {
     if (req.user) {
-        var model = new Term({className: 'Term', name: 'New Term'});
+        var model = new Term({name: 'New Term'});
         model.offer = req.body.offer._id; // A Term must be created with an offer, minimum.
         model.billingOnset = req.body.billingOnset._id;
         model.billingInterval = req.body.billingInterval._id;
@@ -407,7 +408,7 @@ MerchandiseAPI.show = function(req, res) {
 MerchandiseAPI.createUrl = apiRoute + "merchandise";
 MerchandiseAPI.create = function(req, res) {
     if (req.user) {
-        var model = new Merchandise({className: 'Merchandise', name: 'New Merchandise'});
+        var model = new Merchandise({name: 'New Merchandise'});
         model.offer = req.body.offer._id; // A Term must be created with an offer, minimum.
         model.merchType = req.body.merchType._id;
         model.placement = req.body.placement._id;
@@ -457,6 +458,94 @@ MerchandiseAPI.delete = function(req, res) {
 };
 module.exports.Merchandise = MerchandiseAPI;
 
+//
+// SegmentExpression CRUD operations.
+//
+var SegmentExpressionAPI = {};
+SegmentExpressionAPI.listByPopulationUrl = apiRoute + "segmentExpression/:populationId";
+SegmentExpressionAPI.listByPopulation = function(req, res) {
+    if (req.user) {
+        Population.find({_id: req.params.populationId}).populate('segmentExpression').exec(function(err, model) {
+            res.send(model.segmentExpression);
+        });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
+};
+
+SegmentExpressionAPI.showUrl = apiRoute + "segmentExpression/:id";
+SegmentExpressionAPI.show = function(req, res) {
+    if (req.user) {
+        SegmentExpression.findOne({ _id: req.params.id}).populate('left operator right').exec(function(err, model) {
+            res.json(model.toJSON());
+        });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
+};
+
+SegmentExpressionAPI.createUrl = apiRoute + "segmentExpression";
+SegmentExpressionAPI.create = function(req, res) {
+    if (req.user) {
+        var model = new SegmentExpression({name: 'New SegmentExpression'});
+        model.population = req.body.population._id;
+        model.operatorOnly = req.body.operatorOnly;
+        model.left = req.body.left._id;
+        model.operator = req.body.operator._id;
+        model.right = req.body.right._id;
+        
+        model.save(function(err) {
+            // push the expression into the array within the population.
+            // this helps maintain good ordering.
+            Population.findOne({_id: req.body.population._id}).populate('segmentExpression').exec(function(err, pop) {
+                pop.segmentExpression.push(model);
+                pop.save();
+            });
+            
+            res.json(model.toJSON());
+        });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
+}
+
+SegmentExpressionAPI.updateUrl = apiRoute + "segmentExpression/:id";
+SegmentExpressionAPI.update = function(req, res) {
+    if (req.user) {
+        SegmentExpression.findByIdAndUpdate(req.params.id, {
+            $set: {left:                    req.body.left._id,
+                   operator:                req.body.operator._id,
+                   right:                   req.body.right._id}
+        }, { upsert: true }, function(err, model) {
+            return res.json(model.toJSON());
+        });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
+}
+
+SegmentExpressionAPI.deleteUrl = apiRoute + "segmentExpression/:id";
+SegmentExpressionAPI.delete = function(req, res) {
+    if (req.user) {
+        SegmentExpression.remove({ _id: req.params.id }, function(err) {
+            res.json(true);
+        });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
+};
+module.exports.SegmentExpression = SegmentExpressionAPI;
+
 // Dimension (enum)
 var DimensionAPI = {}
 DimensionAPI.listUrl = apiRoute + "dimensions";
@@ -478,7 +567,7 @@ var RangeAPI = {}
 RangeAPI.listUrl = apiRoute + "ranges";
 RangeAPI.list = function(req, res) {
     if (req.user) {
-        Range.find({}, function(err, models) {
+        Range.find({}).populate('dimension').exec(function(err, models) {
             res.send(models);
         });
     }
@@ -488,6 +577,22 @@ RangeAPI.list = function(req, res) {
     }
 };
 module.exports.Range = RangeAPI;
+
+// Operator (enum)
+var OperatorAPI = {}
+OperatorAPI.listUrl = apiRoute + "operators";
+OperatorAPI.list = function(req, res) {
+    if (req.user) {
+        Operator.find({}, function(err, models) {
+            res.send(models);
+        });
+    }
+    else {
+        console.log("JWT token is invalid");
+        res.status(401).send('JWT token is invalid');
+    }
+};
+module.exports.Operator = OperatorAPI;
 
 // OfferType (enum)
 var OfferTypeAPI = {}

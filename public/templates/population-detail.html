@@ -20,13 +20,13 @@
         </div>
     </form>
     <div id="populationDefinition" class="container-fluid">
-        <h3>Population Definition</h3>
+        <h3>Segmentation Definition</h3>
         <div ng-repeat="expression in population.segmentExpression">
 
             <!-- Repeater for outer opperators (AND|OR|NOT)-->
-            <div ng-if="expression.className == 'Operator'" class="dropdown" id="outerOperator">
+            <div ng-if="expression.operatorOnly" class="dropdown" id="outerOperator">
               <button class="btn btn-default dropdown-toggle" type="button" id="outerOperator" data-toggle="dropdown" aria-expanded="true">
-                {{expression.sign}}<span class="caret"></span>
+                {{expression.operator.sign}}<span class="caret"></span>
               </button>
               <ul class="dropdown-menu" role="menu" aria-labelledby="outerOperator">
                 <li role="presentation" ng-click="setOperator(expression, 3)">AND</li>
@@ -35,12 +35,12 @@
               </ul>
             </div>
             
-            <!-- Repeater for expressions.  Within, the left and right may be expressions themselves. -->
-            <div ng-if="expression.className == 'Expression'" id="expression">
+            <!-- Repeater for expressions. -->
+            <div ng-if="!expression.operatorOnly" id="expression">
                 <!-- Use when the left side is a dimension -->
-                <div ng-if="expression.leftExpression.className == 'Dimension'" class="dropdown" id="dimension">
+                <div class="dropdown" id="dimension">
                   <button class="btn btn-default dropdown-toggle" type="button" id="dimensionButton" data-toggle="dropdown" aria-expanded="true">
-                    {{expression.leftExpression.name}}<span class="caret"></span>
+                    {{expression.left.name}}<span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu" role="menu" aria-labelledby="dimensionButton">
                     <li role="presentation" ng-repeat="dimension in supportedDimensions" ng-click="setDimension(expression, dimension)">
@@ -55,19 +55,19 @@
                     {{expression.operator.sign}}<span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu" role="menu" aria-labelledby="innerOperatorButton">
-                    <li role="presentation" ng-click="setOperator(expression.operator, 1)">=</li>
-                    <li role="presentation" ng-click="setOperator(expression.operator, 2)">!=</li>
+                    <li role="presentation" ng-click="setOperator(expression, 1)">=</li>
+                    <li role="presentation" ng-click="setOperator(expression, 2)">!=</li>
                   </ul>
                 </div>
 
                 <!-- Use when the right side is a range -->
-                <div ng-if="expression.rightExpression.className == 'Range'" class="dropdown" id="range">
+                <div class="dropdown" id="range">
                   <button class="btn btn-default dropdown-toggle" type="button" id="rangeButton" data-toggle="dropdown" aria-expanded="true">
-                    {{expression.rightExpression.range}}<span class="caret"></span>
+                    {{expression.right.name}}<span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu" role="menu" aria-labelledby="rangeButton">
-                    <li role="presentation" ng-repeat="range in expression.leftExpression.applicableRanges" ng-click="expression.rightExpression = range">
-                        {{range.range}}
+                    <li role="presentation" ng-repeat="range in expression.applicableRanges" ng-click="expression.right = range">
+                        {{range.name}}
                     </li>
                   </ul>
                 </div>

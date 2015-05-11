@@ -12,7 +12,6 @@ var mongoose = require('mongoose')
    ,ObjectId = Schema.ObjectId;
  
 var postSchema = new Schema({
-    className                   : String,
     name                        : String,
     orderWithinOffer            : Number,
     amount                      : String,

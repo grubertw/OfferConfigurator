@@ -12,9 +12,8 @@ var mongoose = require('mongoose')
    ,ObjectId = Schema.ObjectId;
  
 var postSchema = new Schema({
-    className                   : String,
     name                        : String,
-    statusId                    : ObjectId
+    segmentExpression           : [{type: ObjectId, ref: 'SegmentExpression'}]
 });
  
 module.exports = mongoose.model('Population', postSchema);

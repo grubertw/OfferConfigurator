@@ -101,18 +101,18 @@ function HeaderController($scope, $state, AppState) {
         AppState.showGotoOffers = false;
         AppState.showGotoOffer = false;
         
-        $state.go('populationDetails', {populationId: AppState.currPopulation._id});
+        $state.go('populationDetails', {populationId: AppState.currPopulationId});
     };
     $scope.gotoOffers = function () {
         AppState.showGotoOffers = false;
         AppState.showGotoOffer = false;
         
-        $state.go('offers', {populationId: AppState.currPopulation._id});
+        $state.go('offers', {populationId: AppState.currPopulationId});
     };
     $scope.gotoSelectedOffer = function () {
         AppState.showGotoOffer = false;
         
-        $state.go('offerDetails', {offerId: AppState.currOffer._id});
+        $state.go('offerDetails', {offerId: AppState.currOfferId});
     };
     
     //
@@ -132,16 +132,21 @@ offerConfiguratorControllers.controller('PopulationsController',
                                         ['$scope', 'Populations', 'Population', 'AppState',
                                          'OfferTypes', 'OfferStatuses', 'Benefits', 'ActionTypes',
                                          'BillingOnsets', 'BillingIntervals', 'BillingPeriods', 'ProrationRules',
-                                         'MerchTypes', 'Placements',
+                                         'MerchTypes', 'Placements', 'Dimensions', 'Ranges', 'Operators',
                                          PopulationsController]);
 function PopulationsController($scope, Populations, Population, AppState, 
                                OfferTypes, OfferStatuses, Benefits, ActionTypes,
-                               BillingOnsets, BillingIntervals, BillingPeriods, ProrationRules, MerchTypes, Placements) {
+                               BillingOnsets, BillingIntervals, BillingPeriods, 
+                               ProrationRules, MerchTypes, Placements,
+                               Dimensions, Ranges, Operators) {
     // Prefetch enumerations from the server here
     // FIXME:
     // This should be done in the login handler function,
     // but for some reason, angular has trouble injecting an updated 
     // AppState into the model REST services.
+    AppState.dimensions = Dimensions.list();
+    AppState.ranges = Ranges.list();
+    AppState.operators = Operators.list();
     AppState.offerTypes = OfferTypes.list();
     AppState.offerStatuses = OfferStatuses.list();
     AppState.benefits = Benefits.list();
@@ -185,73 +190,105 @@ function PopulationsController($scope, Populations, Population, AppState,
 // a means to characterize a group of people.
 // 
 offerConfiguratorControllers.controller('PopulationDetailsController', 
-                                        ['$scope', '$stateParams', 'AppState', 'Population',
+                                        ['$scope', '$stateParams', 'AppState', 'Population', 'SegmentExpression',
                                          PopulationDetailsController]);
-function PopulationDetailsController($scope, $stateParams, AppState, Population) {
+function PopulationDetailsController($scope, $stateParams, AppState, Population, SegmentExpression) {
     // Lookup the population by it's ID.
-    $scope.population = Population.show({id:$stateParams.populationId}, function(d){}, function(err) {
+    Population.show({id:$stateParams.populationId}, function(population){
+        // Update Application State.
+        AppState.currPopulationId = population._id;
+        
+        $scope.population = population;
+        // Populate each of the expressions within the segment definition.
+        for (var i=0; i < population.segmentExpression.length; i++) {
+            var ex = population.segmentExpression[i];
+            SegmentExpression.show({id: ex._id}, function (expression){
+                expression.applicableRanges = AppState.getApplicableRangesInDimension(expression.left);
+                // Expressions must be kept in the order they were created.
+                for (var j=0; j < population.segmentExpression.length; j++) {
+                    if (population.segmentExpression[j]._id == expression._id) {
+                        population.segmentExpression[j] = expression;
+                        break;
+                    }
+                }
+            });
+        }
+    }, function(err) {
         if (err.status === 401) {
             AppState.logout();
         }
     });
     
-    // Update Application State.
-    AppState.currPopulation = $scope.population;
-    
-    // Attach the segment expression object tree to the population.
-    $scope.population.segmentExpression = models.getSegmentExpression($stateParams.populationId);
-    
-    $scope.supportedDimensions = models.dimensions; // FIXME: this should be an HTTP GET.
+    $scope.supportedDimensions = AppState.dimensions;
     
     // When a dimension is chosen for an expression, the range must be updated
     // so as not to specify the range of a different dimension.
     $scope.setDimension = function (expression, dimension) {
-        expression.leftExpression = dimension;
-        expression.leftId = dimension.dimensionId;
-        expression.rightExpression = models.getApplicableRangesInDimension(dimension.dimensionId)[0];
-        expression.rightId = expression.rightExpression.rangeId;
+        expression.left = dimension;
+        expression.applicableRanges = AppState.getApplicableRangesInDimension(dimension);
+        expression.right = expression.applicableRanges[0];
     };
-    // Esnure currect operator instance is set into expression.
-    $scope.setOperator = function (operator, operatorId) {
-        var opCopy = models.getOperator(operatorId);
-        operator.operatorId = opCopy.operatorId;
-        operator.sign = opCopy.sign;
+    // Ensure currect operator is set into expression.
+    $scope.setOperator = function (expression, operatorId) {
+        expression.operator = AppState.getOperator(operatorId);
     };
     // Add a new expression to the segment expression.
     $scope.addExpression = function () {
-        var expression = new models.SegmentExpression(models.getDimension(1), models.getOperator(1), models.getRange(1));
-        expression.populationId = $scope.population.populationId;
+        var defaultDimension = AppState.getDimension(1);
+        var defaultOperator = AppState.getOperator(1);
+        var defaultRange = AppState.getApplicableRangesInDimension(defaultDimension)[0];
         
-        // If the complete expression is empty, add 1 new expression only.
-        if (   (typeof($scope.population.segmentExpression) === 'undefined')
-            || ($scope.population.segmentExpression.length == 0) ) {
-            $scope.population.segmentExpression = [expression];
+        // If there is at least one expression, add an outer operator first
+        if ($scope.population.segmentExpression.length > 0) {
+            SegmentExpression.create({population:       $scope.population,
+                                      operatorOnly:     true,
+                                      left:             defaultDimension,
+                                      operator:         AppState.getOperator(3),
+                                      right:            defaultRange}, 
+                                     function(expression) {
+                expression.left = defaultDimension; // ignored
+                expression.operator = AppState.getOperator(3);
+                expression.right = defaultRange; // ignored
+                $scope.population.segmentExpression.push(expression);
+            });
         }
-        // If there is at least one expression, add an outer operator + a new expression.
-        else {
-            var outerOp = models.getOperator(3);
-            outerOp.populationId = $scope.population.populationId;
-            models.expressions.push(outerOp);
-            
-            $scope.population.segmentExpression.push(outerOp);
+        
+        SegmentExpression.create({population:       $scope.population,
+                                  operatorOnly:     false,
+                                  left:             defaultDimension,
+                                  operator:         defaultOperator,
+                                  right:            defaultRange}, 
+                                 function(expression){
+            expression.left = defaultDimension;
+            expression.operator = defaultOperator;
+            expression.right = defaultRange;
+            expression.applicableRanges = AppState.getApplicableRangesInDimension(defaultDimension);
             $scope.population.segmentExpression.push(expression);
-        }
-        
-        models.expressions.push(expression);
+        });
     };
     // Removes the selected expression from the complete segment expression.
     $scope.removeExpression = function(expression) {
         var index = $scope.population.segmentExpression.indexOf(expression);
         if ($scope.population.segmentExpression.length > 1) {
+            SegmentExpression.delete({id: $scope.population.segmentExpression[index-1]._id});
             $scope.population.segmentExpression.splice(index-1, 2); // Remove the outer operator AND the expression.
         }
         else {
-            $scope.population.segmentExpression.splice(index, 1); // remove expression.
+            $scope.population.segmentExpression.splice(index, 1);
         }
+        
+        SegmentExpression.delete({id: expression._id});
     }
     
     $scope.savePopulation = function () {
         Population.update({id:$scope.population._id}, $scope.population);
+        
+        // Update any changes to the segment expression.
+        for (var i=0; i < $scope.population.segmentExpression.length; i++) {
+            var expression = $scope.population.segmentExpression[i];
+            
+            SegmentExpression.update({id: expression._id}, expression);
+        }
     }
 }
 
@@ -339,16 +376,16 @@ offerConfiguratorControllers.controller('OfferDetailsController',
                                          OfferDetailsController]);
 function OfferDetailsController($scope, $stateParams, AppState, Offer) {
     // Lookup the offer by it's ID.
-    $scope.offer = Offer.show({id:$stateParams.offerId}, function(d){}, function(err) {
+    $scope.offer = Offer.show({id:$stateParams.offerId}, function(offer){
+        // Update Application State.
+        AppState.currOfferId = offer._id;
+        AppState.showGotoOffers = true;
+        AppState.showGotoOffer = false;
+    }, function(err) {
         if (err.status === 401) {
             AppState.logout();
         }
     });
-    
-    // Update Application State.
-    AppState.currOffer = $scope.offer;
-    AppState.showGotoOffers = true;
-    AppState.showGotoOffer = false;
     
     // Get OfferType and OfferStatus enum listings (for dropdowns)
     $scope.offerTypes = AppState.offerTypes;
@@ -512,7 +549,6 @@ function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
             
             // Add term reference to the offer.
             $scope.offer.terms.push(term);
-            AppState.currOffer.terms.push(term);
         });
     };
     $scope.removeTerm = function (term) {

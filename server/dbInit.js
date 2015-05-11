@@ -8,6 +8,7 @@ var console = require('console');
 
 var Dimension = require(__dirname + '/models/Dimension.js');
 var Range = require(__dirname + '/models/Range.js');
+var Operator = require(__dirname + '/models/Operator.js');
 var Benefit = require(__dirname + '/models/Benefit.js');
 var OfferStatus = require(__dirname + '/models/OfferStatus.js');
 var OfferType = require(__dirname + '/models/OfferType.js');
@@ -29,9 +30,9 @@ module.exports.initDb = function () {
     //
     Dimension.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            new Dimension({_id: 1, className: "Dimension", name: "Age"}).save();
-            new Dimension({_id: 2, className: "Dimension", name: "Occupation"}).save();
-            new Dimension({_id: 3, className: "Dimension", name: "Anual Income"}).save();
+            new Dimension({_id: 1, name: "Age"}).save();
+            new Dimension({_id: 2, name: "Occupation"}).save();
+            new Dimension({_id: 3, name: "Anual Income"}).save();
         }
     });
     
@@ -40,20 +41,33 @@ module.exports.initDb = function () {
     //
     Range.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            new Range({_id: 1, className: "Range", dimension: 1, name: "0-18"}).save();
-            new Range({_id: 2, className: "Range", dimension: 1, name: "19-24"}).save();
-            new Range({_id: 3, className: "Range", dimension: 1, name: "25-39"}).save();
-            new Range({_id: 4, className: "Range", dimension: 1, name: "40-62"}).save();
+            new Range({_id: 1, dimension: 1, name: "0-18"}).save();
+            new Range({_id: 2, dimension: 1, name: "19-24"}).save();
+            new Range({_id: 3, dimension: 1, name: "25-39"}).save();
+            new Range({_id: 4, dimension: 1, name: "40-62"}).save();
             
-            new Range({_id: 5, className: "Range", dimension: 2, name: "Doctor"}).save();
-            new Range({_id: 6, className: "Range", dimension: 2, name: "Engineer"}).save();
-            new Range({_id: 7, className: "Range", dimension: 2, name: "Laywyer"}).save();
-            new Range({_id: 8, className: "Range", dimension: 2, name: "Accountant"}).save();
+            new Range({_id: 5, dimension: 2, name: "Doctor"}).save();
+            new Range({_id: 6, dimension: 2, name: "Engineer"}).save();
+            new Range({_id: 7, dimension: 2, name: "Laywyer"}).save();
+            new Range({_id: 8, dimension: 2, name: "Accountant"}).save();
             
-            new Range({_id: 9, className: "Range", dimension: 3, name: "$0 - $13,999"}).save();
-            new Range({_id:10, className: "Range", dimension: 3, name: "$14,000 - $24,999"}).save();
-            new Range({_id:11, className: "Range", dimension: 3, name: "$25,000 - $49,999"}).save();
-            new Range({_id:12, className: "Range", dimension: 3, name: "$50,000 - $99,999"}).save();
+            new Range({_id: 9, dimension: 3, name: "$0 - $13,999"}).save();
+            new Range({_id:10, dimension: 3, name: "$14,000 - $24,999"}).save();
+            new Range({_id:11, dimension: 3, name: "$25,000 - $49,999"}).save();
+            new Range({_id:12, dimension: 3, name: "$50,000 - $99,999"}).save();
+        }
+    });
+    
+    //
+    // Insert test Operators.
+    //
+    Operator.findOne({_id: 1}, function (err, obj) {
+        if (obj == null) {
+            new Operator({_id: 1, sign: "="}).save();
+            new Operator({_id: 2, sign: "!="}).save();
+            new Operator({_id: 3, sign: "AND"}).save();
+            new Operator({_id: 4, sign: "OR"}).save();
+            new Operator({_id: 5, sign: "NOT"}).save();
         }
     });
     
@@ -62,9 +76,9 @@ module.exports.initDb = function () {
     //
     Benefit.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            new Benefit({_id: 1, className: "Benefit", name: "1B", description: "1B Report, Deliver After Registration"}).save();
-            new Benefit({_id: 2, className: "Benefit", name: "Daily 1B", description: "Daily 1B Report, Post Trial, Auto-refresh on Login"}).save();
-            new Benefit({_id: 3, className: "Benefit", name: "3M", description: "3M Monitoring"}).save();
+            new Benefit({_id: 1, name: "1B", description: "1B Report, Deliver After Registration"}).save();
+            new Benefit({_id: 2, name: "Daily 1B", description: "Daily 1B Report, Post Trial, Auto-refresh on Login"}).save();
+            new Benefit({_id: 3, name: "3M", description: "3M Monitoring"}).save();
         }
     });
     
@@ -73,9 +87,9 @@ module.exports.initDb = function () {
     //
     OfferStatus.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            var unpublished = new OfferStatus({_id: 1, className: "OfferStatus", name: "Unpublished", nextAction: "Publish"});
-            var published = new OfferStatus({_id: 2, className: "OfferStatus", name: "Published", nextAction: "Deactivate"});
-            var deactivated = new OfferStatus({_id: 3, className: "OfferStatus", name: "Deactivated", nextAction: "Deactivate"});
+            var unpublished = new OfferStatus({_id: 1, name: "Unpublished", nextAction: "Publish"});
+            var published = new OfferStatus({_id: 2, name: "Published", nextAction: "Deactivate"});
+            var deactivated = new OfferStatus({_id: 3, name: "Deactivated", nextAction: "Deactivate"});
             
             unpublished.nextStatus = published._id;
             published.nextStatus = deactivated._id;
@@ -92,11 +106,11 @@ module.exports.initDb = function () {
     //
     OfferType.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            new OfferType({_id: 1, className: "OfferType", name: "New Subscription"}).save();
-            new OfferType({_id: 2, className: "OfferType", name: "Transactional"}).save();
-            new OfferType({_id: 3, className: "OfferType", name: "Retention"}).save();
-            new OfferType({_id: 4, className: "OfferType", name: "Cancelation"}).save();
-            new OfferType({_id: 5, className: "OfferType", name: "Amendment"}).save();
+            new OfferType({_id: 1, name: "New Subscription"}).save();
+            new OfferType({_id: 2, name: "Transactional"}).save();
+            new OfferType({_id: 3, name: "Retention"}).save();
+            new OfferType({_id: 4, name: "Cancelation"}).save();
+            new OfferType({_id: 5, name: "Amendment"}).save();
         }
     });
     
@@ -105,8 +119,8 @@ module.exports.initDb = function () {
     //
     ActionType.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            new ActionType({_id: 1, className: "ActionType", name: "Add"}).save();
-            new ActionType({_id: 2, className: "ActionType", name: "Remove"}).save();
+            new ActionType({_id: 1, name: "Add"}).save();
+            new ActionType({_id: 2, name: "Remove"}).save();
         }
     });
     
@@ -115,12 +129,12 @@ module.exports.initDb = function () {
     //
     BillingOnset.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            new BillingOnset({_id: 1, className: "BillingOnset", name: "Trial Start"}).save();
-            new BillingOnset({_id: 2, className: "BillingOnset", name: "Membership Start"}).save();
-            new BillingOnset({_id: 3, className: "BillingOnset", name: "3B3S Delivered"}).save();
-            new BillingOnset({_id: 4, className: "BillingOnset", name: "1B1S Delivered"}).save();
-            new BillingOnset({_id: 5, className: "BillingOnset", name: "Offer Accepted"}).save();
-            new BillingOnset({_id: 6, className: "BillingOnset", name: "End of Previous Charge"}).save();
+            new BillingOnset({_id: 1, name: "Trial Start"}).save();
+            new BillingOnset({_id: 2, name: "Membership Start"}).save();
+            new BillingOnset({_id: 3, name: "3B3S Delivered"}).save();
+            new BillingOnset({_id: 4, name: "1B1S Delivered"}).save();
+            new BillingOnset({_id: 5, name: "Offer Accepted"}).save();
+            new BillingOnset({_id: 6, name: "End of Previous Charge"}).save();
         }
     });
     
@@ -129,10 +143,10 @@ module.exports.initDb = function () {
     //
     BillingInterval.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            new BillingInterval({_id: 1, className: "BillingInterval", name: "days"}).save();
-            new BillingInterval({_id: 2, className: "BillingInterval", name: "weeks"}).save();
-            new BillingInterval({_id: 3, className: "BillingInterval", name: "months"}).save();
-            new BillingInterval({_id: 4, className: "BillingInterval", name: "years"}).save();
+            new BillingInterval({_id: 1, name: "days"}).save();
+            new BillingInterval({_id: 2, name: "weeks"}).save();
+            new BillingInterval({_id: 3, name: "months"}).save();
+            new BillingInterval({_id: 4, name: "years"}).save();
         }
     });
     
@@ -141,11 +155,11 @@ module.exports.initDb = function () {
     //
     BillingPeriod.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            new BillingPeriod({_id: 0, className: "BillingPeriod", name: "Indefinite"}).save();
-            new BillingPeriod({_id: 1, className: "BillingPeriod", name: "1"}).save();
-            new BillingPeriod({_id: 2, className: "BillingPeriod", name: "2"}).save();
-            new BillingPeriod({_id: 3, className: "BillingPeriod", name: "3"}).save();
-            new BillingPeriod({_id: 4, className: "BillingPeriod", name: "4"}).save();
+            new BillingPeriod({_id: 0, name: "Indefinite"}).save();
+            new BillingPeriod({_id: 1, name: "1"}).save();
+            new BillingPeriod({_id: 2, name: "2"}).save();
+            new BillingPeriod({_id: 3, name: "3"}).save();
+            new BillingPeriod({_id: 4, name: "4"}).save();
         }
     });
     
@@ -154,8 +168,8 @@ module.exports.initDb = function () {
     //
     ProrationRule.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            new ProrationRule({_id: 1, className: "ProrationRule", name: "Bill difference immediately"}).save();
-            new ProrationRule({_id: 2, className: "ProrationRule", name: "Add to next bill"}).save();
+            new ProrationRule({_id: 1, name: "Bill difference immediately"}).save();
+            new ProrationRule({_id: 2, name: "Add to next bill"}).save();
         }
     });
     
@@ -164,10 +178,10 @@ module.exports.initDb = function () {
     //
     MerchType.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            new MerchType({_id: 1, className: "MerchType", name: "text", dataCode: 2}).save();
-            new MerchType({_id: 2, className: "MerchType", name: "image", dataCode: 5}).save();
-            new MerchType({_id: 3, className: "MerchType", name: "audio", dataCode: 5}).save();
-            new MerchType({_id: 4, className: "MerchType", name: "video", dataCode: 5}).save();
+            new MerchType({_id: 1, name: "text", dataCode: 2}).save();
+            new MerchType({_id: 2, name: "image", dataCode: 5}).save();
+            new MerchType({_id: 3, name: "audio", dataCode: 5}).save();
+            new MerchType({_id: 4, name: "video", dataCode: 5}).save();
         }
     });
     
@@ -176,10 +190,10 @@ module.exports.initDb = function () {
     //
     Placement.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            new Placement({_id: 1, className: "Placement", name: "top"}).save();
-            new Placement({_id: 2, className: "Placement", name: "bottom"}).save();
-            new Placement({_id: 3, className: "Placement", name: "left"}).save();
-            new Placement({_id: 4, className: "Placement", name: "right"}).save();
+            new Placement({_id: 1, name: "top"}).save();
+            new Placement({_id: 2, name: "bottom"}).save();
+            new Placement({_id: 3, name: "left"}).save();
+            new Placement({_id: 4, name: "right"}).save();
         }
     });
     
@@ -192,7 +206,7 @@ module.exports.initDb = function () {
     var ManageOffersId = {};
     PrivilegeType.findOne({name: "ManageUsers"}, function (err, obj) {
         if (obj == null) { // Only insert if not already present.
-            var privType = new PrivilegeType({className: "PrivilegeType", name: "ManageUsers"});
+            var privType = new PrivilegeType({name: "ManageUsers"});
             privType.save;
             ManageUsersId = privType._id;
         }
@@ -201,7 +215,7 @@ module.exports.initDb = function () {
     });
     PrivilegeType.findOne({name: "ManagePopulations"}, function (err, obj) {
         if (obj == null) { // Only insert if not already present.
-            var privType = new PrivilegeType({className: "PrivilegeType", name: "ManagePopulations"});
+            var privType = new PrivilegeType({name: "ManagePopulations"});
             privType.save;
             ManagePopulationsId = privType._id;
         }
@@ -210,7 +224,7 @@ module.exports.initDb = function () {
     });
     PrivilegeType.findOne({name: "ManageOffers"}, function (err, obj) {
         if (obj == null) { // Only insert if not already present.
-            var privType = new PrivilegeType({className: "PrivilegeType", name: "ManageOffers"});
+            var privType = new PrivilegeType({name: "ManageOffers"});
             privType.save;
             ManageOffersId = privType._id;
         }
@@ -223,16 +237,16 @@ module.exports.initDb = function () {
     //
     User.findOne({username: "administrator"}, function (err, obj) {
         if (obj == null) { // Only insert if not already present.
-            var administrator = new User({className: "User", username: "administrator", password: "ecdOCtool",
-                                          firstName: "Some", lastName: "Administrator"});
+            var administrator = new User({username: "administrator", password: "ecdOCtool",
+                                          lastName: "Administrator"});
             administrator.save();
 
             // Give administrator privileges.
-            new Privilege({className: "Privilege", privilegeTypeId: ManageUsersId, userId: administrator._id,
+            new Privilege({privilegeTypeId: ManageUsersId, userId: administrator._id,
                            readAccess: true, createAccess: true, updateAccess: true, deleteAccess: true}).save();
-            new Privilege({className: "Privilege", privilegeTypeId: ManagePopulationsId, userId: administrator._id,
+            new Privilege({privilegeTypeId: ManagePopulationsId, userId: administrator._id,
                            readAccess: true, createAccess: true, updateAccess: true, deleteAccess: true}).save();
-            new Privilege({className: "Privilege", privilegeTypeId: ManageOffersId, userId: administrator._id,
+            new Privilege({privilegeTypeId: ManageOffersId, userId: administrator._id,
                            readAccess: true, createAccess: true, updateAccess: true, deleteAccess: true}).save();
         }
     });

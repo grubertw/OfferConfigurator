@@ -12,7 +12,6 @@ var mongoose = require('mongoose')
    ,ObjectId = Schema.ObjectId;
  
 var postSchema = new Schema({
-    className                   : String,
     timeoutInterval             : Number, // time (in seconds) the session will expire.
     userId                      : ObjectId
 });

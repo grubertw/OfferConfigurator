@@ -24,14 +24,15 @@ offerConfiguratorServices.service('AppState', ['$state', function ($state) {
     this.showGotoOffer = false;
     
     // Current selected population.
-    this.currPopulation = {};
+    this.currPopulationId = {};
     
     // Current selected offer.
-    this.currOffer = {};
+    this.currOfferId = {};
     
     // Enumerated models requested from the server after successfull login.
     this.dimensions = [];
     this.ranges = [];
+    this.operators = [];
     this.offerTypes = [];
     this.offerStatuses = [];
     this.benefits = [];
@@ -65,6 +66,31 @@ offerConfiguratorServices.service('AppState', ['$state', function ($state) {
         var obj = {};
         for (var i = 0; i < this.ranges.length; i++) {
             var objIt = this.ranges[i];
+            if (objIt._id == id) {
+                obj = objIt;
+                break;
+            }
+        }
+        return obj;
+    };
+    
+    // Get ranges within this dimension
+    this.getApplicableRangesInDimension = function(dim) {
+        var ranges = [];
+        for (var i=0; i < this.ranges.length; i++) {
+            var objIt = this.ranges[i];
+            if (objIt.dimension._id == dim._id) {
+                ranges.push(objIt);
+            }
+        }
+        return ranges;
+    };
+    
+    // Get Operator by id
+    this.getOperator = function (id) {
+        var obj = {};
+        for (var i = 0; i < this.operators.length; i++) {
+            var objIt = this.operators[i];
             if (objIt._id == id) {
                 obj = objIt;
                 break;
@@ -310,6 +336,22 @@ offerConfiguratorServices.factory('Merchandise', ['$resource', 'AppState', funct
 }]);
 
 //
+// SegmentExpression service (show, create, update, delete).
+//
+offerConfiguratorServices.factory('SegmentExpression', ['$resource', 'AppState', function ($resource, AppState) {
+    var httpHeaders = {'authorization': 'Bearer ' + AppState.authToken};
+    
+    return $resource(apiRoute+'segmentExpression/:id', {id:'@id'},
+                     {show:     {method: 'GET', headers: httpHeaders},
+                      listByPopulation: {method: 'GET', headers: httpHeaders, isAray: true,
+                                         url: apiRoute+'segmentExpression/:populationId', 
+                                         params: {populationId:'@populationId'}},
+                      create:   {method: 'POST', headers: httpHeaders},
+                      update:   {method: 'PUT', headers: httpHeaders},
+                      delete:   {method: 'DELETE', headers: httpHeaders}});
+}]);
+
+//
 // Dimensions service (list)
 //
 offerConfiguratorServices.factory('Dimensions', ['$resource', 'AppState', function ($resource, AppState) {
@@ -322,6 +364,14 @@ offerConfiguratorServices.factory('Dimensions', ['$resource', 'AppState', functi
 //
 offerConfiguratorServices.factory('Ranges', ['$resource', 'AppState', function ($resource, AppState) {
     return $resource(apiRoute+'ranges', {}, 
+                     {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}});
+}]);
+
+//
+// Operators service (list)
+//
+offerConfiguratorServices.factory('Operators', ['$resource', 'AppState', function ($resource, AppState) {
+    return $resource(apiRoute+'operators', {}, 
                      {list: {method: 'GET', isArray: true,  headers: {'authorization': 'Bearer ' + AppState.authToken}}});
 }]);
 

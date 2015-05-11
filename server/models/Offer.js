@@ -12,7 +12,6 @@ var mongoose = require('mongoose')
    ,ObjectId = Schema.ObjectId;
 
 var Offer = new Schema({
-    className                   : String,
     name                        : String,
     description                 : String,
     offerType                   : {type: Number, ref: 'OfferType'},
