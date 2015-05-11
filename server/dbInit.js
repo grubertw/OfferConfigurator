@@ -30,9 +30,9 @@ module.exports.initDb = function () {
     //
     Dimension.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            new Dimension({_id: 1, name: "Age"}).save();
-            new Dimension({_id: 2, name: "Occupation"}).save();
-            new Dimension({_id: 3, name: "Anual Income"}).save();
+            new Dimension({_id: 1, name: "Purchase Intent"}).save();
+            new Dimension({_id: 2, name: "Previous History"}).save();
+            new Dimension({_id: 3, name: "Communications Style"}).save();
         }
     });
     
@@ -41,20 +41,23 @@ module.exports.initDb = function () {
     //
     Range.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            new Range({_id: 1, dimension: 1, name: "0-18"}).save();
-            new Range({_id: 2, dimension: 1, name: "19-24"}).save();
-            new Range({_id: 3, dimension: 1, name: "25-39"}).save();
-            new Range({_id: 4, dimension: 1, name: "40-62"}).save();
+            new Range({_id: 101, dimension: 1, name: "Curious"}).save();
+            new Range({_id: 102, dimension: 1, name: "In Market: Car"}).save();
+            new Range({_id: 103, dimension: 1, name: "In Market: House"}).save();
+            new Range({_id: 104, dimension: 1, name: "Identity Theft"}).save();
+            new Range({_id: 105, dimension: 1, name: "Repair Credit"}).save();
             
-            new Range({_id: 5, dimension: 2, name: "Doctor"}).save();
-            new Range({_id: 6, dimension: 2, name: "Engineer"}).save();
-            new Range({_id: 7, dimension: 2, name: "Laywyer"}).save();
-            new Range({_id: 8, dimension: 2, name: "Accountant"}).save();
+            new Range({_id: 201, dimension: 2, name: 'None'}).save();
+            new Range({_id: 202, dimension: 2, name: 'One Trial Only'}).save();
+            new Range({_id: 203, dimension: 2, name: 'Multiple Trial Only'}).save();
+            new Range({_id: 204, dimension: 2, name: 'Negative Experiance'}).save();
+            new Range({_id: 205, dimension: 2, name: 'Unprofitable'}).save();
+            new Range({_id: 206, dimension: 2, name: 'Marginally Profitable'}).save();
+            new Range({_id: 207, dimension: 2, name: 'Highly Profitable'}).save();
             
-            new Range({_id: 9, dimension: 3, name: "$0 - $13,999"}).save();
-            new Range({_id:10, dimension: 3, name: "$14,000 - $24,999"}).save();
-            new Range({_id:11, dimension: 3, name: "$25,000 - $49,999"}).save();
-            new Range({_id:12, dimension: 3, name: "$50,000 - $99,999"}).save();
+            new Range({_id: 301, dimension: 3, name: 'Direct'}).save();
+            new Range({_id: 302, dimension: 3, name: 'Humorous'}).save();
+            new Range({_id: 303, dimension: 3, name: 'Alarming'}).save();
         }
     });
     
@@ -79,6 +82,9 @@ module.exports.initDb = function () {
             new Benefit({_id: 1, name: "1B", description: "1B Report, Deliver After Registration"}).save();
             new Benefit({_id: 2, name: "Daily 1B", description: "Daily 1B Report, Post Trial, Auto-refresh on Login"}).save();
             new Benefit({_id: 3, name: "3M", description: "3M Monitoring"}).save();
+            new Benefit({_id: 4, name: '1M', description: '1M Monitoring'}).save();
+            new Benefit({_id: 5, name: 'Score Monitoring', description: 'Score Monitoring'}).save();
+            new Benefit({_id: 6, name: 'Monthly Statement', description: 'Monthly Statement'}).save();
         }
     });
     
@@ -143,10 +149,8 @@ module.exports.initDb = function () {
     //
     BillingInterval.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            new BillingInterval({_id: 1, name: "days"}).save();
-            new BillingInterval({_id: 2, name: "weeks"}).save();
-            new BillingInterval({_id: 3, name: "months"}).save();
-            new BillingInterval({_id: 4, name: "years"}).save();
+            new BillingInterval({_id: 1, name: "months"}).save();
+            new BillingInterval({_id: 2, name: "years"}).save();
         }
     });
     
