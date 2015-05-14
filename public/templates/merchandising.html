@@ -32,56 +32,54 @@
     </form>
     
     <div class="container-fluid">
-        <div id="merchandiseRow" class="row" ng-repeat="item in merchandising">
-            <div class="col-md-2">
+        <form id="merchandiseRow" class="row form-inline" ng-repeat="item in merchandising">
+            <div class="form-group col-md-3">
                 <label>Name</label>
                 <input type="text" class="form-control" ng-model="item.name">
             </div>
-            <div class="col-md-2">
+            <div class="form-group col-md-2">
                 <label>Type</label>
-                <div class="dropdown" id="merchType">
-                    <button class="btn btn-default dropdown-toggle" type="button" id="merchTypeButton" data-toggle="dropdown" aria-expanded="true">
+                <div class="btn-group" dropdown id="merchType">
+                    <button class="btn btn-default dropdown-toggle" dropdown-toggle type="button" id="merchTypeButton">
                     {{item.merchType.name}}<span class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="merchTypeButton">
-                        <li role="presentation" ng-repeat="type in merchTypes" ng-click="setMerchType(item,type)">
-                        {{type.name}}
+                    <ul class="dropdown-menu" role="menu">
+                        <li ng-repeat="type in merchTypes">
+                            <a href="#" ng-click="setMerchType(item,type)">{{type.name}}</a>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="form-group col-md-3">
                 <label>Value</label>
                 <input type="text" class="form-control" ng-model="item.value">
             </div>
-            <div class="col-md-2">
+            <div class="form-group col-md-2">
                 <label for="merchPlacement">Placement</label>
-                <div class="dropdown" id="merchPlacement">
-                    <button class="btn btn-default dropdown-toggle" type="button" id="merchPlacementButton" data-toggle="dropdown" aria-expanded="true">
+                <div class="btn-group" dropdown id="merchPlacement">
+                    <button class="btn btn-default dropdown-toggle" dropdown-toggle type="button" id="merchPlacementButton">
                     {{item.placement.name}}<span class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="merchPlacementButton">
-                        <li role="presentation" ng-repeat="placement in placements" ng-click="setPlacement(item,placement)">
-                        {{placement.name}}
+                    <ul class="dropdown-menu" role="menu">
+                        <li ng-repeat="placement in placements">
+                            <a href="#" ng-click="setPlacement(item,placement)">{{placement.name}}</a>
                         </li>
                     </ul>
                 </div>
                     
             </div>
-            <div class="col-md-1">
-                <label>Remove</label>
+            <div class="form-group col-md-1">
                 <button type="button" class="btn btn-default" ng-click="removeMerchandising(item)">
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                 </button>
             </div>
-            
         </div>
     </div>
     
-    <button type="button" class="btn btn-default" ng-click="addMerchandising()">
+    <button type="button" class="btn btn-primary" ng-click="addMerchandising()">
         <span class="glyphicon glyphicon-add" aria-hidden="true"></span>Add
     </button>
-    <button type="button" class="btn btn-default" ng-click="saveMerchandising()">
+    <button type="button" class="btn btn-primary" ng-click="saveMerchandising()">
         <span class="glyphicon glyphicon-save" aria-hidden="true"></span>Save
     </button>
 </div>

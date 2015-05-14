@@ -24,13 +24,13 @@
     <!-- term.billingOnset entry -->
     <div class="form-group">
         <label class="col-sm-2 control-label">Billing Onset</label>
-        <div class="dropdown col-sm-2" id="billingOnset">
-          <button class="btn btn-default dropdown-toggle" type="button" id="billingOnsetButton" data-toggle="dropdown" aria-expanded="true">
+        <div class="btn-group col-sm-2" dropdown id="billingOnset">
+          <button class="btn btn-default dropdown-toggle" dropdown-toggle type="button" id="billingOnsetButton">
             {{term.billingOnset.name}}<span class="caret"></span>
           </button>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="billingOnsetButton">
-            <li role="presentation" ng-repeat="billingOnset in billingOnsets" ng-click="setBillingOnset(billingOnset)">
-                {{billingOnset.name}}
+          <ul class="dropdown-menu" role="menu">
+            <li ng-repeat="billingOnset in billingOnsets" ng-click="setBillingOnset(billingOnset)">
+                <a href="#">{{billingOnset.name}}</a>
             </li>
           </ul>
         </div>
@@ -72,13 +72,13 @@
 
         <!-- term.billingInterval entry -->
         <div class="form-group">
-            <div class="dropdown" id="billingInterval">
-              <button class="btn btn-default dropdown-toggle" type="button" id="billingIntervalButton" data-toggle="dropdown" aria-expanded="true">
+            <div class="btn-group" dropdown id="billingInterval">
+              <button class="btn btn-default dropdown-toggle" dropdown-toggle type="button" id="billingIntervalButton">
                 {{term.billingInterval.name}}<span class="caret"></span>
               </button>
-              <ul class="dropdown-menu" role="menu" aria-labelledby="billingIntervalButton">
-                <li role="presentation" ng-repeat="billingInterval in billingIntervals" ng-click="setBillingInterval(billingInterval)">
-                    {{billingInterval.name}}
+              <ul class="dropdown-menu" role="menu">
+                <li ng-repeat="billingInterval in billingIntervals">
+                    <a href="#" ng-click="setBillingInterval(billingInterval)">{{billingInterval.name}}</a>
                 </li>
               </ul>
             </div>
@@ -90,13 +90,13 @@
 
         <!-- term.billingPeriod entry -->
         <div class="form-group">
-            <div class="dropdown" id="billingPeriod">
-              <button class="btn btn-default dropdown-toggle" type="button" id="billingPeriodButton" data-toggle="dropdown" aria-expanded="true">
+            <div class="btn-group" dropdown id="billingPeriod">
+              <button class="btn btn-default dropdown-toggle" dropdown-toggle type="button" id="billingPeriodButton">
                 {{term.billingPeriod.name}}<span class="caret"></span>
               </button>
-              <ul class="dropdown-menu" role="menu" aria-labelledby="billingPeriodButton">
-                <li role="presentation" ng-repeat="billingPeriod in billingPeriods" ng-click="setBillingPeriod(billingPeriod)">
-                    {{billingPeriod.name}}
+              <ul class="dropdown-menu" role="menu">
+                <li ng-repeat="billingPeriod in billingPeriods">
+                    <a href="#" ng-click="setBillingPeriod(billingPeriod)">{{billingPeriod.name}}</a>
                 </li>
               </ul>
             </div>
@@ -112,13 +112,13 @@
     <!-- term.prorationRule entry -->
     <div class="form-group">
         <label class="col-sm-2 control-label">Proration Rule</label>
-        <div class="dropdown col-sm-2" id="prorationRule">
-          <button class="btn btn-default dropdown-toggle" type="button" id="prorationRuleButton" data-toggle="dropdown" aria-expanded="true">
+        <div class="btn-group col-sm-2" dropdown id="prorationRule">
+          <button class="btn btn-default dropdown-toggle" dropdown-toggle type="button" id="prorationRuleButton">
             {{term.prorationRule.name}}<span class="caret"></span>
           </button>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="prorationRuleButton">
-            <li role="presentation" ng-repeat="prorationRule in prorationRules" ng-click="setProrationRule(prorationRule)">
-                {{prorationRule.name}}
+          <ul class="dropdown-menu" role="menu">
+            <li ng-repeat="prorationRule in prorationRules">
+                <a href="#" ng-click="setProrationRule(prorationRule)">{{prorationRule.name}}</a>
             </li>
           </ul>
         </div>
@@ -133,6 +133,6 @@
     </div>
 </form>
 
-<button type="button" class="btn btn-default" id="save-button" ng-click="saveTerm()">
+<button type="button" class="btn btn-primary" id="save-button" ng-click="saveTerm()">
     <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save and Relist Terms 
 </button>

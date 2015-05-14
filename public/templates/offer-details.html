@@ -69,13 +69,13 @@
         <!-- offer.offerTypeId entry -->
         <div class="form-group">
             <label class="col-sm-2 control-label">Offer Type</label>
-            <div class="dropdown col-sm-2" id="offerType">
-              <button class="btn btn-default dropdown-toggle" type="button" id="offerTypeButton" data-toggle="dropdown" aria-expanded="true">
+            <div class="btn-group col-sm-2" dropdown id="offerType">
+              <button class="btn btn-default dropdown-toggle" dropdown-toggle type="button" id="offerTypeButton">
                 {{offer.offerType.name}}<span class="caret"></span>
               </button>
-              <ul class="dropdown-menu" role="menu" aria-labelledby="offerTypeButton">
-                <li role="presentation" ng-repeat="offerType in offerTypes" ng-click="setOfferType(offerType)">
-                    {{offerType.name}}
+              <ul class="dropdown-menu" role="menu">
+                <li ng-repeat="offerType in offerTypes">
+                    <a href="#" ng-click="setOfferType(offerType)">{{offerType.name}}</a>
                 </li>
               </ul>
             </div>
@@ -90,7 +90,7 @@
         </div>
     </form>
     
-    <button type="button" class="btn btn-default" id="save-button" ng-click="saveOffer()">
+    <button type="button" class="btn btn-primary" id="save-button" ng-click="saveOffer()">
         <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save
     </button>
 </div>

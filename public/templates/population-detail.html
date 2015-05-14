@@ -24,50 +24,50 @@
         <div ng-repeat="expression in population.segmentExpression">
 
             <!-- Repeater for outer opperators (AND|OR|NOT)-->
-            <div ng-if="expression.operatorOnly" class="dropdown" id="outerOperator">
-              <button class="btn btn-default dropdown-toggle" type="button" id="outerOperator" data-toggle="dropdown" aria-expanded="true">
+            <div ng-if="expression.operatorOnly" class="btn-group" dropdown id="outerOperator">
+              <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
                 {{expression.operator.sign}}<span class="caret"></span>
               </button>
-              <ul class="dropdown-menu" role="menu" aria-labelledby="outerOperator">
-                <li role="presentation" ng-click="setOperator(expression, 3)">AND</li>
-                <li role="presentation" ng-click="setOperator(expression, 4)">OR</li>
-                <li role="presentation" ng-click="setOperator(expression, 5)">NOT</li>
+              <ul class="dropdown-menu" role="menu">
+                  <li><a href="#" ng-click="setOperator(expression, 3)">AND</a></li>
+                  <li><a href="#" ng-click="setOperator(expression, 4)">OR</a></li>
+                  <li><a href="#" ng-click="setOperator(expression, 5)">NOT</a></li>
               </ul>
             </div>
             
             <!-- Repeater for expressions. -->
             <div ng-if="!expression.operatorOnly" id="expression">
                 <!-- Use when the left side is a dimension -->
-                <div class="dropdown" id="dimension">
-                  <button class="btn btn-default dropdown-toggle" type="button" id="dimensionButton" data-toggle="dropdown" aria-expanded="true">
+                <div class="btn-group" dropdown id="dimension">
+                  <button class="btn btn-default dropdown-toggle" dropdown-toggle type="button" id="dimensionButton" >
                     {{expression.left.name}}<span class="caret"></span>
                   </button>
-                  <ul class="dropdown-menu" role="menu" aria-labelledby="dimensionButton">
-                    <li role="presentation" ng-repeat="dimension in supportedDimensions" ng-click="setDimension(expression, dimension)">
-                        {{dimension.name}}
+                  <ul class="dropdown-menu" role="menu">
+                    <li ng-repeat="dimension in supportedDimensions">
+                        <a href="#" ng-click="setDimension(expression, dimension)">{{dimension.name}}</a>
                     </li>
                   </ul>
                 </div>
 
                 <!-- Inner operator -->
-                <div class="dropdown" id="innerOperator">
-                  <button class="btn btn-default dropdown-toggle" type="button" id="innerOperatorButton" data-toggle="dropdown" aria-expanded="true">
+                <div class="btn-group" dropdown id="innerOperator">
+                  <button class="btn btn-default dropdown-toggle" dropdown-toggle type="button" id="innerOperatorButton">
                     {{expression.operator.sign}}<span class="caret"></span>
                   </button>
-                  <ul class="dropdown-menu" role="menu" aria-labelledby="innerOperatorButton">
-                    <li role="presentation" ng-click="setOperator(expression, 1)">=</li>
-                    <li role="presentation" ng-click="setOperator(expression, 2)">!=</li>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#" ng-click="setOperator(expression, 1)">=</a></li>
+                    <li><a href="#" ng-click="setOperator(expression, 2)">!=</a></li>
                   </ul>
                 </div>
 
                 <!-- Use when the right side is a range -->
-                <div class="dropdown" id="range">
-                  <button class="btn btn-default dropdown-toggle" type="button" id="rangeButton" data-toggle="dropdown" aria-expanded="true">
+                <div class="dropdown" dropdown id="range">
+                  <button class="btn btn-default dropdown-toggle" dropdown-toggle type="button" id="rangeButton">
                     {{expression.right.name}}<span class="caret"></span>
                   </button>
-                  <ul class="dropdown-menu" role="menu" aria-labelledby="rangeButton">
-                    <li role="presentation" ng-repeat="range in expression.applicableRanges" ng-click="expression.right = range">
-                        {{range.name}}
+                  <ul class="dropdown-menu" role="menu">
+                    <li ng-repeat="range in expression.applicableRanges">
+                        <a href="#" ng-click="expression.right = range">{{range.name}}</a>
                     </li>
                   </ul>
                 </div>
@@ -79,7 +79,7 @@
         </button>
         
     </div>
-    <button type="button" class="btn btn-default" id="save-button" ng-click="savePopulation()">
+    <button type="button" class="btn btn-primary" id="save-button" ng-click="savePopulation()">
       <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save
     </button>
 </div> <!-- END population details content -->

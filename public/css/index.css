@@ -109,3 +109,5 @@
 #save-button {
     margin-top: 20px;
 }
+
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }

@@ -9,7 +9,7 @@
 // (at some point it may make sense to group the controllers into 
 // different sub-modules)
 var offerConfiguratorApp = angular.module('offerConfiguratorApp', 
-                                          ['ui.router', 'ui.date',
+                                          ['ui.router', 'ui.date', 'ui.bootstrap',
                                            'offerConfiguratorServices',
                                            'offerConfiguratorControllers'
                                            ]);
