@@ -160,19 +160,9 @@ function PopulationsController($scope, Populations, Population, AppState,
     // Fetch the populations from the server.
     $scope.populations = Populations.list();
     
-    // Toggle remove/edit populations.
-    $scope.editPopulations = false;
-    $scope.removePopulations = false;
-    
     //
     // Supported Opperations
     //
-    $scope.toggleEditPopulations = function () {
-        $scope.editPopulations = !$scope.editPopulations;
-    };
-    $scope.toggleRemovePopulations = function () {
-        $scope.removePopulations = !$scope.removePopulations;
-    };
     $scope.addPopulation = function () {
         var newPopulation = Population.create();
         $scope.populations.push(newPopulation);
@@ -315,19 +305,9 @@ function OffersController($scope, $stateParams, AppState, Population, Offers, Of
     // Update the Application State.
     AppState.showGotoPopulation = true;
     
-    // Toggle remove/edit offers.
-    $scope.editOffers = false;
-    $scope.removeOffers = false;
-    
     //
     // Supported opperations.
     //
-    $scope.toggleEditOffers = function () {
-        $scope.editOffers = !$scope.editOffers;
-    };
-    $scope.toggleRemoveOffers = function () {
-        $scope.removeOffers = !$scope.removeOffers;
-    };
     $scope.addOffer = function () {
         // Create an offer within the selected population.
         // Set default values for offerStatus and offerType.
@@ -433,17 +413,12 @@ function BenefitsController($scope, $stateParams, AppState, Offer) {
     // Get Benefits.
     $scope.benefits = AppState.benefits;
     
-    // Toggle remove benefits.
-    $scope.removeBenefits = false;
     // Selected benefit to add.
     $scope.benefitToAdd = {};
     
     //
     // Supported opperations.
     //
-    $scope.toggleRemoveBenefits = function () {
-        $scope.removeBenefits = !$scope.removeBenefits;
-    };
     $scope.removeBenefit = function (benefit) {
         var index = $scope.offer.benefits.indexOf(benefit);
         $scope.offer.benefits.splice(index, 1);
@@ -500,21 +475,9 @@ function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
         }
     });
     
-    // Toggle edit terms.
-    $scope.editTerms = false;
-    // Toggle remove terms.
-    $scope.removeTerms = false;
-
-    
     //
     // Supported opperations.
     //
-    $scope.toggleEditTerms = function () {
-        $scope.editTerms = !$scope.editTerms;
-    };
-    $scope.toggleRemoveTerms = function () {
-        $scope.removeTerms = !$scope.removeTerms;
-    };
     $scope.addTerm = function () {
         // Create an term within the selected offer.
         // Set default values for billingOnset, billingInterval, recurrence and prorationRule.

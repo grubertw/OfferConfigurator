@@ -9,37 +9,31 @@
     <button type="button" class="btn btn-primary" ng-click="addOffer()">
       <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
     </button>
-    <button type="button" class="btn btn-primary" ng-click="toggleEditOffers()">
-      <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit
-    </button>
-    <button type="button" class="btn btn-primary" ng-click="toggleRemoveOffers()">
-      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove
-    </button>
 
     <table class="table table-striped">
         <thead><tr>
+            <th></th>
             <th>Name</th>
             <th>Type</th>
             <th>Split</th>
             <th>Status</th>
             <th>Starts</th>
             <th>Ends</th>
-            <th class="editTableHeader" ng-show="editOffers">Edit</th>
-            <th class="editTableHeader" ng-show="removeOffers">Remove</th>
+            <th></th>
         </tr></thead>
         <tbody><tr ng-repeat="offer in offers">
+            <td>
+                <button type="button" class="btn btn-default">
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true" ui-sref="offerDetails({offerId:offer._id})"></span>
+                </button>
+            </td>
             <td>{{offer.name}}</td>
             <td>{{offer.offerType.name}}</td>
             <td><input id="offerSplitEditTextbox" type="text" class="form-control" ng-model="offer.split">%</td>
             <td>{{offer.offerStatus.name}}</td>
             <td>{{offer.startDate}}</td>
             <td>{{offer.endDate}}</td>
-            <td ng-show="editOffers">
-                <button type="button" class="btn btn-default">
-                    <span class="glyphicon glyphicon-edit" aria-hidden="true" ui-sref="offerDetails({offerId:offer._id})"></span>
-                </button>
-            </td>
-            <td ng-show="removeOffers">
+            <td>
                 <button type="button" class="btn btn-default" ng-click="removeOffer(offer)">
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                 </button>
@@ -49,12 +43,6 @@
 
     <button type="button" class="btn btn-primary" ng-click="addOffer()">
       <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
-    </button>
-    <button type="button" class="btn btn-primary" ng-click="toggleEditOffers()">
-      <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit
-    </button>
-    <button type="button" class="btn btn-primary" ng-click="toggleRemoveOffers()">
-      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove
     </button>
 </div>
 </div> <!-- END tab content -->

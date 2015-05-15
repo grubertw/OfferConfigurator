@@ -82,34 +82,28 @@
         <button type="button" class="btn btn-primary" ng-click="addTerm()">
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Term
         </button>
-        <button type="button" class="btn btn-primary" ng-click="toggleEditTerms()">
-            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit Term
-        </button>
-        <button type="button" class="btn btn-primary" ng-click="toggleRemoveTerms()">
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove Term
-        </button>
 
         <!-- Charges/Terms table -->
         <table class="table table-striped">
             <thead><tr>
+                <th></th>
                 <th>Billing Onset</th>
                 <th>Amount</th>
                 <th>MSRP</th>
                 <th>Reccurence</th>
-                <th class="editTableHeader" ng-show="editTerms">Edit</th>
-                <th class="editTableHeader" ng-show="removeTerms">Remove</th>
+                <th></th>
             </tr></thead>
             <tbody><tr ng-repeat="term in terms">
-                <td>{{term.billingOnset.name}}</td>
-                <td>{{term.price}}</td>
-                <td>{{term.msrp}}</td>
-                <td>{{term.reccurrenceDescription}}</td>
-                <td ng-show="editTerms">
+                <td>
                     <button type="button" class="btn btn-default">
                         <span class="glyphicon glyphicon-edit" aria-hidden="true" ui-sref="terms.termDetails({termId:term._id})"></span>
                     </button>
                 </td>
-                <td ng-show="removeTerms">
+                <td>{{term.billingOnset.name}}</td>
+                <td>{{term.price}}</td>
+                <td>{{term.msrp}}</td>
+                <td>{{term.reccurrenceDescription}}</td>
+                <td>
                     <button type="button" class="btn btn-default" ng-click="removeTerm(term)">
                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                     </button>
@@ -119,12 +113,6 @@
 
         <button type="button" class="btn btn-primary" ng-click="addTerm()">
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Term
-        </button>
-        <button type="button" class="btn btn-primary" ng-click="toggleEditTerms()">
-            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit Term
-        </button>
-        <button type="button" class="btn btn-primary" ng-click="toggleRemoveTerms()">
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove Term
         </button>
     </div>
     

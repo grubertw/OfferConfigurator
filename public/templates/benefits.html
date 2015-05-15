@@ -29,20 +29,16 @@
         <span>{{offer.name}}</span>
     </form>
     
-    <button type="button" class="btn btn-default" ng-click="toggleRemoveBenefits()">
-        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove
-    </button>
-    
     <table class="table table-striped">
         <thead><tr>
             <th>Benefit</th>
             <th>Description</th>
-            <th class="editTableHeader" ng-show="removeBenefits">Remove</th>
+            <th></th>
         </tr></thead>
         <tbody><tr ng-repeat="benefit in offer.benefits">
             <td>{{benefit.name}}</td>
             <td>{{benefit.description}}</td>
-            <td ng-show="removeBenefits">
+            <td>
                 <button type="button" class="btn btn-default" ng-click="removeBenefit(benefit)">
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                 </button>
