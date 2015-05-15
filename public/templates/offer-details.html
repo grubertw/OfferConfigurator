@@ -45,7 +45,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Name</label>
             <div class="col-sm-2">
-                <input type="text" class="form-control" ng-model="offer.name">
+                <input type="text" class="form-control" ng-model="offer.name" ng-change="saveOffer()">
             </div>
         </div>
             
@@ -53,7 +53,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Start Date</label>
             <div class="col-sm-2">
-                <input type="text" class="form-control" ui-date="offerStartDatePicker" ng-model="offer.startDate">
+                <input type="text" class="form-control" ui-date="offerStartDatePicker" ng-model="offer.startDate" ng-change="saveOffer()">
             </div>
         </div>
         
@@ -62,7 +62,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">End Date</label>
             <div class="col-sm-2">
-                <input type="text" class="form-control" ui-date="offerEndDatePicker" ng-model="offer.endDate">
+                <input type="text" class="form-control" ui-date="offerEndDatePicker" ng-model="offer.endDate" ng-change="saveOffer()">
             </div>
         </div>
 
@@ -85,14 +85,10 @@
         <div class="form-group">
             <label class="col-sm-2 control-label" for="offerDescriptionInput">Internal Description</label>
             <div class="col-sm-6">
-                <textarea id="offerDescriptionInput" rows="3" class="form-control" ng-model="offer.description"></textarea>
+                <textarea id="offerDescriptionInput" rows="3" class="form-control" ng-model="offer.description" ng-change="saveOffer()"></textarea>
             </div>
         </div>
     </form>
-    
-    <button type="button" class="btn btn-primary" id="save-button" ng-click="saveOffer()">
-        <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save
-    </button>
 </div>
     
 </div> <!-- END tab content -->

@@ -166,7 +166,7 @@ var OfferAPI = {};
 OfferAPI.listByPopulationUrl = apiRoute + "offers/:populationId";
 OfferAPI.listByPopulation = function(req, res) {    
     if (req.user) {
-        Offer.find({population: req.params.populationId}).populate('offerType offerStatus population').exec(function(err, models) {
+        Offer.find({population: req.params.populationId}).populate('offerType offerStatus population benefits terms').exec(function(err, models) {
             res.send(models);
         });
     }
@@ -197,6 +197,7 @@ OfferAPI.create = function(req, res) {
         model.population = req.body.population._id; // An Offer must be created with a population, minimum.
         model.offerStatus = req.body.offerStatus._id;
         model.offerType = req.body.offerType._id;
+        model.split = req.body.split;
         model.description = req.body.description;
         model.startDate = req.body.startDate;
         model.endDate = req.body.endDate;
@@ -239,6 +240,7 @@ OfferAPI.update = function(req, res) {
             $set: {name:                        req.body.name, 
                    offerType:                   req.body.offerType._id, 
                    offerStatus:                 req.body.offerStatus._id,
+                   split:                       req.body.split,
                    description:                 req.body.description,
                    startDate:                   req.body.startDate,
                    endDate:                     req.body.endDate,
@@ -250,8 +252,6 @@ OfferAPI.update = function(req, res) {
                    benefits:                    benefits,
                    terms:                       terms}
         }, { upsert: true }, function(err, model) {
-            console.log("Update Offer  err=%s", err);
-            
             return res.json(model.toJSON());
         });
     }

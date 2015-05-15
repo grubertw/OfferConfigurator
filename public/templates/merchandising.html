@@ -35,7 +35,7 @@
         <form id="merchandiseRow" class="row form-inline" ng-repeat="item in merchandising">
             <div class="form-group col-md-3">
                 <label>Name</label>
-                <input type="text" class="form-control" ng-model="item.name">
+                <input type="text" class="form-control" ng-model="item.name" ng-change="saveMerchandise(item)">
             </div>
             <div class="form-group col-md-2">
                 <label>Type</label>
@@ -52,7 +52,7 @@
             </div>
             <div class="form-group col-md-3">
                 <label>Value</label>
-                <input type="text" class="form-control" ng-model="item.value">
+                <input type="text" class="form-control" ng-model="item.value" ng-change="saveMerchandise(item)">
             </div>
             <div class="form-group col-md-2">
                 <label for="merchPlacement">Placement</label>
@@ -66,7 +66,6 @@
                         </li>
                     </ul>
                 </div>
-                    
             </div>
             <div class="form-group col-md-1">
                 <button type="button" class="btn btn-default" ng-click="removeMerchandising(item)">
@@ -74,14 +73,11 @@
                 </button>
             </div>
         </div>
+        
+        <button type="button" class="btn btn-primary" ng-click="addMerchandising()">
+            <span class="glyphicon glyphicon-add" aria-hidden="true"></span>Add
+        </button>
     </div>
-    
-    <button type="button" class="btn btn-primary" ng-click="addMerchandising()">
-        <span class="glyphicon glyphicon-add" aria-hidden="true"></span>Add
-    </button>
-    <button type="button" class="btn btn-primary" ng-click="saveMerchandising()">
-        <span class="glyphicon glyphicon-save" aria-hidden="true"></span>Save
-    </button>
 </div>
 </div> <!-- END tab content -->
 </div> <!-- END offer tabs -->

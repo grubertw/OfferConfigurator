@@ -15,7 +15,7 @@
         <div class="form-group">
             <label class="col-sm-1 control-label">Name</label>
             <div class="col-sm-2">
-                <input type="text" class="form-control" ng-model="population.name">
+                <input type="text" class="form-control" ng-model="population.name" ng-change="savePopulation()">
             </div>
         </div>
     </form>
@@ -67,21 +67,18 @@
                   </button>
                   <ul class="dropdown-menu" role="menu">
                     <li ng-repeat="range in expression.applicableRanges">
-                        <a href="#" ng-click="expression.right = range">{{range.name}}</a>
+                        <a href="#" ng-click="setRange(expression, range)">{{range.name}}</a>
                     </li>
                   </ul>
                 </div>
                 <span class="glyphicon glyphicon-remove" aria-hidden="true" ng-click="removeExpression(expression)"></span>
             </div>
         </div>
-        <button type="button" class="btn btn-default" id="addExpressionButton" ng-click="addExpression()">
+        <button type="button" class="btn btn-primary" id="addExpressionButton" ng-click="addExpression()">
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Expression
-        </button>
-        
+        </button>        
     </div>
-    <button type="button" class="btn btn-primary" id="save-button" ng-click="savePopulation()">
-      <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save
-    </button>
+
 </div> <!-- END population details content -->
     
 </div> <!-- END tab content -->

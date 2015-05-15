@@ -29,7 +29,7 @@
             </td>
             <td>{{offer.name}}</td>
             <td>{{offer.offerType.name}}</td>
-            <td><input id="offerSplitEditTextbox" type="text" class="form-control" ng-model="offer.split">%</td>
+            <td><input id="offerSplitEditTextbox" type="text" class="form-control" ng-model="offer.split" ng-change="saveOffer(offer)">%</td>
             <td>{{offer.offerStatus.name}}</td>
             <td>{{offer.startDate}}</td>
             <td>{{offer.endDate}}</td>

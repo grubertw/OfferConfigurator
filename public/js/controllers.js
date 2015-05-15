@@ -217,10 +217,19 @@ function PopulationDetailsController($scope, $stateParams, AppState, Population,
         expression.left = dimension;
         expression.applicableRanges = AppState.getApplicableRangesInDimension(dimension);
         expression.right = expression.applicableRanges[0];
+        
+        SegmentExpression.update({id: expression._id}, expression);
     };
     // Ensure currect operator is set into expression.
     $scope.setOperator = function (expression, operatorId) {
         expression.operator = AppState.getOperator(operatorId);
+        
+        SegmentExpression.update({id: expression._id}, expression);
+    };
+    // Save changes to the range.
+    $scope.setRange = function(expression, range) {
+        expression.right = range;
+        SegmentExpression.update({id: expression._id}, expression);
     };
     // Add a new expression to the segment expression.
     $scope.addExpression = function () {
@@ -269,16 +278,8 @@ function PopulationDetailsController($scope, $stateParams, AppState, Population,
         
         SegmentExpression.delete({id: expression._id});
     }
-    
     $scope.savePopulation = function () {
         Population.update({id:$scope.population._id}, $scope.population);
-        
-        // Update any changes to the segment expression.
-        for (var i=0; i < $scope.population.segmentExpression.length; i++) {
-            var expression = $scope.population.segmentExpression[i];
-            
-            SegmentExpression.update({id: expression._id}, expression);
-        }
     }
 }
 
@@ -319,6 +320,7 @@ function OffersController($scope, $stateParams, AppState, Population, Offers, Of
         Offer.create({population:                       $scope.population,
                       offerStatus:                      defaultStatus,
                       offerType:                        defaultOfferType,
+                      split:                            0,
                       description:                      "offer description here",
                       startDate:                        now,
                       endDate:                          now,
@@ -339,6 +341,9 @@ function OffersController($scope, $stateParams, AppState, Population, Offers, Of
         
         var index = this.offers.indexOf(offer);
         $scope.offers.splice(index, 1);
+    };
+    $scope.saveOffer = function (offer) {
+        Offer.update({id: offer._id}, offer);
     };
 }
 
@@ -377,9 +382,11 @@ function OfferDetailsController($scope, $stateParams, AppState, Offer) {
     $scope.progressOfferStatus = function () {
         // Progress the offer status to it's next allowable status.
         $scope.offer.offerStatus = AppState.getOfferStatus($scope.offer.offerStatus.nextStatus);
+        Offer.update({id: $scope.offer._id}, $scope.offer);
     }
     $scope.setOfferType = function (offerType) {
         $scope.offer.offerType = offerType;
+        Offer.update({id: $scope.offer._id}, $scope.offer);
     };
     $scope.saveOffer = function () {
         Offer.update({id: $scope.offer._id}, $scope.offer);
@@ -422,14 +429,13 @@ function BenefitsController($scope, $stateParams, AppState, Offer) {
     $scope.removeBenefit = function (benefit) {
         var index = $scope.offer.benefits.indexOf(benefit);
         $scope.offer.benefits.splice(index, 1);
+        Offer.update({id: $scope.offer._id}, $scope.offer);
     }
     $scope.setBenefitToAdd = function (benefit) {
         $scope.benefitToAdd = benefit;
     };
     $scope.addBenefitToOffer = function () {        
         $scope.offer.benefits.push($scope.benefitToAdd);
-    };
-    $scope.saveBenefits = function () {
         Offer.update({id: $scope.offer._id}, $scope.offer);
     };
 }
@@ -560,22 +566,24 @@ function TermDetailsController($scope, $state, $stateParams, AppState, Term) {
     //
     $scope.setBillingOnset = function (billingOnset) {
         $scope.term.billingOnset = billingOnset;
+        Term.update({id: $scope.term._id}, $scope.term);
     };
     $scope.setBillingInterval = function (billingInterval) {
         $scope.term.billingInterval = billingInterval;
+        Term.update({id: $scope.term._id}, $scope.term);
     };
     $scope.setBillingPeriod = function (billingPeriod) {
         $scope.term.billingPeriod = billingPeriod;
+        Term.update({id: $scope.term._id}, $scope.term);
     };
     $scope.setProrationRule = function (prorationRule) {
         $scope.term.prorationRule = prorationRule;
-    };
-    $scope.saveTerm = function () {
-        // Set the frequency from billingPeriod.name
-        $scope.term.frequency = $scope.term.billingPeriod.name;
-        
         Term.update({id: $scope.term._id}, $scope.term);
-        
+    };
+    $scope.saveTerm = function() {
+        Term.update({id: $scope.term._id}, $scope.term);
+    };
+    $scope.backToTerms = function () {
         // Go back to terms 
         $state.go('terms', {offerId: $scope.term.offer._id}, {reload: true});
     };
@@ -614,9 +622,11 @@ function OfferMerchandisingController($scope, $stateParams, AppState, Offer, Mer
     //
     $scope.setPlacement = function (merch, placement) {
         merch.placement = placement;
+        Merchandise.update({id: merch._id}, merch);
     };
     $scope.setMerchType = function (merch, type) {
         merch.merchType = type;
+        Merchandise.update({id: merch._id}, merch);
     };
     $scope.addMerchandising = function () {
         var defaultMerchType = AppState.getMerchType(1);
@@ -640,12 +650,7 @@ function OfferMerchandisingController($scope, $stateParams, AppState, Offer, Mer
         var index = $scope.merchandising.indexOf(merchandise);
         $scope.merchandising.splice(index, 1);
     }
-
-    $scope.saveMerchandising = function () {
-        for (var i=0; i<$scope.merchandising.length; i++) {
-            var merch = $scope.merchandising[i];
-            
-            Merchandise.update({id: merch._id}, merch);
-        }
+    $scope.saveMerchandise = function (merch) {
+        Merchandise.update({id: merch._id}, merch);
     };
 }

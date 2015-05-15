@@ -15,7 +15,7 @@
         <div class="col-sm-offset-2 col-sm-10">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" ng-model="term.isTrial">Is Trial
+                    <input type="checkbox" ng-model="term.isTrial" ng-change="saveTerm()">Is Trial
                 </label>
             </div>
         </div>
@@ -40,7 +40,7 @@
     <div class="form-group">
         <label class="col-sm-2 control-label">Amount</label>
         <div class="col-sm-2">
-            <input type="text" class="form-control" ng-model="term.price">
+            <input type="text" class="form-control" ng-model="term.price" ng-change="saveTerm()">
         </div>
     </div>
     
@@ -48,7 +48,7 @@
     <div class="form-group">
         <label class="col-sm-2 control-label">MSRP</label>
         <div class="col-sm-2">
-            <input type="text" class="form-control" ng-model="term.msrp">
+            <input type="text" class="form-control" ng-model="term.msrp" ng-change="saveTerm()">
         </div>
     </div>
 </form>
@@ -67,7 +67,7 @@
         <!-- term.billingTimespan entry -->
         <div class="form-group">
             <label for="billingTimespan">Every</label>
-            <input type="number" class="form-control" id="billingTimespan" placeholder="1" ng-model="term.billingTimespan">
+            <input type="number" class="form-control" id="billingTimespan" placeholder="1" ng-model="term.billingTimespan" ng-change="saveTerm()">
         </div>
 
         <!-- term.billingInterval entry -->
@@ -128,11 +128,11 @@
     <div class="form-group">
         <label class="col-sm-2 control-label">Description</label>
         <div class="col-sm-6">
-            <input type="text" class="form-control" ng-model="term.description"></input>
+            <input type="text" class="form-control" ng-model="term.description" ng-change="saveTerm()"></input>
         </div>
     </div>
 </form>
 
-<button type="button" class="btn btn-primary" id="save-button" ng-click="saveTerm()">
-    <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save and Relist Terms 
+<button type="button" class="btn btn-primary" id="save-button" ng-click="backToTerms()">
+    <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Relist Terms 
 </button>
