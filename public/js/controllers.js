@@ -129,13 +129,13 @@ function HeaderController($scope, $state, AppState) {
 // passing the populationId.
 //
 offerConfiguratorControllers.controller('PopulationsController', 
-                                        ['$scope', 'Populations', 'Population', 'AppState',
-                                         'OfferTypes', 'OfferStatuses', 'Benefits', 'ActionTypes',
+                                        ['$scope', '$state', 'Populations', 'Population', 'AppState', 'IntegralUITreeGridService',
+                                         'Offer', 'OfferTypes', 'OfferStatuses', 'Benefits', 'ActionTypes',
                                          'BillingOnsets', 'BillingIntervals', 'BillingPeriods', 'ProrationRules',
                                          'MerchTypes', 'Placements', 'Dimensions', 'Ranges', 'Operators',
                                          PopulationsController]);
-function PopulationsController($scope, Populations, Population, AppState, 
-                               OfferTypes, OfferStatuses, Benefits, ActionTypes,
+function PopulationsController ($scope, $state, Populations, Population, AppState, $gridService,
+                               Offer, OfferTypes, OfferStatuses, Benefits, ActionTypes,
                                BillingOnsets, BillingIntervals, BillingPeriods, 
                                ProrationRules, MerchTypes, Placements,
                                Dimensions, Ranges, Operators) {
@@ -157,20 +157,75 @@ function PopulationsController($scope, Populations, Population, AppState,
     AppState.merchTypes = MerchTypes.list();
     AppState.placements = Placements.list();
     
+    $scope.gridName = "populationsTreeGrid";
+    $scope.columns = [
+        { id: 1, headerText: "Name", headerAlignment: "left", contentAlignment: "left", width: 180 },
+        { id: 2, headerText: "Type", headerAlignment: "center", contentAlignment: "center", width: 125 },
+        { id: 3, headerText: "Split", headerAlignment: "center", contentAlignment: "center", width: 60 },
+        { id: 4, headerText: "Status", headerAlignment: "center", contentAlignment: "center", width: 105 },
+        { id: 5, headerText: "Start", headerAlignment: "center", contentAlignment: "center", width: 160 },
+        { id: 6, headerText: "End", headerAlignment: "center", contentAlignment: "center", width: 160 }
+    ];
+    
+    $scope.rowData = [];
+    
     // Fetch the populations from the server.
-    $scope.populations = Populations.list();
+    $scope.populations = Populations.list(function (populations) {
+        for (i=0; i<populations.length; i++) {
+            var pop = populations[i];
+            
+            var row = {dbObj: pop, dbType: "Population", cells: [{text: pop.name}]};
+            $gridService.addRow($scope.gridName, row);
+            
+            // Insert any child offers of this population.
+            var offers = pop.offers;
+            for (j=0; j<offers.length; j++) {
+                var offer = offers[j];
+                
+                var childRow = {dbObj: offer, dbType: "Offer", cells: [
+                    {text: offer.name}, 
+                    {text: offer.offerType.name},
+                    {text: offer.split},
+                    {text: offer.offerStatus.name},
+                    {text: offer.startDate},
+                    {text: offer.endDate}
+                ]};
+                
+                $gridService.addRow($scope.gridName, childRow, row);
+            }
+        }
+    });
     
     //
     // Supported Opperations
     //
-    $scope.addPopulation = function () {
-        var newPopulation = Population.create();
-        $scope.populations.push(newPopulation);
+    $scope.createPopulation = function () {
+        var newPopulation = Population.create(function(pop) {
+            var row = {dbObj: pop, dbType: "Population", cells: [{text: pop.name}]};
+            $gridService.addRow($scope.gridName, row);
+        });
     };
-    $scope.removePopulation = function (pop) {
-        Population.delete({id: pop._id});
-        var index = $scope.populations.indexOf(pop);
-        $scope.populations.splice(index, 1);
+    $scope.remove = function () {
+        var row = $gridService.selectedRow($scope.gridName);
+        $gridService.removeRow($scope.gridName,  row);
+        
+        if (row.dbType == "Population") {
+            Population.delete({id: row.dbObj._id});
+        }
+        else if (row.dbType == "Offer") {
+            Offer.delete({id: row.dbObj._id});
+        }
+        
+    };
+    $scope.edit = function () {
+        var row = $gridService.selectedRow($scope.gridName);
+        
+        if (row.dbType == "Population") {
+            $state.go('populationDetails', {populationId: row.dbObj._id});
+        }
+        else if (row.dbType == "Offer") {
+            $state.go('offerDetails', {offerId: row.dbObj._id});
+        }
     };
 }
 

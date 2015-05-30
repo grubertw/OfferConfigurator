@@ -3,43 +3,23 @@
   -->
 <div id="populations" class="panel panel-default">
 <div class="panel-body">
-    <button type="button" class="btn btn-primary" ng-click="addPopulation()">
-      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
-    </button>
-
-    <table class="table table-striped">
-        <thead><tr>
-            <th></th>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Split</th>
-            <th>Status</th>
-            <th>Start</th>
-            <th>End</th>
-            <th></th>
-        </tr></thead>
-        <tbody><tr ng-repeat="pop in populations">
-            <td>
-                <a type="button" class="btn btn-default">
-                    <span class="glyphicon glyphicon-edit" aria-hidden="true" ui-sref="populationDetails({populationId:pop._id})"></span>
-                </a>
-            </td>
-            <td>{{pop.name}}</td>
-            <td></td>
-            <td></td>
-            <td>{{pop.status}}</td>
-            <td></td>
-            <td></td>
-            <td>
-                <button type="button" class="btn btn-default" ng-click="removePopulation(pop)">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                </button>
-            </td>
-        </tr></tbody>
-    </table>
     
-    <button type="button" class="btn btn-primary" ng-click="addPopulation()">
-      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
-    </button>
+    <div class="tree-grid-panel">
+        <iui-treegrid name="{{gridName}}" class="tree-grid" columns="columns" rows="rowData" show-footer="false"></iui-treegrid>
+        <div class="tg-button-panel">
+            <button type="button" class="btn btn-primary tg-button" ng-click="createPopulation()">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create Population
+            </button>
+            <button type="button" class="btn btn-primary tg-button" ng-click="remove()">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove
+            </button>
+            <button type="button" class="btn btn-primary tg-button" ng-click="edit()">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit
+            </button>
+            <button type="button" class="btn btn-primary tg-button" ng-click="copy()">
+                <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Copy
+            </button>
+        </div>
+    </div>
 </div>
 </div>

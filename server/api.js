@@ -91,9 +91,50 @@ PopulationAPI.listUrl = apiRoute + "populations";
 PopulationAPI.list = function(req, res) {    
     if (req.user) {
         console.log("JWT token is valid");
+        var reqOffersToPopulate = 0;
         
-        Population.find({}, function(err, models) {
-            res.send(models);
+        Population.find({}).populate('offers').exec(function(err, populations) {
+            if (populations) {
+                for (i=0; i<populations.length; i++) {
+                    var population = populations[i];
+                    
+                    for (j=0; j<population.offers.length; j++) {
+                        var offer = population.offers[j];
+                        reqOffersToPopulate += 1;
+                        
+                        Offer.findOne({_id: offer._id}).populate('offerType offerStatus population').exec(function(err, off) {
+                            if (off) {
+                                reqOffersToPopulate -= 1;
+                                
+                                
+                                for (k=0; k<populations.length; k++) {
+                                    var p = populations[k];
+                                    
+                                    if (p._id.equals(off.population._id)) {
+                                        
+                                        for (l=0; l<p.offers.length; l++) {
+                                            var o = p.offers[l];
+                                            
+                                            if (o._id.equals(off._id)) {
+                                                p.offers[l] = off;
+                                                
+                                            }
+                                        }
+                                        
+                                    }
+                                }
+                                
+                                if (reqOffersToPopulate === 0) {
+                                    res.send(populations);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+            else {
+                res.status(404).send('No Populations found');
+            }
         });
     }
     else {
@@ -207,9 +248,15 @@ OfferAPI.create = function(req, res) {
         model.requiresPaymentAuthorization = req.body.requiresPaymentAuthorization;
         model.paymentAuthorizationAmount = req.body.paymentAuthorizationAmount;
         model.shortPaymentDisclosure = req.body.shortPaymentDisclosure;
-        model.longPaymentDisclosure = req.body.longPaymentDisclosure;
+        model.longPaymentDisclosure = req.body.longPaymentDisclosure;    
         
         model.save(function(err) {
+            // Insert the offer into the population as a cross-reference.
+            Population.findOne({ _id: req.body.population._id}).populate('offers').exec(function(err, pop) {
+                pop.offers.push(model);
+                pop.save();
+            });
+            
             res.json(model.toJSON());
         });   
     }

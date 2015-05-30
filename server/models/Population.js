@@ -13,7 +13,8 @@ var mongoose = require('mongoose')
  
 var postSchema = new Schema({
     name                        : String,
-    segmentExpression           : [{type: ObjectId, ref: 'SegmentExpression'}]
+    segmentExpression           : [{type: ObjectId, ref: 'SegmentExpression'}],
+    offers                      : [{type: ObjectId, ref: 'Offer'}]
 });
  
 module.exports = mongoose.model('Population', postSchema);
