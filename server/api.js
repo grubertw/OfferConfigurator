@@ -102,7 +102,7 @@ PopulationAPI.list = function(req, res) {
                         var offer = population.offers[j];
                         reqOffersToPopulate += 1;
                         
-                        Offer.findOne({_id: offer._id}).populate('offerType offerStatus population').exec(function(err, off) {
+                        Offer.findOne({_id: offer._id}).populate('offerType offerStatus population benefits terms').exec(function(err, off) {
                             if (off) {
                                 reqOffersToPopulate -= 1;
                                 
@@ -299,6 +299,7 @@ OfferAPI.update = function(req, res) {
                    benefits:                    benefits,
                    terms:                       terms}
         }, { upsert: true }, function(err, model) {
+            //console.log("Offer.update() err=%s", err);
             return res.json(model.toJSON());
         });
     }

@@ -5,7 +5,7 @@
 //
 
 // Factory for creating Angular controllers.
-var offerConfiguratorControllers = angular.module('offerConfiguratorControllers', 
+var offerConfiguratorControllers = angular.module('offerConfiguratorControllers',
                                                   ['ui.router',
                                                    'offerConfiguratorServices']);
 
@@ -13,10 +13,11 @@ var offerConfiguratorControllers = angular.module('offerConfiguratorControllers'
 // Login controller.
 // - Responsible for user authentication.
 //
-offerConfiguratorControllers.controller('LoginController', 
+offerConfiguratorControllers.controller('LoginController',
                                         ['$scope', '$state', 'AppState', 'Authenticate',
                                          LoginController]);
 function LoginController($scope, $state, AppState, Authenticate) {
+    'use strict';
     // Collect Username and Password for authentication with the server.
     $scope.username = 'administrator';
     $scope.password = 'ecdOCtool';
@@ -51,10 +52,9 @@ So59bMGeymGBjBaiBs2xcyZN3/Dm2Tc+FNjuwvtoAone7iuUaSqorlbdtIuvjv5D\
         if (!AppState.loggedIn) {
             // Pass username and password as one JSON in the body.
             // expects a session object with a sessionId.
-            var credentials = {username:$scope.username, password:$scope.password};
+            var credentials = {username: $scope.username, password: $scope.password};
             Authenticate.login(credentials, function (token) {
                 var jws = new KJUR.jws.JWS();
-
                 var cert = new X509();
                 cert.readCertPEM(sCert);
 
@@ -77,14 +77,12 @@ So59bMGeymGBjBaiBs2xcyZN3/Dm2Tc+FNjuwvtoAone7iuUaSqorlbdtIuvjv5D\
 //
 // Controls header information.
 // 
-offerConfiguratorControllers.controller('HeaderController', 
+offerConfiguratorControllers.controller('HeaderController',
                                         ['$scope', '$state', 'AppState',
                                          HeaderController]);
 function HeaderController($scope, $state, AppState) {
+    'use strict';
     $scope.appState = AppState;
-    
-    // Initialize models.
-    models.setApplicableRangesInDimensions();
     
     //
     // Navigation methods.
@@ -118,7 +116,7 @@ function HeaderController($scope, $state, AppState) {
     //
     // Logout by flipping the variables in the AppState.
     //
-    $scope.logout = function() {
+    $scope.logout = function () {
         AppState.logout();
     };
 }
@@ -128,17 +126,19 @@ function HeaderController($scope, $state, AppState) {
 // On edit of a population, will route to the PopulationDetailsController,
 // passing the populationId.
 //
-offerConfiguratorControllers.controller('PopulationsController', 
+offerConfiguratorControllers.controller('PopulationsController',
                                         ['$scope', '$state', 'Populations', 'Population', 'AppState', 'IntegralUITreeGridService',
-                                         'Offer', 'OfferTypes', 'OfferStatuses', 'Benefits', 'ActionTypes',
+                                         'Offer', 'OfferTypes', 'OfferStatuses', 'Benefits', 'ActionTypes', 'Terms', 'Term',
                                          'BillingOnsets', 'BillingIntervals', 'BillingPeriods', 'ProrationRules',
                                          'MerchTypes', 'Placements', 'Dimensions', 'Ranges', 'Operators',
+                                         'Merchandising', 'Merchandise',
                                          PopulationsController]);
-function PopulationsController ($scope, $state, Populations, Population, AppState, $gridService,
-                               Offer, OfferTypes, OfferStatuses, Benefits, ActionTypes,
-                               BillingOnsets, BillingIntervals, BillingPeriods, 
-                               ProrationRules, MerchTypes, Placements,
-                               Dimensions, Ranges, Operators) {
+function PopulationsController($scope, $state, Populations, Population, AppState, $gridService,
+                               Offer, OfferTypes, OfferStatuses, Benefits, ActionTypes, Terms, Term,
+                               BillingOnsets, BillingIntervals, BillingPeriods, ProrationRules,
+                               MerchTypes, Placements, Dimensions, Ranges, Operators,
+                               Merchandising, Merchandise) {
+    'use strict';
     // Prefetch enumerations from the server here
     // FIXME:
     // This should be done in the login handler function,
@@ -171,19 +171,20 @@ function PopulationsController ($scope, $state, Populations, Population, AppStat
     
     // Fetch the populations from the server.
     $scope.populations = Populations.list(function (populations) {
-        for (i=0; i<populations.length; i++) {
-            var pop = populations[i];
+        var i, j, pop, row, offers, offer, childRow;
+        for (i = 0; i < populations.length; i += 1) {
+            pop = populations[i];
             
-            var row = {dbObj: pop, dbType: "Population", cells: [{text: pop.name}]};
+            row = {dbObj: pop, dbType: "Population", cells: [{text: pop.name}]};
             $gridService.addRow($scope.gridName, row);
             
             // Insert any child offers of this population.
-            var offers = pop.offers;
-            for (j=0; j<offers.length; j++) {
-                var offer = offers[j];
+            offers = pop.offers;
+            for (j = 0; j < offers.length; j += 1) {
+                offer = offers[j];
                 
-                var childRow = {dbObj: offer, dbType: "Offer", cells: [
-                    {text: offer.name}, 
+                childRow = {dbObj: offer, dbType: "Offer", cells: [
+                    {text: offer.name},
                     {text: offer.offerType.name},
                     {text: offer.split},
                     {text: offer.offerStatus.name},
@@ -200,7 +201,7 @@ function PopulationsController ($scope, $state, Populations, Population, AppStat
     // Supported Opperations
     //
     $scope.createPopulation = function () {
-        var newPopulation = Population.create(function(pop) {
+        Population.create(function (pop) {
             var row = {dbObj: pop, dbType: "Population", cells: [{text: pop.name}]};
             $gridService.addRow($scope.gridName, row);
         });
@@ -211,7 +212,7 @@ function PopulationsController ($scope, $state, Populations, Population, AppStat
         
         if (row.dbType == "Population") {
             Population.delete({id: row.dbObj._id});
-        }
+        } 
         else if (row.dbType == "Offer") {
             Offer.delete({id: row.dbObj._id});
         }
@@ -222,9 +223,110 @@ function PopulationsController ($scope, $state, Populations, Population, AppStat
         
         if (row.dbType == "Population") {
             $state.go('populationDetails', {populationId: row.dbObj._id});
-        }
+        } 
         else if (row.dbType == "Offer") {
             $state.go('offerDetails', {offerId: row.dbObj._id});
+        }
+    };
+    $scope.copy = function () {
+        var selectedRow = $gridService.selectedRow($scope.gridName);
+        
+        if (selectedRow.dbType == "Population") {
+            Population.create(function (pop) {
+                pop.name = selectedRow.dbObj.name;
+                
+                var newRow = {dbObj: pop, dbType: "Population", cells: [{text: pop.name}]};
+                $gridService.insertRowAfter($scope.gridName, newRow, selectedRow);
+            });
+        } 
+        else if (selectedRow.dbType == "Offer") {
+            var selectedOffer = selectedRow.dbObj;
+            
+            Offer.create({population:                       selectedOffer.population,
+                          offerStatus:                      selectedOffer.offerStatus,
+                          offerType:                        selectedOffer.offerType,
+                          split:                            selectedOffer.split,
+                          description:                      selectedOffer.description,
+                          startDate:                        selectedOffer.startDate,
+                          endDate:                          selectedOffer.endDate,
+                          // The following attributes are part of the top-level fields of terms.
+                          hasTrial:                         selectedOffer.hasTrial,
+                          requiresPaymentAuthorization:     selectedOffer.requiresPaymentAuthorization,
+                          paymentAuthorizationAmount:       selectedOffer.paymentAuthorizationAmount,
+                          shortPaymentDisclosure:           selectedOffer.shortPaymentDisclosure,
+                          longPaymentDisclosure:            selectedOffer.longPaymentDisclosure},
+            function (offer) {
+                var i, bene, selectedTerm, merch, newRow;
+                
+                offer.name = selectedOffer.name;
+                offer.offerType = selectedOffer.offerType;
+                offer.offerStatus = selectedOffer.offerStatus;
+                offer.benefits = [];
+                offer.terms = [];
+                
+                // Copy Benefits from selected offer into new offer.
+                for(i=0; i<selectedOffer.benefits.length; i++) {
+                    bene = selectedOffer.benefits[i];
+                    offer.benefits.push(bene);
+                }
+                Offer.update({id: offer._id}, offer);
+                
+                // Copy Terms from the selected offer into the new offer.
+                Terms.listByOffer({offerId: selectedOffer._id}, function (terms) {
+                    for (i=0; i<terms.length; i++) {
+                        var selectedTerm = terms[i];
+                        var termAddedCount = 0;
+                        
+                        // New term object must be created so that making changes
+                        // to this term does not modify the term in the selected offer.
+                        Term.create({offer:                 offer,
+                                     billingOnset:          selectedTerm.billingOnset,
+                                     billingInterval:       selectedTerm.billingInterval,
+                                     billingPeriod:         selectedTerm.billingPeriod,
+                                     prorationRule:         selectedTerm.prorationRule,
+                                     isTrial:               selectedTerm.isTrial,
+                                     description:           selectedTerm.description,
+                                     startDate:             selectedTerm.startDate,
+                                     price:                 selectedTerm.price,
+                                     msrp:                  selectedTerm.msrp,
+                                     hasBillingInterval:    selectedTerm.hasBillingInterval,
+                                     billingTimespan:       selectedTerm.billingTimespan,
+                                     frequency:             selectedTerm.frequency}, 
+                        function (term) {
+                            offer.terms.push(term);
+                            termAddedCount += 1;
+                            
+                            if (termAddedCount == terms.length) {
+                                Offer.update({id: offer._id}, offer);
+                            }
+                        });
+                    }
+                });
+                
+                // Copy Merchandising from the selected offer into the new offer.
+                Merchandising.listByOffer({offerId: selectedOffer._id}, function (merchandising) {
+                    if (merchandising) {
+                        for (i=0; i<merchandising.length; i++) {
+                            merch = merchandising[i];
+                            
+                            Merchandise.create({offer:                 offer,
+                                                merchType:             merch.merchType,
+                                                placement:             merch.placement,
+                                                value:                 merch.value,
+                                                notes:                 merch.notes});
+                        }
+                    }
+                });
+                
+                newRow = {dbObj: offer, dbType: "Offer", 
+                              cells: [{text: offer.name}, 
+                                      {text: offer.offerType.name},
+                                      {text: offer.split},
+                                      {text: offer.offerStatus.name},
+                                      {text: offer.startDate},
+                                      {text: offer.endDate}]};
+                $gridService.insertRowAfter($scope.gridName, newRow, selectedRow);
+            });
         }
     };
 }
@@ -573,6 +675,7 @@ function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
             
             // Add term reference to the offer.
             $scope.offer.terms.push(term);
+            Offer.update({id: $scope.offer._id}, $scope.offer);
         });
     };
     $scope.removeTerm = function (term) {
