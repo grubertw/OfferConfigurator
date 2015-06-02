@@ -29,6 +29,26 @@ offerConfiguratorServices.service('AppState', ['$state', function ($state) {
     // Current selected offer.
     this.currOfferId = {};
     
+    //
+    // Flip the application back to the logout state.
+    //
+    this.logout = function () {
+        if (this.loggedIn) {
+            this.loggedIn = false;
+            
+            // Clear the jwt token.
+            this.authToken = {}
+            
+            // Go back to the login page.
+            $state.go('login');
+        }
+    };
+}]);
+
+//
+// Holds application utility methods.
+//
+offerConfiguratorServices.service('AppUtility', ['Offer', 'Terms', 'Term', 'Merchandising', 'Merchandise', function (Offer, Terms, Term, Merchandising, Merchandise) {
     // Enumerated models requested from the server after successfull login.
     this.dimensions = [];
     this.ranges = [];
@@ -214,19 +234,92 @@ offerConfiguratorServices.service('AppState', ['$state', function ($state) {
             }
         }
         return obj;
-    };
-    
-    // Flip the application back to the logout state.
-    this.logout = function () {
-        if (this.loggedIn) {
-            this.loggedIn = false;
+    }
+   
+    // Perform a deep-copy of the passed-in offer. 
+    //
+    // Copy all offer attributes, benefits, terms, and merchandise.
+    // Offers can only be copied if they are in the Unpublished state.
+    this.copyOffer = function(selectedOffer, completionCallback) {
+        var unpublished = this.getOfferStatus(1);
+        
+        Offer.create({population:                       selectedOffer.population,
+                      offerStatus:                      unpublished,
+                      offerType:                        selectedOffer.offerType,
+                      split:                            selectedOffer.split,
+                      description:                      selectedOffer.description,
+                      startDate:                        selectedOffer.startDate,
+                      endDate:                          selectedOffer.endDate,
+                      // The following attributes are part of the top-level fields of terms.
+                      hasTrial:                         selectedOffer.hasTrial,
+                      requiresPaymentAuthorization:     selectedOffer.requiresPaymentAuthorization,
+                      paymentAuthorizationAmount:       selectedOffer.paymentAuthorizationAmount,
+                      shortPaymentDisclosure:           selectedOffer.shortPaymentDisclosure,
+                      longPaymentDisclosure:            selectedOffer.longPaymentDisclosure}, function (offer) {
+            var i, bene, selectedTerm, merch;
+
+            offer.name = selectedOffer.name;
+            offer.offerType = selectedOffer.offerType;
+            offer.offerStatus = unpublished;
+            offer.benefits = [];
+            offer.terms = [];
+
+            // Copy Benefits from selected offer into new offer.
+            for(i=0; i<selectedOffer.benefits.length; i++) {
+                bene = selectedOffer.benefits[i];
+                offer.benefits.push(bene);
+            }
+            Offer.update({id: offer._id}, offer);
+
+            // Copy Terms from the selected offer into the new offer.
+            Terms.listByOffer({offerId: selectedOffer._id}, function (terms) {
+                for (i=0; i<terms.length; i++) {
+                    var selectedTerm = terms[i];
+                    var termAddedCount = 0;
+
+                    // New term object must be created so that making changes
+                    // to this term does not modify the term in the selected offer.
+                    Term.create({offer:                 offer,
+                                 billingOnset:          selectedTerm.billingOnset,
+                                 billingInterval:       selectedTerm.billingInterval,
+                                 billingPeriod:         selectedTerm.billingPeriod,
+                                 prorationRule:         selectedTerm.prorationRule,
+                                 isTrial:               selectedTerm.isTrial,
+                                 description:           selectedTerm.description,
+                                 startDate:             selectedTerm.startDate,
+                                 price:                 selectedTerm.price,
+                                 msrp:                  selectedTerm.msrp,
+                                 hasBillingInterval:    selectedTerm.hasBillingInterval,
+                                 billingTimespan:       selectedTerm.billingTimespan,
+                                 frequency:             selectedTerm.frequency}, 
+                    function (term) {
+                        offer.terms.push(term);
+                        termAddedCount += 1;
+
+                        if (termAddedCount == terms.length) {
+                            Offer.update({id: offer._id}, offer);
+                        }
+                    });
+                }
+            });
+
+            // Copy Merchandising from the selected offer into the new offer.
+            Merchandising.listByOffer({offerId: selectedOffer._id}, function (merchandising) {
+                if (merchandising) {
+                    for (i=0; i<merchandising.length; i++) {
+                        merch = merchandising[i];
+
+                        Merchandise.create({offer:                 offer,
+                                            merchType:             merch.merchType,
+                                            placement:             merch.placement,
+                                            value:                 merch.value,
+                                            notes:                 merch.notes});
+                    }
+                }
+            });
             
-            // Clear the jwt token.
-            this.authToken = {}
-            
-            // Go back to the login page.
-            $state.go('login');
-        }
+            completionCallback(offer);
+        });
     };
 }]);
 

@@ -126,37 +126,23 @@ function HeaderController($scope, $state, AppState) {
 // On edit of a population, will route to the PopulationDetailsController,
 // passing the populationId.
 //
-offerConfiguratorControllers.controller('PopulationsController',
-                                        ['$scope', '$state', 'Populations', 'Population', 'AppState', 'IntegralUITreeGridService',
-                                         'Offer', 'OfferTypes', 'OfferStatuses', 'Benefits', 'ActionTypes', 'Terms', 'Term',
-                                         'BillingOnsets', 'BillingIntervals', 'BillingPeriods', 'ProrationRules',
-                                         'MerchTypes', 'Placements', 'Dimensions', 'Ranges', 'Operators',
-                                         'Merchandising', 'Merchandise',
-                                         PopulationsController]);
-function PopulationsController($scope, $state, Populations, Population, AppState, $gridService,
-                               Offer, OfferTypes, OfferStatuses, Benefits, ActionTypes, Terms, Term,
-                               BillingOnsets, BillingIntervals, BillingPeriods, ProrationRules,
-                               MerchTypes, Placements, Dimensions, Ranges, Operators,
-                               Merchandising, Merchandise) {
+offerConfiguratorControllers.controller('PopulationsController', ['$scope', '$state', 'AppUtility', 'IntegralUITreeGridService', 'Populations', 'Population', 'Offer', 'OfferTypes', 'OfferStatuses', 'Benefits', 'ActionTypes', 'BillingOnsets', 'BillingIntervals', 'BillingPeriods', 'ProrationRules', 'MerchTypes', 'Placements', 'Dimensions', 'Ranges', 'Operators', PopulationsController]);
+function PopulationsController($scope, $state, AppUtility, $gridService, Populations, Population, Offer, OfferTypes, OfferStatuses, Benefits, ActionTypes, BillingOnsets, BillingIntervals, BillingPeriods, ProrationRules, MerchTypes, Placements, Dimensions, Ranges, Operators) {
     'use strict';
     // Prefetch enumerations from the server here
-    // FIXME:
-    // This should be done in the login handler function,
-    // but for some reason, angular has trouble injecting an updated 
-    // AppState into the model REST services.
-    AppState.dimensions = Dimensions.list();
-    AppState.ranges = Ranges.list();
-    AppState.operators = Operators.list();
-    AppState.offerTypes = OfferTypes.list();
-    AppState.offerStatuses = OfferStatuses.list();
-    AppState.benefits = Benefits.list();
-    AppState.billingOnsets = BillingOnsets.list();
-    AppState.billingIntervals = BillingIntervals.list();
-    AppState.billingPeriods = BillingPeriods.list();
-    AppState.prorationRules = ProrationRules.list();
-    AppState.merchTypes = MerchTypes.list();
-    AppState.placements = Placements.list();
-    
+    AppUtility.dimensions = Dimensions.list();
+    AppUtility.ranges = Ranges.list();
+    AppUtility.operators = Operators.list();
+    AppUtility.offerTypes = OfferTypes.list();
+    AppUtility.offerStatuses = OfferStatuses.list();
+    AppUtility.benefits = Benefits.list();
+    AppUtility.billingOnsets = BillingOnsets.list();
+    AppUtility.billingIntervals = BillingIntervals.list();
+    AppUtility.billingPeriods = BillingPeriods.list();
+    AppUtility.prorationRules = ProrationRules.list();
+    AppUtility.merchTypes = MerchTypes.list();
+    AppUtility.placements = Placements.list();
+
     $scope.gridName = "populationsTreeGrid";
     $scope.columns = [
         { id: 1, headerText: "Name", headerAlignment: "left", contentAlignment: "left", width: 180 },
@@ -242,83 +228,8 @@ function PopulationsController($scope, $state, Populations, Population, AppState
         else if (selectedRow.dbType == "Offer") {
             var selectedOffer = selectedRow.dbObj;
             
-            Offer.create({population:                       selectedOffer.population,
-                          offerStatus:                      selectedOffer.offerStatus,
-                          offerType:                        selectedOffer.offerType,
-                          split:                            selectedOffer.split,
-                          description:                      selectedOffer.description,
-                          startDate:                        selectedOffer.startDate,
-                          endDate:                          selectedOffer.endDate,
-                          // The following attributes are part of the top-level fields of terms.
-                          hasTrial:                         selectedOffer.hasTrial,
-                          requiresPaymentAuthorization:     selectedOffer.requiresPaymentAuthorization,
-                          paymentAuthorizationAmount:       selectedOffer.paymentAuthorizationAmount,
-                          shortPaymentDisclosure:           selectedOffer.shortPaymentDisclosure,
-                          longPaymentDisclosure:            selectedOffer.longPaymentDisclosure},
-            function (offer) {
-                var i, bene, selectedTerm, merch, newRow;
-                
-                offer.name = selectedOffer.name;
-                offer.offerType = selectedOffer.offerType;
-                offer.offerStatus = selectedOffer.offerStatus;
-                offer.benefits = [];
-                offer.terms = [];
-                
-                // Copy Benefits from selected offer into new offer.
-                for(i=0; i<selectedOffer.benefits.length; i++) {
-                    bene = selectedOffer.benefits[i];
-                    offer.benefits.push(bene);
-                }
-                Offer.update({id: offer._id}, offer);
-                
-                // Copy Terms from the selected offer into the new offer.
-                Terms.listByOffer({offerId: selectedOffer._id}, function (terms) {
-                    for (i=0; i<terms.length; i++) {
-                        var selectedTerm = terms[i];
-                        var termAddedCount = 0;
-                        
-                        // New term object must be created so that making changes
-                        // to this term does not modify the term in the selected offer.
-                        Term.create({offer:                 offer,
-                                     billingOnset:          selectedTerm.billingOnset,
-                                     billingInterval:       selectedTerm.billingInterval,
-                                     billingPeriod:         selectedTerm.billingPeriod,
-                                     prorationRule:         selectedTerm.prorationRule,
-                                     isTrial:               selectedTerm.isTrial,
-                                     description:           selectedTerm.description,
-                                     startDate:             selectedTerm.startDate,
-                                     price:                 selectedTerm.price,
-                                     msrp:                  selectedTerm.msrp,
-                                     hasBillingInterval:    selectedTerm.hasBillingInterval,
-                                     billingTimespan:       selectedTerm.billingTimespan,
-                                     frequency:             selectedTerm.frequency}, 
-                        function (term) {
-                            offer.terms.push(term);
-                            termAddedCount += 1;
-                            
-                            if (termAddedCount == terms.length) {
-                                Offer.update({id: offer._id}, offer);
-                            }
-                        });
-                    }
-                });
-                
-                // Copy Merchandising from the selected offer into the new offer.
-                Merchandising.listByOffer({offerId: selectedOffer._id}, function (merchandising) {
-                    if (merchandising) {
-                        for (i=0; i<merchandising.length; i++) {
-                            merch = merchandising[i];
-                            
-                            Merchandise.create({offer:                 offer,
-                                                merchType:             merch.merchType,
-                                                placement:             merch.placement,
-                                                value:                 merch.value,
-                                                notes:                 merch.notes});
-                        }
-                    }
-                });
-                
-                newRow = {dbObj: offer, dbType: "Offer", 
+            AppUtility.copyOffer(selectedOffer, function(offer) {
+                var newRow = {dbObj: offer, dbType: "Offer", 
                               cells: [{text: offer.name}, 
                                       {text: offer.offerType.name},
                                       {text: offer.split},
@@ -337,9 +248,9 @@ function PopulationsController($scope, $state, Populations, Population, AppState
 // a means to characterize a group of people.
 // 
 offerConfiguratorControllers.controller('PopulationDetailsController', 
-                                        ['$scope', '$stateParams', 'AppState', 'Population', 'SegmentExpression',
+                                        ['$scope', '$stateParams', 'AppState', 'AppUtility', 'Population', 'SegmentExpression',
                                          PopulationDetailsController]);
-function PopulationDetailsController($scope, $stateParams, AppState, Population, SegmentExpression) {
+function PopulationDetailsController($scope, $stateParams, AppState, AppUtility, Population, SegmentExpression) {
     // Lookup the population by it's ID.
     Population.show({id:$stateParams.populationId}, function(population){
         // Update Application State.
@@ -350,7 +261,7 @@ function PopulationDetailsController($scope, $stateParams, AppState, Population,
         for (var i=0; i < population.segmentExpression.length; i++) {
             var ex = population.segmentExpression[i];
             SegmentExpression.show({id: ex._id}, function (expression){
-                expression.applicableRanges = AppState.getApplicableRangesInDimension(expression.left);
+                expression.applicableRanges = AppUtility.getApplicableRangesInDimension(expression.left);
                 // Expressions must be kept in the order they were created.
                 for (var j=0; j < population.segmentExpression.length; j++) {
                     if (population.segmentExpression[j]._id == expression._id) {
@@ -366,20 +277,20 @@ function PopulationDetailsController($scope, $stateParams, AppState, Population,
         }
     });
     
-    $scope.supportedDimensions = AppState.dimensions;
+    $scope.supportedDimensions = AppUtility.dimensions;
     
     // When a dimension is chosen for an expression, the range must be updated
     // so as not to specify the range of a different dimension.
     $scope.setDimension = function (expression, dimension) {
         expression.left = dimension;
-        expression.applicableRanges = AppState.getApplicableRangesInDimension(dimension);
+        expression.applicableRanges = AppUtility.getApplicableRangesInDimension(dimension);
         expression.right = expression.applicableRanges[0];
         
         SegmentExpression.update({id: expression._id}, expression);
     };
     // Ensure currect operator is set into expression.
     $scope.setOperator = function (expression, operatorId) {
-        expression.operator = AppState.getOperator(operatorId);
+        expression.operator = AppUtility.getOperator(operatorId);
         
         SegmentExpression.update({id: expression._id}, expression);
     };
@@ -390,20 +301,20 @@ function PopulationDetailsController($scope, $stateParams, AppState, Population,
     };
     // Add a new expression to the segment expression.
     $scope.addExpression = function () {
-        var defaultDimension = AppState.getDimension(1);
-        var defaultOperator = AppState.getOperator(1);
-        var defaultRange = AppState.getApplicableRangesInDimension(defaultDimension)[0];
+        var defaultDimension = AppUtility.getDimension(1);
+        var defaultOperator = AppUtility.getOperator(1);
+        var defaultRange = AppUtility.getApplicableRangesInDimension(defaultDimension)[0];
         
         // If there is at least one expression, add an outer operator first
         if ($scope.population.segmentExpression.length > 0) {
             SegmentExpression.create({population:       $scope.population,
                                       operatorOnly:     true,
                                       left:             defaultDimension,
-                                      operator:         AppState.getOperator(3),
+                                      operator:         AppUtility.getOperator(3),
                                       right:            defaultRange}, 
                                      function(expression) {
                 expression.left = defaultDimension; // ignored
-                expression.operator = AppState.getOperator(3);
+                expression.operator = AppUtility.getOperator(3);
                 expression.right = defaultRange; // ignored
                 $scope.population.segmentExpression.push(expression);
             });
@@ -418,7 +329,7 @@ function PopulationDetailsController($scope, $stateParams, AppState, Population,
             expression.left = defaultDimension;
             expression.operator = defaultOperator;
             expression.right = defaultRange;
-            expression.applicableRanges = AppState.getApplicableRangesInDimension(defaultDimension);
+            expression.applicableRanges = AppUtility.getApplicableRangesInDimension(defaultDimension);
             $scope.population.segmentExpression.push(expression);
         });
     };
@@ -447,10 +358,11 @@ offerConfiguratorControllers.controller('OffersController',
                                         ['$scope', 
                                          '$stateParams',
                                          'AppState',
+                                         'AppUtility',
                                          'Population',
                                          'Offers', 'Offer',
                                          OffersController]);
-function OffersController($scope, $stateParams, AppState, Population, Offers, Offer) {
+function OffersController($scope, $stateParams, AppState, AppUtility, Population, Offers, Offer) {
     // Lookup the population by it's ID.
     $scope.population = Population.show({id: $stateParams.populationId});
     // Perform HTTP GET for all offers in the population.
@@ -470,8 +382,8 @@ function OffersController($scope, $stateParams, AppState, Population, Offers, Of
         // Create an offer within the selected population.
         // Set default values for offerStatus and offerType.
         // All other fields can be modified on a REST update.
-        var defaultStatus = AppState.getOfferStatus(1);
-        var defaultOfferType = AppState.getOfferType(1);
+        var defaultStatus = AppUtility.getOfferStatus(1);
+        var defaultOfferType = AppUtility.getOfferType(1);
         var now = new Date();
         
         Offer.create({population:                       $scope.population,
@@ -514,9 +426,10 @@ offerConfiguratorControllers.controller('OfferDetailsController',
                                         ['$scope', 
                                          '$stateParams',
                                          'AppState',
+                                         'AppUtility',
                                          'Offer',
                                          OfferDetailsController]);
-function OfferDetailsController($scope, $stateParams, AppState, Offer) {
+function OfferDetailsController($scope, $stateParams, AppState, AppUtility, Offer) {
     // Lookup the offer by it's ID.
     $scope.offer = Offer.show({id:$stateParams.offerId}, function(offer){
         // Update Application State.
@@ -530,15 +443,15 @@ function OfferDetailsController($scope, $stateParams, AppState, Offer) {
     });
     
     // Get OfferType and OfferStatus enum listings (for dropdowns)
-    $scope.offerTypes = AppState.offerTypes;
-    $scope.offerStatuses = AppState.offerStatuses;
+    $scope.offerTypes = AppUtility.offerTypes;
+    $scope.offerStatuses = AppUtility.offerStatuses;
     
     //
     // Supported opperations.
     //
     $scope.progressOfferStatus = function () {
         // Progress the offer status to it's next allowable status.
-        $scope.offer.offerStatus = AppState.getOfferStatus($scope.offer.offerStatus.nextStatus);
+        $scope.offer.offerStatus = AppUtility.getOfferStatus($scope.offer.offerStatus.nextStatus);
         Offer.update({id: $scope.offer._id}, $scope.offer);
     }
     $scope.setOfferType = function (offerType) {
@@ -561,9 +474,10 @@ offerConfiguratorControllers.controller('BenefitsController',
                                         ['$scope', 
                                          '$stateParams',
                                          'AppState',
+                                         'AppUtility',
                                          'Offer',
                                          BenefitsController]);
-function BenefitsController($scope, $stateParams, AppState, Offer) {
+function BenefitsController($scope, $stateParams, AppState, AppUtility, Offer) {
     // Lookup the offer by it's ID.
     $scope.offer = Offer.show({id:$stateParams.offerId}, function(d){}, function(err) {
         if (err.status === 401) {
@@ -575,7 +489,7 @@ function BenefitsController($scope, $stateParams, AppState, Offer) {
     AppState.showGotoOffer = true;
     
     // Get Benefits.
-    $scope.benefits = AppState.benefits;
+    $scope.benefits = AppUtility.benefits;
     
     // Selected benefit to add.
     $scope.benefitToAdd = {};
@@ -607,9 +521,10 @@ offerConfiguratorControllers.controller('TermsController',
                                         ['$scope', 
                                          '$stateParams',
                                          'AppState',
+                                         'AppUtility',
                                          'Offer', 'Terms', 'Term',
                                          TermsController]);
-function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
+function TermsController($scope, $stateParams, AppState, AppUtility, Offer, Terms, Term) {
     AppState.displayTerms = true;
     AppState.displayTermDetails = false;
     $scope.appState = AppState;
@@ -645,10 +560,10 @@ function TermsController($scope, $stateParams, AppState, Offer, Terms, Term) {
         // Create an term within the selected offer.
         // Set default values for billingOnset, billingInterval, recurrence and prorationRule.
         // All other fields can be modified on a REST update.
-        var defaultBillingOnset = AppState.getBillingOnset(1);
-        var defaultBillingInterval = AppState.getBillingInterval(1);
-        var defaultBillingPeriod = AppState.getBillingPeriod(1);
-        var defaultProrationRule = AppState.getProrationRule(1);
+        var defaultBillingOnset = AppUtility.getBillingOnset(1);
+        var defaultBillingInterval = AppUtility.getBillingInterval(1);
+        var defaultBillingPeriod = AppUtility.getBillingPeriod(1);
+        var defaultProrationRule = AppUtility.getProrationRule(1);
         
         var now = new Date();
         
@@ -699,9 +614,10 @@ offerConfiguratorControllers.controller('TermDetailsController',
                                          '$state',
                                          '$stateParams',
                                          'AppState',
+                                         'AppUtility',
                                          'Term',
                                          TermDetailsController]);
-function TermDetailsController($scope, $state, $stateParams, AppState, Term) {
+function TermDetailsController($scope, $state, $stateParams, AppState, AppUtility, Term) {
     // Flip the appState into terms detail.
     AppState.displayTerms = false;
     AppState.displayTermDetails = true;
@@ -714,10 +630,10 @@ function TermDetailsController($scope, $state, $stateParams, AppState, Term) {
     });
     
     // Get BillingOnset, BillingInterval, Recurrence, and ProrationRule enum listings (for dropdowns)
-    $scope.billingOnsets = AppState.billingOnsets;
-    $scope.billingIntervals = AppState.billingIntervals;
-    $scope.billingPeriods = AppState.billingPeriods;
-    $scope.prorationRules = AppState.prorationRules;
+    $scope.billingOnsets = AppUtility.billingOnsets;
+    $scope.billingIntervals = AppUtility.billingIntervals;
+    $scope.billingPeriods = AppUtility.billingPeriods;
+    $scope.prorationRules = AppUtility.prorationRules;
     
     //
     // Supported opperations.
@@ -754,9 +670,10 @@ offerConfiguratorControllers.controller('OfferMerchandisingController',
                                         ['$scope', 
                                          '$stateParams',
                                          'AppState',
+                                         'AppUtility',
                                          'Offer', 'Merchandising', 'Merchandise',
                                          OfferMerchandisingController]);
-function OfferMerchandisingController($scope, $stateParams, AppState, Offer, Merchandising, Merchandise) {
+function OfferMerchandisingController($scope, $stateParams, AppState, AppUtility, Offer, Merchandising, Merchandise) {
     $scope.appState = AppState;
     
     // Update the Application State.
@@ -772,8 +689,8 @@ function OfferMerchandisingController($scope, $stateParams, AppState, Offer, Mer
     // Perform HTTP GET for all merchendising in the offer.
     $scope.merchandising = Merchandising.listByOffer({offerId: $stateParams.offerId});
 
-    $scope.placements = AppState.placements;
-    $scope.merchTypes = AppState.merchTypes;
+    $scope.placements = AppUtility.placements;
+    $scope.merchTypes = AppUtility.merchTypes;
     
     //
     // Supported opperations.
@@ -787,8 +704,8 @@ function OfferMerchandisingController($scope, $stateParams, AppState, Offer, Mer
         Merchandise.update({id: merch._id}, merch);
     };
     $scope.addMerchandising = function () {
-        var defaultMerchType = AppState.getMerchType(1);
-        var defaultPlacement = AppState.getPlacement(1);
+        var defaultMerchType = AppUtility.getMerchType(1);
+        var defaultPlacement = AppUtility.getPlacement(1);
         
         Merchandise.create({offer:                 $scope.offer,
                             merchType:             defaultMerchType,
