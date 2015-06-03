@@ -169,13 +169,16 @@ function PopulationsController($scope, $state, AppUtility, $gridService, Populat
             for (j = 0; j < offers.length; j += 1) {
                 offer = offers[j];
                 
+                var startDate = new Date(offer.startDate);
+                var endDate = new Date(offer.endDate);
+                
                 childRow = {dbObj: offer, dbType: "Offer", cells: [
                     {text: offer.name},
                     {text: offer.offerType.name},
                     {text: offer.split},
                     {text: offer.offerStatus.name},
-                    {text: offer.startDate},
-                    {text: offer.endDate}
+                    {text: startDate.toDateString()},
+                    {text: endDate.toDateString()}
                 ]};
                 
                 $gridService.addRow($scope.gridName, childRow, row);
@@ -229,13 +232,16 @@ function PopulationsController($scope, $state, AppUtility, $gridService, Populat
             var selectedOffer = selectedRow.dbObj;
             
             AppUtility.copyOffer(selectedOffer, function(offer) {
+                var startDate = new Date(offer.startDate);
+                var endDate = new Date(offer.endDate);
+                
                 var newRow = {dbObj: offer, dbType: "Offer", 
                               cells: [{text: offer.name}, 
                                       {text: offer.offerType.name},
                                       {text: offer.split},
                                       {text: offer.offerStatus.name},
-                                      {text: offer.startDate},
-                                      {text: offer.endDate}]};
+                                      {text: startDate.toDateString()},
+                                      {text: endDate.toDateString()}]};
                 $gridService.insertRowAfter($scope.gridName, newRow, selectedRow);
             });
         }
