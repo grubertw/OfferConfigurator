@@ -93,15 +93,18 @@ module.exports.initDb = function () {
     //
     OfferStatus.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            var unpublished = new OfferStatus({_id: 1, name: "Unpublished", nextAction: "Publish"});
-            var published = new OfferStatus({_id: 2, name: "Published", nextAction: "Deactivate"});
-            var deactivated = new OfferStatus({_id: 3, name: "Deactivated", nextAction: "Deactivate"});
+            var unpublished = new OfferStatus({_id: 1, name: "Unpublished", nextAction: "Publish Pending"});
+            var publishPending = new OfferStatus({_id: 2, name: "Publish Pending", nextAction: "Approve Publish"});
+            var published = new OfferStatus({_id: 3, name: "Published", nextAction: "Deactivate"});
+            var deactivated = new OfferStatus({_id: 4, name: "Deactivated", nextAction: "Deactivate"});
             
-            unpublished.nextStatus = published._id;
+            unpublished.nextStatus = publishPending._id;
+            publishPending.nextStatus = published._id;
             published.nextStatus = deactivated._id;
             deactivated.nextStatus = deactivated._id;
             
             unpublished.save();
+            publishPending.save();
             published.save();
             deactivated.save();
         }
