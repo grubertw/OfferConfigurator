@@ -9,9 +9,6 @@
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- CSS application -->
-    <link href="css/index.css" rel="stylesheet">
-    
     <!-- CSS JQuery-UI -->
     <link href="js/lib/jquery-ui/jquery-ui.css" rel="stylesheet">
     
@@ -19,6 +16,9 @@
     <link href="css/integralui.css" rel="stylesheet">
     <link href="css/integralui.treegrid.css" rel="stylesheet">
     <link href="css/treegrid-themes/theme-flat-blue.css" rel="stylesheet">
+    
+    <!-- CSS application -->
+    <link href="css/index.css" rel="stylesheet">
     
     <!-- JS libraries -->
     <script src="js/lib/jquery.js"></script>
@@ -61,7 +61,7 @@
 </head>
 
 <body ng-controller="HeaderController">
-<nav ng-show="appState.loggedIn" class="navbar navbar-primary">
+<nav ng-show="appState.loggedIn" class="navbar navbar-custom">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
@@ -79,8 +79,7 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">{{appState.firstName}}</a></li>
-                <li><a href="#">{{appState.lastName}}</a></li>
+                <li><a href="#">{{appState.firstName}} {{appState.lastName}}</a></li>
                 <li><a id="logout" href="#" ng-click="logout()">Logout</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
