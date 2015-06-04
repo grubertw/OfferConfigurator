@@ -152,8 +152,9 @@ module.exports.initDb = function () {
     //
     BillingInterval.findOne({_id: 1}, function (err, obj) {
         if (obj == null) {
-            new BillingInterval({_id: 1, name: "months"}).save();
-            new BillingInterval({_id: 2, name: "years"}).save();
+            new BillingInterval({_id: 1, name: "days"}).save();
+            new BillingInterval({_id: 2, name: "months"}).save();
+            new BillingInterval({_id: 3, name: "years"}).save();
         }
     });
     

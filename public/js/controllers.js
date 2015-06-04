@@ -145,12 +145,12 @@ function PopulationsController($scope, $state, AppUtility, $gridService, Populat
 
     $scope.gridName = "populationsTreeGrid";
     $scope.columns = [
-        { id: 1, headerText: "Name", headerAlignment: "left", contentAlignment: "left", width: 180 },
-        { id: 2, headerText: "Type", headerAlignment: "center", contentAlignment: "center", width: 125 },
+        { id: 1, headerText: "Name", headerAlignment: "left", contentAlignment: "left", width: 200 },
+        { id: 2, headerText: "Type", headerAlignment: "center", contentAlignment: "center", width: 140 },
         { id: 3, headerText: "Split", headerAlignment: "center", contentAlignment: "center", width: 60 },
-        { id: 4, headerText: "Status", headerAlignment: "center", contentAlignment: "center", width: 105 },
-        { id: 5, headerText: "Start", headerAlignment: "center", contentAlignment: "center", width: 160 },
-        { id: 6, headerText: "End", headerAlignment: "center", contentAlignment: "center", width: 160 }
+        { id: 4, headerText: "Status", headerAlignment: "center", contentAlignment: "center", width: 140 },
+        { id: 5, headerText: "Start", headerAlignment: "center", contentAlignment: "center", width: 180 },
+        { id: 6, headerText: "End", headerAlignment: "center", contentAlignment: "center", width: 180 }
     ];
     
     $scope.rowData = [];
