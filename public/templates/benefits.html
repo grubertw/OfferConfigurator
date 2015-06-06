@@ -29,43 +29,20 @@
         <span>{{offer.name}}</span>
     </form>
     
-    <table class="table table-striped">
-        <thead><tr>
-            <th>Benefit</th>
-            <th>Description</th>
-            <th></th>
-        </tr></thead>
-        <tbody><tr ng-repeat="benefit in offer.benefits">
-            <td>{{benefit.name}}</td>
-            <td>{{benefit.description}}</td>
-            <td>
-                <button type="button" class="btn btn-default" ng-click="removeBenefit(benefit)">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                </button>
-            </td>
-        </tr></tbody>
-    </table>
-    
-    <form class="form-horizontal">
-        <div class="form-group">
-            <label class="control-label col-sm-1">Add Benefit</label>
-            <div class="btn-group col-sm-2" dropdown>
-              <button class="btn btn-default dropdown-toggle" dropdown-toggle type="button" id="benefitButton">
-                {{benefitToAdd.name}}<span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu" role="menu">
-                <li ng-repeat="benefit in benefits">
-                    <a href="#" ng-click="setBenefitToAdd(benefit)">{{benefit.name}}</a>
-                </li>
-              </ul>
-            </div>
-        
-            <button type="button" class="btn btn-primary" id="addBenefitToOfferButton" ng-click="addBenefitToOffer()">
-                <span class="glyphicon glyphicon-chevron-add" aria-hidden="true"></span>Add Benefit
+    <div>
+        <iui-treegrid name="{{assignedBenefitsGrid}}" class="benefit-list" columns="leftColumns" rows="assignedBenefitsRows" show-footer="false"></iui-treegrid>
+
+        <div class="benefit-opps-buttons">
+            <button type="button" class="btn btn-primary assign-benefit" ng-click="addBenefit()">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            </button> <br />
+            <button type="button" class="btn btn-primary unassign-benefit" ng-click="removeBenefit()">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
             </button>
         </div>
-    </form> 
-    
+
+        <iui-treegrid name="{{availableBenefitsGrid}}" class="benefit-list" columns="rightColumns" rows="availableBenefitsRows" show-footer="false"></iui-treegrid>
+    </div>
 </div>
     
 </div> <!-- END tab content -->

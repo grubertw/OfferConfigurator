@@ -145,7 +145,7 @@ function PopulationsController($scope, $state, AppUtility, $gridService, Populat
 
     $scope.gridName = "populationsTreeGrid";
     $scope.columns = [
-        { id: 1, headerText: "Name", headerAlignment: "left", contentAlignment: "left", width: 200 },
+        { id: 1, headerText: "Name", headerAlignment: "left", contentAlignment: "left", width: 180 },
         { id: 2, headerText: "Type", headerAlignment: "center", contentAlignment: "center", width: 140 },
         { id: 3, headerText: "Split", headerAlignment: "center", contentAlignment: "center", width: 60 },
         { id: 4, headerText: "Status", headerAlignment: "center", contentAlignment: "center", width: 140 },
@@ -482,37 +482,74 @@ offerConfiguratorControllers.controller('BenefitsController',
                                          'AppState',
                                          'AppUtility',
                                          'Offer',
+                                         'IntegralUITreeGridService',
                                          BenefitsController]);
-function BenefitsController($scope, $stateParams, AppState, AppUtility, Offer) {
+function BenefitsController($scope, $stateParams, AppState, AppUtility, Offer, $gridService) {
+    // Update the Application State.
+    AppState.showGotoOffer = true;
+    
+    // Get all available benefits.
+    $scope.availableBenefits = AppUtility.benefits;
+    
+    $scope.assignedBenefitsGrid = "assignedBenefits";
+    $scope.availableBenefitsGrid = "availableBenefits";
+    $scope.leftColumns = [
+        { id: 1, headerText: "Assigned Benefits", headerAlignment: "center", contentAlignment: "center", width: 250 },
+    ];
+    $scope.rightColumns = [
+        { id: 1, headerText: "Available Benefits", headerAlignment: "center", contentAlignment: "center", width: 250 },
+    ];
+    $scope.assignedBenefitsRows = [];
+    $scope.availableBenefitsRows = [];
+    
     // Lookup the offer by it's ID.
-    $scope.offer = Offer.show({id:$stateParams.offerId}, function(d){}, function(err) {
+    $scope.offer = Offer.show({id:$stateParams.offerId}, function(offer){
+        for (var i=0; i<$scope.availableBenefits.length; i++) {
+            var availBene = $scope.availableBenefits[i];
+            
+            var row = {dbObj:availBene, cells:[{text: availBene.name}]};
+            
+            // If the benefit is assgined to the offer, put in the
+            // and assignedBenefies and not the availableBenefits.
+            var benefitAssigned = false;
+            for (var j=0; j<offer.benefits.length; j++) {
+                var assignedBene = offer.benefits[j];
+                 
+                if (availBene._id == assignedBene._id) {
+                    benefitAssigned = true;
+                    $gridService.addRow($scope.assignedBenefitsGrid, row);
+                    break;
+                }
+            }
+            
+            if (!benefitAssigned) {
+                $gridService.addRow($scope.availableBenefitsGrid, row);
+            }
+        }
+    }, function(err) {
         if (err.status === 401) {
             AppState.logout();
         }
     });
     
-    // Update the Application State.
-    AppState.showGotoOffer = true;
-    
-    // Get Benefits.
-    $scope.benefits = AppUtility.benefits;
-    
-    // Selected benefit to add.
-    $scope.benefitToAdd = {};
-    
     //
     // Supported opperations.
     //
-    $scope.removeBenefit = function (benefit) {
-        var index = $scope.offer.benefits.indexOf(benefit);
-        $scope.offer.benefits.splice(index, 1);
+    $scope.addBenefit = function () {
+        var row = $gridService.selectedRow($scope.availableBenefitsGrid);
+        $gridService.addRow($scope.assignedBenefitsGrid, row);
+        $gridService.removeRow($scope.availableBenefitsGrid, row);
+        
+        $scope.offer.benefits.push(row.dbObj);
         Offer.update({id: $scope.offer._id}, $scope.offer);
     }
-    $scope.setBenefitToAdd = function (benefit) {
-        $scope.benefitToAdd = benefit;
-    };
-    $scope.addBenefitToOffer = function () {        
-        $scope.offer.benefits.push($scope.benefitToAdd);
+    $scope.removeBenefit = function () {
+        var row = $gridService.selectedRow($scope.assignedBenefitsGrid);
+        $gridService.addRow($scope.availableBenefitsGrid, row);
+        $gridService.removeRow($scope.assignedBenefitsGrid, row);
+        
+        var index = $scope.offer.benefits.indexOf(row.dbObj);
+        $scope.offer.benefits.splice(index, 1);
         Offer.update({id: $scope.offer._id}, $scope.offer);
     };
 }

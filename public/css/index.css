@@ -208,6 +208,23 @@
     margin-top: 50px;
 }
 
+.benefit-list {
+    display: inline-block;
+    width: 250px;
+    height: 500px;
+}
+
+.benefit-opps-buttons {
+    display: inline-block;
+}
+
+.assign-benefit {
+    margin-bottom: 15px;
+}
+.unassign-benefit {
+    margin-bottom: 400px;
+}
+
 #termsDiv {
     padding: 10px;
     border: solid;
@@ -233,10 +250,6 @@
 
 #termInputRecurrenceForm {
     margin-left: 10px;
-}
-
-#benefitButton {
-    width: 175px;
 }
 
 #merchandiseRow {
