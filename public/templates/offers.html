@@ -6,44 +6,25 @@
     
 <div class="tab-content">
 <div role="tabpanel" class="tab-pane active" id="offers">
-    <button type="button" class="btn btn-primary" ng-click="addOffer()">
-      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
-    </button>
-
-    <table class="table table-striped">
-        <thead><tr>
-            <th></th>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Split</th>
-            <th>Status</th>
-            <th>Starts</th>
-            <th>Ends</th>
-            <th></th>
-        </tr></thead>
-        <tbody><tr ng-repeat="offer in offers">
-            <td>
-                <button type="button" class="btn btn-default">
-                    <span class="glyphicon glyphicon-edit" aria-hidden="true" ui-sref="offerDetails({offerId:offer._id})"></span>
-                </button>
-            </td>
-            <td>{{offer.name}}</td>
-            <td>{{offer.offerType.name}}</td>
-            <td><input id="offerSplitEditTextbox" type="text" class="form-control" ng-model="offer.split" ng-change="saveOffer(offer)">%</td>
-            <td>{{offer.offerStatus.name}}</td>
-            <td>{{offer.startDate}}</td>
-            <td>{{offer.endDate}}</td>
-            <td>
-                <button type="button" class="btn btn-default" ng-click="removeOffer(offer)">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                </button>
-            </td>
-        </tr></tbody>
-    </table>
-
-    <button type="button" class="btn btn-primary" ng-click="addOffer()">
-      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
-    </button>
+    
+    <div class="tree-grid-panel">
+        <iui-treegrid id="offerTG" name="{{gridName}}" class="tree-grid" columns="columns" rows="rowData" label-edit="true" tabindex="0" show-footer="false" after-label-edit="rowEdited(e)"></iui-treegrid>
+        <div class="tg-button-panel">
+            <button type="button" class="btn btn-primary tg-button" ng-click="createOffer()">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create Offer
+            </button>
+            <button type="button" class="btn btn-primary tg-button" ng-click="remove()">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove
+            </button>
+            <button type="button" class="btn btn-primary tg-button" ng-click="edit()">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit
+            </button>
+            <button type="button" class="btn btn-primary tg-button" ng-click="copy()">
+                <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Copy From
+            </button>
+        </div>
+    </div>
+    
 </div>
 </div> <!-- END tab content -->
 </div> <!-- END population tabs -->

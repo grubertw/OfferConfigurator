@@ -5,7 +5,7 @@
 <div class="panel-body">
     
     <div class="tree-grid-panel">
-        <iui-treegrid name="{{gridName}}" class="tree-grid" columns="columns" rows="rowData" show-footer="false"></iui-treegrid>
+        <iui-treegrid id="popTG" name="{{gridName}}" class="tree-grid" columns="columns" rows="rowData" show-footer="false"></iui-treegrid>
         <div class="tg-button-panel">
             <button type="button" class="btn btn-primary tg-button" ng-click="createPopulation()">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create Population
@@ -15,9 +15,6 @@
             </button>
             <button type="button" class="btn btn-primary tg-button" ng-click="edit()">
                 <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit
-            </button>
-            <button type="button" class="btn btn-primary tg-button" ng-click="copy()">
-                <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Copy
             </button>
         </div>
     </div>

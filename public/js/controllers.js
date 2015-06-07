@@ -143,16 +143,17 @@ function PopulationsController($scope, $state, AppUtility, $gridService, Populat
     AppUtility.merchTypes = MerchTypes.list();
     AppUtility.placements = Placements.list();
 
+    var tgWidth = $("#popTG").width();
+    
     $scope.gridName = "populationsTreeGrid";
     $scope.columns = [
-        { id: 1, headerText: "Name", headerAlignment: "left", contentAlignment: "left", width: 180 },
-        { id: 2, headerText: "Type", headerAlignment: "center", contentAlignment: "center", width: 140 },
-        { id: 3, headerText: "Split", headerAlignment: "center", contentAlignment: "center", width: 60 },
-        { id: 4, headerText: "Status", headerAlignment: "center", contentAlignment: "center", width: 140 },
-        { id: 5, headerText: "Start", headerAlignment: "center", contentAlignment: "center", width: 180 },
-        { id: 6, headerText: "End", headerAlignment: "center", contentAlignment: "center", width: 180 }
+        {headerText: "Name", headerAlignment: "left", contentAlignment: "left", width: Math.round(tgWidth*0.2) },
+        {headerText: "Type", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.15) },
+        {headerText: "Split", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.1) },
+        {headerText: "Status", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.15) },
+        {headerText: "Start", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.2) },
+        {headerText: "End", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.2) }
     ];
-    
     $scope.rowData = [];
     
     // Fetch the populations from the server.
@@ -205,7 +206,6 @@ function PopulationsController($scope, $state, AppUtility, $gridService, Populat
         else if (row.dbType == "Offer") {
             Offer.delete({id: row.dbObj._id});
         }
-        
     };
     $scope.edit = function () {
         var row = $gridService.selectedRow($scope.gridName);
@@ -361,30 +361,62 @@ function PopulationDetailsController($scope, $stateParams, AppState, AppUtility,
 // Controller for adding/removing Offers.
 //
 offerConfiguratorControllers.controller('OffersController', 
-                                        ['$scope', 
+                                        ['$scope',
+                                         '$state',
                                          '$stateParams',
+                                         'IntegralUITreeGridService',
                                          'AppState',
                                          'AppUtility',
                                          'Population',
                                          'Offers', 'Offer',
                                          OffersController]);
-function OffersController($scope, $stateParams, AppState, AppUtility, Population, Offers, Offer) {
+function OffersController($scope, $state, $stateParams, $gridService, AppState, AppUtility, Population, Offers, Offer) {
+    // Update the Application State.
+    AppState.showGotoPopulation = true;
+    
+    var tgWidth = $("#offerTG").width();
+    
+    $scope.gridName = "offersTreeGrid";
+    $scope.columns = [
+        {headerText: "Name", headerAlignment: "left", contentAlignment: "left", width: Math.round(tgWidth*0.2) },
+        {headerText: "Type", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.15) },
+        {headerText: "Split", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.1) },
+        {headerText: "Status", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.15) },
+        {headerText: "Start", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.2) },
+        {headerText: "End", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.2) }
+    ];
+    $scope.rowData = [];
+    
     // Lookup the population by it's ID.
     $scope.population = Population.show({id: $stateParams.populationId});
     // Perform HTTP GET for all offers in the population.
-    $scope.offers = Offers.listByPopulation({populationId: $stateParams.populationId}, function(d){}, function(err) {
+    Offers.listByPopulation({populationId: $stateParams.populationId}, function(offers){
+        for (var i=0; i<offers.length; i++) {
+            var offer = offers[i];
+            var id = i+1;
+            var startDate = new Date(offer.startDate);
+            var endDate = new Date(offer.endDate);
+            
+            var row = {dbObj:offer, id: id, cells:[
+                {value: "name", text: offer.name},
+                {value: "offerType", text: offer.offerType.name},
+                {value: "split", text: offer.split, labelEdit: true},
+                {value: "offerStatus", text: offer.offerStatus.name},
+                {value: "startDate", text: startDate.toDateString()},
+                {value: "endDate", text: endDate.toDateString()}
+            ]};
+            $gridService.addRow($scope.gridName, row);
+        }
+    }, function(err) {
         if (err.status === 401) {
             AppState.logout();
         }
     });
     
-    // Update the Application State.
-    AppState.showGotoPopulation = true;
-    
     //
     // Supported opperations.
     //
-    $scope.addOffer = function () {
+    $scope.createOffer = function () {
         // Create an offer within the selected population.
         // Set default values for offerStatus and offerType.
         // All other fields can be modified on a REST update.
@@ -408,17 +440,59 @@ function OffersController($scope, $stateParams, AppState, AppUtility, Population
                      function (offer) {
             offer.offerStatus = defaultStatus;
             offer.offerType = defaultOfferType;
-            $scope.offers.push(offer);
+            var startDate = new Date(offer.startDate);
+            var endDate = new Date(offer.endDate);
+            
+            var row = {dbObj: offer, cells:[
+                {value: "name", text: offer.name},
+                {value: "offerType", text: offer.offerType.name},
+                {value: "split", text: offer.split, labelEdit: true},
+                {value: "offerStatus", text: offer.offerStatus.name},
+                {value: "startDate", text: startDate.toDateString()},
+                {value: "endDate", text: endDate.toDateString()}
+            ]};
+            $gridService.addRow($scope.gridName, row);
         });
     };
-    $scope.removeOffer = function (offer) {
-        Offer.delete({id: offer._id});
+    $scope.remove = function () {
+        var row = $gridService.selectedRow($scope.gridName);
+
+        $gridService.removeRow($scope.gridName,  row);
         
-        var index = this.offers.indexOf(offer);
-        $scope.offers.splice(index, 1);
+        Offer.delete({id: row.dbObj._id});
     };
-    $scope.saveOffer = function (offer) {
-        Offer.update({id: offer._id}, offer);
+    $scope.edit = function (offer) {
+        var row = $gridService.selectedRow($scope.gridName);
+        $state.go('offerDetails', {offerId: row.dbObj._id});
+    };
+    $scope.rowEdited = function (e) {
+        var row = $gridService.selectedRow($scope.gridName);
+        var offer = row.dbObj;
+        
+        if (e.cell.value == "split") {
+            offer.split = e.cell.text;
+            Offer.update({id: offer._id}, offer);
+        }
+        else if (e.cell.value == "name") {
+            offer.name = e.cell.text;
+            Offer.update({id: offer._id}, offer);
+        }
+        else {
+            if (e.cell.value == "offerType") {
+                e.cell.text = offer.offerType.name;
+            }
+            else if (e.cell.value == "offerStatus") {
+                e.cell.text = offer.offerStatus.name;
+            }
+            else if (e.cell.value == "startDate") {
+                var startDate = new Date(offer.startDate);
+                e.cell.text = startDate.toDateString();
+            }
+            else if (e.cell.value == "endDate") {
+                var endDate = new Date(offer.endDate);
+                e.cell.text = endDate.toDateString();
+            }
+        }
     };
 }
 
