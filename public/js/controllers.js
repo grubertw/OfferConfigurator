@@ -126,8 +126,8 @@ function HeaderController($scope, $state, AppState) {
 // On edit of a population, will route to the PopulationDetailsController,
 // passing the populationId.
 //
-offerConfiguratorControllers.controller('PopulationsController', ['$scope', '$state', 'AppUtility', 'IntegralUITreeGridService', 'Populations', 'Population', 'Offer', 'OfferTypes', 'OfferStatuses', 'Benefits', 'ActionTypes', 'BillingOnsets', 'BillingIntervals', 'BillingPeriods', 'ProrationRules', 'MerchTypes', 'Placements', 'Dimensions', 'Ranges', 'Operators', PopulationsController]);
-function PopulationsController($scope, $state, AppUtility, $gridService, Populations, Population, Offer, OfferTypes, OfferStatuses, Benefits, ActionTypes, BillingOnsets, BillingIntervals, BillingPeriods, ProrationRules, MerchTypes, Placements, Dimensions, Ranges, Operators) {
+offerConfiguratorControllers.controller('PopulationsController', ['$scope', '$state', 'AppState', 'AppUtility', 'IntegralUITreeGridService', 'Populations', 'Population', 'SegmentExpression', 'Offer', 'OfferTypes', 'OfferStatuses', 'Benefits', 'ActionTypes', 'BillingOnsets', 'BillingIntervals', 'BillingPeriods', 'ProrationRules', 'MerchTypes', 'Placements', 'Dimensions', 'Ranges', 'Operators', PopulationsController]);
+function PopulationsController($scope, $state, AppState, AppUtility, $gridService, Populations, Population, SegmentExpression, Offer, OfferTypes, OfferStatuses, Benefits, ActionTypes, BillingOnsets, BillingIntervals, BillingPeriods, ProrationRules, MerchTypes, Placements, Dimensions, Ranges, Operators) {
     'use strict';
     // Prefetch enumerations from the server here
     AppUtility.dimensions = Dimensions.list();
@@ -214,15 +214,49 @@ function PopulationsController($scope, $state, AppUtility, $gridService, Populat
             $state.go('populationDetails', {populationId: row.dbObj._id});
         } 
         else if (row.dbType == "Offer") {
+            var parentRow = $gridService.getRowParent($scope.gridName, row);
+            
+            // Update the Application State.
+            AppState.showGotoPopulation = true;
+            AppState.currPopulationId = parentRow.dbObj._id;
+            
             $state.go('offerDetails', {offerId: row.dbObj._id});
         }
     };
-    $scope.copy = function () {
+    $scope.copyPopulation = function () {
         var selectedRow = $gridService.selectedRow($scope.gridName);
         
         if (selectedRow.dbType == "Population") {
+            var selectedPop = selectedRow.dbObj;
+            
             Population.create(function (pop) {
-                pop.name = selectedRow.dbObj.name;
+                pop.name = selectedPop.name;
+                
+                // Copy the segment definition.
+                var exCreateCount = 0;
+                for (var i=0; i<selectedPop.segmentExpression.length; i++) {
+                    var ex = selectedPop.segmentExpression[i];
+                    
+                    SegmentExpression.show({id: ex._id}, function (expression){
+                        SegmentExpression.create({population:       pop,
+                                                  operatorOnly:     expression.operatorOnly,
+                                                  left:             expression.left,
+                                                  operator:         expression.operator,
+                                                  right:            expression.right}, 
+                                                 function(newExpression) {
+                            pop.segmentExpression.push(newExpression);
+
+                            exCreateCount += 1;
+                            if (exCreateCount == selectedPop.segmentExpression.length) {
+                                Population.update({id:pop._id}, pop);
+                            }
+                        });
+                    });
+                }
+                
+                if (selectedPop.segmentExpression.length == 0) {
+                    Population.update({id:pop._id}, pop);
+                }
                 
                 var newRow = {dbObj: pop, dbType: "Population", cells: [{text: pop.name}]};
                 $gridService.insertRowAfter($scope.gridName, newRow, selectedRow);

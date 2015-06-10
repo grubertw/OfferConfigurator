@@ -93,7 +93,7 @@ PopulationAPI.list = function(req, res) {
         console.log("JWT token is valid");
         var reqOffersToPopulate = 0;
         
-        Population.find({}).populate('offers').exec(function(err, populations) {
+        Population.find({}).populate('segmentExpression offers').exec(function(err, populations) {
             if (populations) {
                 for (i=0; i<populations.length; i++) {
                     var population = populations[i];
@@ -162,8 +162,9 @@ PopulationAPI.create = function(req, res) {
     if (req.user) {
         var model = new Population({name: 'New Population'});
         model.segmentExpression = [];
-        model.save();
-        res.json(model.toJSON());
+        model.save(function(err) {
+            res.json(model.toJSON());
+        });
     }
     else {
         console.log("JWT token is invalid");
