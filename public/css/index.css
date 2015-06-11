@@ -123,8 +123,11 @@
 }
 
 .tree-grid {
-    /*width: 95%;*/
     height: 400px;
+}
+
+.terms-tree-grid {
+    height: 100px;
 }
 
 .tg-button-panel {
@@ -233,7 +236,6 @@
 
 #termsDiv {
     padding: 10px;
-    border: solid;
 }
 
 #termDetailsDiv {

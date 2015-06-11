@@ -79,41 +79,18 @@
     
     <h3>Charges:</h3>
     <div ng-show="appState.displayTerms" id="termsDiv">
-        <button type="button" class="btn btn-primary" ng-click="addTerm()">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Term
-        </button>
-
-        <!-- Charges/Terms table -->
-        <table class="table table-striped">
-            <thead><tr>
-                <th></th>
-                <th>Billing Onset</th>
-                <th>Amount</th>
-                <th>MSRP</th>
-                <th>Reccurence</th>
-                <th></th>
-            </tr></thead>
-            <tbody><tr ng-repeat="term in terms">
-                <td>
-                    <button type="button" class="btn btn-default">
-                        <span class="glyphicon glyphicon-edit" aria-hidden="true" ui-sref="terms.termDetails({termId:term._id})"></span>
-                    </button>
-                </td>
-                <td>{{term.billingOnset.name}}</td>
-                <td>{{term.price}}</td>
-                <td>{{term.msrp}}</td>
-                <td>{{term.reccurrenceDescription}}</td>
-                <td>
-                    <button type="button" class="btn btn-default" ng-click="removeTerm(term)">
-                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                    </button>
-                </td>
-            </tr></tbody>
-        </table>
-
-        <button type="button" class="btn btn-primary" ng-click="addTerm()">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Term
-        </button>
+        <iui-treegrid id="chargesTG" name="{{gridName}}" class="terms-tree-grid" columns="columns" rows="rowData" show-footer="false"></iui-treegrid>
+        <div class="tg-button-panel">
+            <button type="button" class="btn btn-primary" ng-click="createTerm()">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create Term
+            </button>
+            <button type="button" class="btn btn-primary" ng-click="editTerm()">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit
+            </button>
+            <button type="button" class="btn btn-primary" ng-click="removeTerm()">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove
+            </button>
+        </div>
     </div>
     
     <div ng-show="appState.displayTermDetails" id="termDetailsDiv">

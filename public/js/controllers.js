@@ -151,8 +151,8 @@ function PopulationsController($scope, $state, AppState, AppUtility, $gridServic
         {headerText: "Type", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.15) },
         {headerText: "Split", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.1) },
         {headerText: "Status", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.15) },
-        {headerText: "Start", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.2) },
-        {headerText: "End", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.2) }
+        {headerText: "Start", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.19) },
+        {headerText: "End", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.19) }
     ];
     $scope.rowData = [];
     
@@ -416,8 +416,8 @@ function OffersController($scope, $state, $stateParams, $gridService, AppState, 
         {headerText: "Type", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.15) },
         {headerText: "Split", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.1) },
         {headerText: "Status", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.15) },
-        {headerText: "Start", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.2) },
-        {headerText: "End", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.2) }
+        {headerText: "Start", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.19) },
+        {headerText: "End", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.19) }
     ];
     $scope.rowData = [];
     
@@ -669,19 +669,32 @@ function BenefitsController($scope, $stateParams, AppState, AppUtility, Offer, $
 // parent offer.
 //
 offerConfiguratorControllers.controller('TermsController', 
-                                        ['$scope', 
+                                        ['$scope',
+                                         '$state',
                                          '$stateParams',
                                          'AppState',
                                          'AppUtility',
+                                         'IntegralUITreeGridService',
                                          'Offer', 'Terms', 'Term',
                                          TermsController]);
-function TermsController($scope, $stateParams, AppState, AppUtility, Offer, Terms, Term) {
+function TermsController($scope, $state, $stateParams, AppState, AppUtility, $gridService, Offer, Terms, Term) {
     AppState.displayTerms = true;
     AppState.displayTermDetails = false;
     $scope.appState = AppState;
     
     // Update the Application State.
     AppState.showGotoOffer = true;
+    
+    var tgWidth = $("#chargesTG").width();
+    
+    $scope.gridName = "chargesTreeGrid";
+    $scope.columns = [
+        {headerText: "Billing Onset", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.25) },
+        {headerText: "Amount", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.20) },
+        {headerText: "MSRP", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.20) },
+        {headerText: "Reccurence", headerAlignment: "center", contentAlignment: "center", width: Math.round(tgWidth*0.34) }
+    ];
+    $scope.rowData = [];
     
     // Lookup the offer by it's ID.
     $scope.offer = Offer.show({id:$stateParams.offerId}, function(d){}, function(err) {
@@ -691,9 +704,10 @@ function TermsController($scope, $stateParams, AppState, AppUtility, Offer, Term
     });
 
     // Perform HTTP GET for all terms in the offer.
-    $scope.terms = Terms.listByOffer({offerId: $stateParams.offerId}, function (terms) {
+    Terms.listByOffer({offerId: $stateParams.offerId}, function (terms) {
         for (var i=0; i<terms.length; i++) {
             var term = terms[i];
+            var id = i+1;
             
             if (term.hasBillingInterval) {
                 term.reccurrenceDescription = "Every " + term.billingTimespan + " " + term.billingInterval.name + " for " + term.billingPeriod.name + " billing period(s)";
@@ -701,13 +715,21 @@ function TermsController($scope, $stateParams, AppState, AppUtility, Offer, Term
             else {
                 term.reccurrenceDescription = "None";
             }
+            
+            var row = {dbObj:term, id: id, cells:[
+                {value: "billingOnset", text: term.billingOnset.name},
+                {value: "price", text: term.price},
+                {value: "msrp", text: term.msrp},
+                {value: "reccurrenceDescription", text: term.reccurrenceDescription}
+            ]};
+            $gridService.addRow($scope.gridName, row);
         }
     });
     
     //
     // Supported opperations.
     //
-    $scope.addTerm = function () {
+    $scope.createTerm = function () {
         // Create an term within the selected offer.
         // Set default values for billingOnset, billingInterval, recurrence and prorationRule.
         // All other fields can be modified on a REST update.
@@ -737,18 +759,29 @@ function TermsController($scope, $stateParams, AppState, AppUtility, Offer, Term
             term.billingPeriod = defaultBillingPeriod;
             term.prorationRule = defaultProrationRule;
             term.reccurrenceDescription = "Every " + term.billingTimespan + " " + term.billingInterval.name + " for " + term.billingPeriod.name + " billing period(s)";
-            $scope.terms.push(term);
+            
+            var row = {dbObj:term, cells:[
+                {value: "billingOnset", text: term.billingOnset.name},
+                {value: "price", text: term.price},
+                {value: "msrp", text: term.msrp},
+                {value: "reccurrenceDescription", text: term.reccurrenceDescription}
+            ]};
+            $gridService.addRow($scope.gridName, row);
             
             // Add term reference to the offer.
             $scope.offer.terms.push(term);
             Offer.update({id: $scope.offer._id}, $scope.offer);
         });
     };
-    $scope.removeTerm = function (term) {
-        Term.delete({id: term._id});
+    $scope.editTerm = function () {
+        var row = $gridService.selectedRow($scope.gridName);
+        $state.go('terms.termDetails', {termId: row.dbObj._id});
+    };
+    $scope.removeTerm = function () {
+        var row = $gridService.selectedRow($scope.gridName);
+        $gridService.removeRow($scope.gridName,  row);
         
-        var index = $scope.terms.indexOf(term);
-        $scope.terms.splice(index, 1);
+        Term.delete({id: row.dbObj._id});
     }
 
     $scope.saveTerms = function () {
