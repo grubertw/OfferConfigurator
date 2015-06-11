@@ -602,10 +602,10 @@ function BenefitsController($scope, $stateParams, AppState, AppUtility, Offer, $
     $scope.assignedBenefitsGrid = "assignedBenefits";
     $scope.availableBenefitsGrid = "availableBenefits";
     $scope.leftColumns = [
-        { id: 1, headerText: "Assigned Benefits", headerAlignment: "center", contentAlignment: "center", width: 250 },
+        { id: 1, headerText: "Assigned Benefits", headerAlignment: "center", contentAlignment: "center", width: 245 },
     ];
     $scope.rightColumns = [
-        { id: 1, headerText: "Available Benefits", headerAlignment: "center", contentAlignment: "center", width: 250 },
+        { id: 1, headerText: "Available Benefits", headerAlignment: "center", contentAlignment: "center", width: 245 },
     ];
     $scope.assignedBenefitsRows = [];
     $scope.availableBenefitsRows = [];

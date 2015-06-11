@@ -211,18 +211,24 @@
 .benefit-list {
     display: inline-block;
     width: 250px;
-    height: 500px;
+    height: 400px;
 }
 
 .benefit-opps-buttons {
     display: inline-block;
+    vertical-align: top;
+    margin-right: 20px;
+    margin-left: 20px;
 }
 
 .assign-benefit {
+    vertical-align: top;
+    margin-top: 60px;
     margin-bottom: 15px;
 }
 .unassign-benefit {
-    margin-bottom: 400px;
+    vertical-align: top;
+    margin-bottom: 100px;
 }
 
 #termsDiv {
@@ -257,8 +263,8 @@
     margin-bottom: 25px;
 }
 
-#save-button {
-    margin-top: 20px;
+.back-button {
+    margin-top: 15px;
 }
 
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }

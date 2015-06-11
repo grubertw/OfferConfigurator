@@ -72,12 +72,16 @@
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                 </button>
             </div>
-        </div>
-        
-        <button type="button" class="btn btn-primary" ng-click="addMerchandising()">
-            <span class="glyphicon glyphicon-add" aria-hidden="true"></span>Add
-        </button>
+        </form>
     </div>
+        
+    <button type="button" class="btn btn-primary" ng-click="addMerchandising()">
+        <span class="glyphicon glyphicon-add" aria-hidden="true"></span>Add
+    </button> <br />
+    <button type="button" class="btn btn-primary tg-button back-button" ui-sref="offers({populationId:offer.population._id})">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Offers
+    </button>
+</div>
 </div>
 </div> <!-- END tab content -->
 </div> <!-- END offer tabs -->
