@@ -126,6 +126,11 @@
     height: 400px;
 }
 
+.tree-grid-modal {
+    width: 500px;
+    height: 250px;
+}
+
 .terms-tree-grid {
     height: 100px;
 }

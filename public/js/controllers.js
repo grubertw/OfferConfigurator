@@ -261,23 +261,6 @@ function PopulationsController($scope, $state, AppState, AppUtility, $gridServic
                 var newRow = {dbObj: pop, dbType: "Population", cells: [{text: pop.name}]};
                 $gridService.insertRowAfter($scope.gridName, newRow, selectedRow);
             });
-        } 
-        else if (selectedRow.dbType == "Offer") {
-            var selectedOffer = selectedRow.dbObj;
-            
-            AppUtility.copyOffer(selectedOffer, function(offer) {
-                var startDate = new Date(offer.startDate);
-                var endDate = new Date(offer.endDate);
-                
-                var newRow = {dbObj: offer, dbType: "Offer", 
-                              cells: [{text: offer.name}, 
-                                      {text: offer.offerType.name},
-                                      {text: offer.split},
-                                      {text: offer.offerStatus.name},
-                                      {text: startDate.toDateString()},
-                                      {text: endDate.toDateString()}]};
-                $gridService.insertRowAfter($scope.gridName, newRow, selectedRow);
-            });
         }
     };
 }
@@ -399,12 +382,13 @@ offerConfiguratorControllers.controller('OffersController',
                                          '$state',
                                          '$stateParams',
                                          'IntegralUITreeGridService',
+                                         '$modal',
                                          'AppState',
                                          'AppUtility',
                                          'Population',
                                          'Offers', 'Offer',
                                          OffersController]);
-function OffersController($scope, $state, $stateParams, $gridService, AppState, AppUtility, Population, Offers, Offer) {
+function OffersController($scope, $state, $stateParams, $gridService, $modal, AppState, AppUtility, Population, Offers, Offer) {
     // Update the Application State.
     AppState.showGotoPopulation = true;
     
@@ -527,6 +511,75 @@ function OffersController($scope, $state, $stateParams, $gridService, AppState, 
                 e.cell.text = endDate.toDateString();
             }
         }
+    };
+    $scope.copy = function () {
+        var modalInstance = $modal.open({
+            templateUrl: 'templates/copy-offer.html',
+            controller: 'CopyOfferController',
+            size: 'lg'
+        });
+
+        // Copy the offer into the current population.
+        modalInstance.result.then(function (selectedOffer) {
+            AppUtility.copyOffer($scope.population, selectedOffer, function(offer) {
+                var startDate = new Date(offer.startDate);
+                var endDate = new Date(offer.endDate);
+                
+                var newRow = {dbObj: offer, dbType: "Offer", cells: [
+                    {value: "name", text: offer.name},
+                    {value: "offerType", text: offer.offerType.name},
+                    {value: "split", text: offer.split, labelEdit: true},
+                    {value: "offerStatus", text: offer.offerStatus.name},
+                    {value: "startDate", text: startDate.toDateString()},
+                    {value: "endDate", text: endDate.toDateString()}
+                ]};
+                $gridService.addRow($scope.gridName, newRow);
+            });
+        });
+    };
+}
+
+offerConfiguratorControllers.controller('CopyOfferController', 
+                                        ['$scope',
+                                         '$modalInstance',
+                                         'IntegralUITreeGridService',
+                                         'Populations',
+                                         CopyOfferController]);
+function CopyOfferController($scope, $modalInstance, $gridService, Populations) {
+    $scope.gridName = "copyOfferTreeGrid";
+    $scope.columns = [
+        {headerText: "Name", headerAlignment: "left", contentAlignment: "left", width: 495 }
+    ];
+    $scope.rowData = [];
+    
+    Populations.list(function (populations) {
+        var i, j, pop, row, offers, offer, childRow;
+        for (i = 0; i < populations.length; i += 1) {
+            pop = populations[i];
+            
+            row = {dbObj: pop, dbType: "Population", cells: [{text: pop.name}]};
+            $gridService.addRow($scope.gridName, row);
+            
+            // Insert any child offers of this population.
+            offers = pop.offers;
+            for (j = 0; j < offers.length; j += 1) {
+                offer = offers[j];
+
+                childRow = {dbObj: offer, dbType: "Offer", cells: [{text: offer.name}]};
+                $gridService.addRow($scope.gridName, childRow, row);
+            }
+        }
+    });
+    
+    $scope.ok = function () {
+        var selectedRow = $gridService.selectedRow($scope.gridName);
+        
+        if (selectedRow.dbType == "Offer") {
+            $modalInstance.close(selectedRow.dbObj);
+        }
+    };
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
     };
 }
 

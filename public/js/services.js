@@ -240,10 +240,10 @@ offerConfiguratorServices.service('AppUtility', ['Offer', 'Terms', 'Term', 'Merc
     //
     // Copy all offer attributes, benefits, terms, and merchandise.
     // Offers can only be copied if they are in the Unpublished state.
-    this.copyOffer = function(selectedOffer, completionCallback) {
+    this.copyOffer = function(currPopulation, selectedOffer, completionCallback) {
         var unpublished = this.getOfferStatus(1);
         
-        Offer.create({population:                       selectedOffer.population,
+        Offer.create({population:                       currPopulation,
                       offerStatus:                      unpublished,
                       offerType:                        selectedOffer.offerType,
                       split:                            selectedOffer.split,
