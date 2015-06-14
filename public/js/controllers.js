@@ -271,9 +271,9 @@ function PopulationsController($scope, $state, AppState, AppUtility, $gridServic
 // a means to characterize a group of people.
 // 
 offerConfiguratorControllers.controller('PopulationDetailsController', 
-                                        ['$scope', '$stateParams', 'AppState', 'AppUtility', 'Population', 'SegmentExpression',
+                                        ['$scope', '$state', '$stateParams', 'AppState', 'AppUtility', 'Population', 'SegmentExpression',
                                          PopulationDetailsController]);
-function PopulationDetailsController($scope, $stateParams, AppState, AppUtility, Population, SegmentExpression) {
+function PopulationDetailsController($scope, $state, $stateParams, AppState, AppUtility, Population, SegmentExpression) {
     // Lookup the population by it's ID.
     Population.show({id:$stateParams.populationId}, function(population){
         // Update Application State.
@@ -372,6 +372,12 @@ function PopulationDetailsController($scope, $stateParams, AppState, AppUtility,
     $scope.savePopulation = function () {
         Population.update({id:$scope.population._id}, $scope.population);
     }
+    $scope.gotoPopulations = function () {
+        AppState.showGotoPopulation = false;
+        AppState.showGotoOffers = false;
+        AppState.showGotoOffer = false;
+        $state.go('populations');
+    };
 }
 
 //
@@ -537,6 +543,12 @@ function OffersController($scope, $state, $stateParams, $gridService, $modal, Ap
             });
         });
     };
+    $scope.gotoPopulations = function () {
+        AppState.showGotoPopulation = false;
+        AppState.showGotoOffers = false;
+        AppState.showGotoOffer = false;
+        $state.go('populations');
+    };
 }
 
 offerConfiguratorControllers.controller('CopyOfferController', 
@@ -590,13 +602,14 @@ function CopyOfferController($scope, $modalInstance, $gridService, Populations) 
 // are handled by seporate controlers.
 //
 offerConfiguratorControllers.controller('OfferDetailsController', 
-                                        ['$scope', 
+                                        ['$scope',
+                                         '$state',
                                          '$stateParams',
                                          'AppState',
                                          'AppUtility',
                                          'Offer',
                                          OfferDetailsController]);
-function OfferDetailsController($scope, $stateParams, AppState, AppUtility, Offer) {
+function OfferDetailsController($scope, $state, $stateParams, AppState, AppUtility, Offer) {
     // Lookup the offer by it's ID.
     $scope.offer = Offer.show({id:$stateParams.offerId}, function(offer){
         // Update Application State.
@@ -628,6 +641,11 @@ function OfferDetailsController($scope, $stateParams, AppState, AppUtility, Offe
     $scope.saveOffer = function () {
         Offer.update({id: $scope.offer._id}, $scope.offer);
     };
+    $scope.gotoOffers = function () {
+        AppState.showGotoOffers = false;
+        AppState.showGotoOffer = false;
+        $state.go('offers', {populationId: $scope.offer.population._id});
+    };
 }
 
 //
@@ -638,14 +656,15 @@ function OfferDetailsController($scope, $stateParams, AppState, AppUtility, Offe
 // to the offer.
 //
 offerConfiguratorControllers.controller('BenefitsController', 
-                                        ['$scope', 
+                                        ['$scope',
+                                         '$state',
                                          '$stateParams',
                                          'AppState',
                                          'AppUtility',
                                          'Offer',
                                          'IntegralUITreeGridService',
                                          BenefitsController]);
-function BenefitsController($scope, $stateParams, AppState, AppUtility, Offer, $gridService) {
+function BenefitsController($scope, $state, $stateParams, AppState, AppUtility, Offer, $gridService) {
     // Update the Application State.
     AppState.showGotoOffer = true;
     
@@ -712,6 +731,12 @@ function BenefitsController($scope, $stateParams, AppState, AppUtility, Offer, $
         var index = $scope.offer.benefits.indexOf(row.dbObj);
         $scope.offer.benefits.splice(index, 1);
         Offer.update({id: $scope.offer._id}, $scope.offer);
+    };
+    
+    $scope.gotoOffers = function () {
+        AppState.showGotoOffers = false;
+        AppState.showGotoOffer = false;
+        $state.go('offers', {populationId: $scope.offer.population._id});
     };
 }
 
@@ -836,9 +861,13 @@ function TermsController($scope, $state, $stateParams, AppState, AppUtility, $gr
         
         Term.delete({id: row.dbObj._id});
     }
-
     $scope.saveTerms = function () {
         Offer.update({id: $scope.offer._id}, $scope.offer);
+    };
+    $scope.gotoOffers = function () {
+        AppState.showGotoOffers = false;
+        AppState.showGotoOffer = false;
+        $state.go('offers', {populationId: $scope.offer.population._id});
     };
 }
 
@@ -905,12 +934,13 @@ function TermDetailsController($scope, $state, $stateParams, AppState, AppUtilit
 //
 offerConfiguratorControllers.controller('OfferMerchandisingController', 
                                         ['$scope', 
+                                         '$state',
                                          '$stateParams',
                                          'AppState',
                                          'AppUtility',
                                          'Offer', 'Merchandising', 'Merchandise',
                                          OfferMerchandisingController]);
-function OfferMerchandisingController($scope, $stateParams, AppState, AppUtility, Offer, Merchandising, Merchandise) {
+function OfferMerchandisingController($scope, $state, $stateParams, AppState, AppUtility, Offer, Merchandising, Merchandise) {
     $scope.appState = AppState;
     
     // Update the Application State.
@@ -964,5 +994,10 @@ function OfferMerchandisingController($scope, $stateParams, AppState, AppUtility
     }
     $scope.saveMerchandise = function (merch) {
         Merchandise.update({id: merch._id}, merch);
+    };
+    $scope.gotoOffers = function () {
+        AppState.showGotoOffers = false;
+        AppState.showGotoOffer = false;
+        $state.go('offers', {populationId: $scope.offer.population._id});
     };
 }

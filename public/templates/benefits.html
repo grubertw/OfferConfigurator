@@ -44,7 +44,7 @@
         <iui-treegrid name="{{availableBenefitsGrid}}" class="benefit-list" columns="rightColumns" rows="availableBenefitsRows" show-footer="false"></iui-treegrid>
     </div>
     
-    <button type="button" class="btn btn-primary tg-button back-button" ui-sref="offers({populationId:offer.population._id})">
+    <button type="button" class="btn btn-primary tg-button back-button" ng-click="gotoOffers()">
         <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Offers
     </button>
 </div>
