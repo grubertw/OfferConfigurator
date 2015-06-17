@@ -92,6 +92,7 @@ PopulationAPI.list = function(req, res) {
     if (req.user) {
         console.log("JWT token is valid");
         var reqOffersToPopulate = 0;
+        var offerCount = 0;
         
         Population.find({}).populate('segmentExpression offers').exec(function(err, populations) {
             if (populations) {
@@ -101,6 +102,7 @@ PopulationAPI.list = function(req, res) {
                     for (j=0; j<population.offers.length; j++) {
                         var offer = population.offers[j];
                         reqOffersToPopulate += 1;
+                        offerCount += 1;
                         
                         Offer.findOne({_id: offer._id}).populate('offerType offerStatus population benefits terms').exec(function(err, off) {
                             if (off) {
@@ -130,6 +132,9 @@ PopulationAPI.list = function(req, res) {
                             }
                         });
                     }
+                }
+                if (offerCount === 0) {
+                    res.send(populations);
                 }
             }
             else {
@@ -300,7 +305,7 @@ OfferAPI.update = function(req, res) {
                    benefits:                    benefits,
                    terms:                       terms}
         }, { upsert: true }, function(err, model) {
-            //console.log("Offer.update() err=%s", err);
+            console.log("Offer.update() err=%s", err);
             return res.json(model.toJSON());
         });
     }

@@ -21,7 +21,7 @@ var Offer = new Schema({
     endDate                     : Date,
     hasTrial                    : Boolean,
     requiresPaymentAuthorization: Boolean,
-    paymentAuthorizationAmount  : String,
+    paymentAuthorizationAmount  : Number,
     shortPaymentDisclosure      : String,
     longPaymentDisclosure       : String,
     population                  : {type: ObjectId, ref: 'Population'},

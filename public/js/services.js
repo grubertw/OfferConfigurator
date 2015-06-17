@@ -321,6 +321,24 @@ offerConfiguratorServices.service('AppUtility', ['Offer', 'Terms', 'Term', 'Merc
             completionCallback(offer);
         });
     };
+    
+    // The split of an offer must be a whole number, betwen 0 & 100.
+    this.validateSplit = function (inputVal) {
+        var outputVal = Number(inputVal);
+        
+        if (   (outputVal != NaN) 
+            && (outputVal > 0) ) {
+            outputVal = Math.round(outputVal);
+            if (outputVal > 100) { 
+                outputVal = 100;
+            }
+        }
+        else {
+            outputVal = 0;
+        }
+        
+        return outputVal;
+    }
 }]);
 
 // Autheticate service.

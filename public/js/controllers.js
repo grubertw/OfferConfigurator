@@ -458,7 +458,7 @@ function OffersController($scope, $state, $stateParams, $gridService, $modal, Ap
                       // The following attributes are part of the top-level fields of terms.
                       hasTrial:                         false,
                       requiresPaymentAuthorization:     false,
-                      paymentAuthorizationAmount:       "$0.0",
+                      paymentAuthorizationAmount:       0,
                       shortPaymentDisclosure:           "short payment disclosure",
                       longPaymentDisclosure:            "long payment disclosure"},
                      function (offer) {
@@ -494,8 +494,12 @@ function OffersController($scope, $state, $stateParams, $gridService, $modal, Ap
         var offer = row.dbObj;
         
         if (e.cell.value == "split") {
-            offer.split = e.cell.text;
-            Offer.update({id: offer._id}, offer);
+            e.cell.text = AppUtility.validateSplit(e.cell.text);
+            
+            if (e.cell.text !== offer.split) {
+                offer.split = e.cell.text;
+                Offer.update({id: offer._id}, offer);
+            }
         }
         else if (e.cell.value == "name") {
             offer.name = e.cell.text;
@@ -826,8 +830,8 @@ function TermsController($scope, $state, $stateParams, AppState, AppUtility, $gr
                      isTrial:               false,
                      description:           "Term description here",
                      startDate:             now,
-                     price:                 "$0.99",
-                     msrp:                  "-",
+                     price:                 0.99,
+                     msrp:                  0,
                      hasBillingInterval:    true,
                      billingTimespan:       1,
                      frequency:             "Indefinite"},

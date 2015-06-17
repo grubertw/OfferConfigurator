@@ -10,8 +10,8 @@ var mongoose = require('mongoose')
  
 var postSchema = new Schema({
     name                        : String,
-    price                       : String,
-    msrp                        : String,
+    price                       : Number,
+    msrp                        : Number,
     isTrial                     : Boolean,
     startDate                   : Date,         
     description                 : String,
