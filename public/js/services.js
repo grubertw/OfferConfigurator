@@ -326,7 +326,7 @@ offerConfiguratorServices.service('AppUtility', ['Offer', 'Terms', 'Term', 'Merc
     this.validateSplit = function (inputVal) {
         var outputVal = Number(inputVal);
         
-        if (   (outputVal != NaN) 
+        if (   !isNaN(outputVal)
             && (outputVal > 0) ) {
             outputVal = Math.round(outputVal);
             if (outputVal > 100) { 
@@ -337,6 +337,26 @@ offerConfiguratorServices.service('AppUtility', ['Offer', 'Terms', 'Term', 'Merc
             outputVal = 0;
         }
         
+        return outputVal;
+    }
+    
+    // Ensure value is a number with a precision of 2.
+    this.validateMonitaryAmount = function (inputVal) {
+        var outputVal = inputVal;
+        
+        if (outputVal.length > 0) {
+            var char = outputVal[outputVal.length-1];
+            
+            if (char != '.') {
+                outputVal = Number(outputVal);
+        
+                if (   !isNaN(outputVal)
+                    && (outputVal > 0) ) {
+                    outputVal = Math.round(outputVal * 100) / 100;
+                }
+            }
+        }
+  
         return outputVal;
     }
 }]);

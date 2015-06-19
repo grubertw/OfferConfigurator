@@ -866,6 +866,10 @@ function TermsController($scope, $state, $stateParams, AppState, AppUtility, $gr
         Term.delete({id: row.dbObj._id});
     }
     $scope.saveTerms = function () {
+        // Ensure payment auth amount is a monitary value.
+        $scope.offer.paymentAuthorizationAmount = 
+            AppUtility.validateMonitaryAmount($scope.offer.paymentAuthorizationAmount);
+        
         Offer.update({id: $scope.offer._id}, $scope.offer);
     };
     $scope.gotoOffers = function () {
@@ -925,6 +929,10 @@ function TermDetailsController($scope, $state, $stateParams, AppState, AppUtilit
         Term.update({id: $scope.term._id}, $scope.term);
     };
     $scope.saveTerm = function() {
+        // Ensure monitary amounts are valid.
+        $scope.term.price = AppUtility.validateMonitaryAmount($scope.term.price);
+        $scope.term.msrp = AppUtility.validateMonitaryAmount($scope.term.msrp);
+        
         Term.update({id: $scope.term._id}, $scope.term);
     };
     $scope.backToTerms = function () {

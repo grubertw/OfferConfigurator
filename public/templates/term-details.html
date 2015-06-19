@@ -39,7 +39,8 @@
     <!-- term.price entry -->
     <div class="form-group">
         <label class="col-sm-2 control-label">Amount</label>
-        <div class="col-sm-2">
+        <div class="input-group col-sm-2">
+            <div class="input-group-addon">$</div>
             <input type="text" class="form-control" ng-model="term.price" ng-change="saveTerm()">
         </div>
     </div>
@@ -47,7 +48,8 @@
     <!-- term.msrp entry -->
     <div class="form-group">
         <label class="col-sm-2 control-label">MSRP</label>
-        <div class="col-sm-2">
+        <div class="input-group col-sm-2">
+            <div class="input-group-addon">$</div>
             <input type="text" class="form-control" ng-model="term.msrp" ng-change="saveTerm()">
         </div>
     </div>
@@ -56,7 +58,7 @@
 <!-- term.hasBillingInterval entry -->
 <div class="checkbox" id="isReccuringCheckbox">
     <label>
-        <input type="checkbox" ng-model="term.hasBillingInterval">Is Recurring
+        <input type="checkbox" ng-model="term.hasBillingInterval" ng-change="saveTerm()">Is Recurring
     </label>
 </div>
 
